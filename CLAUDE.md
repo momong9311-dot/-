@@ -1,0 +1,205 @@
+# CLAUDE.md — Merci Momong Education Platform
+
+이 문서는 이 저장소에서 작업하는 모든 세션(사람 · Claude)이 **반드시 먼저 읽는** 기준 문서다.
+설계 철학과 금지사항을 지키기 위한 것이며, 세부 사양은 `docs/` 문서를 참조한다.
+
+---
+
+## 1. 이 프로젝트가 무엇인가
+
+메르시모몽의 **디자이너 교육 및 성장관리 플랫폼**이다.
+일반적인 사내 LMS가 아니다.
+
+최종 목표는 다음 흐름을 **하나의 시스템으로 끊김 없이 연결**하는 것이다.
+
+```
+교육 → 학습 → 실습 → 실제 고객 적용 → 평가 → 피드백 → 역량 성장 → 다음 교육 → 반복 → 승급
+```
+
+이 시스템의 최종 정체성:
+> 메르시모몽의 교육 방법론을 **조직의 데이터 자산**으로 만든다.
+
+---
+
+## 2. 절대 잊으면 안 되는 핵심 질문
+
+이 시스템은 "교육을 받았는가?"를 관리하지 않는다.
+
+**핵심 질문은 이것 하나다:**
+> 교육받은 내용을 실제 고객에게 적용했고, 그 결과 디자이너의 역량이 성장했는가?
+
+따라서 다음 6개를 **데이터·화면·로직에서 항상 분리**한다. 하나로 합치지 않는다.
+
+| 구분 | 의미 |
+|------|------|
+| Learning | 교육 내용을 학습했는가 |
+| Practice | 실습(연습)을 했는가 |
+| Application | 실제 고객에게 적용했는가 |
+| Evaluation | 행동·역량을 평가받았는가 |
+| Feedback | 다음 행동으로 연결되는 피드백을 받았는가 |
+| Skill Growth | 그래서 역량이 실제로 성장했는가 |
+
+**교육 완료율(completion rate)을 역량 습득(competency)으로 간주하지 않는다.**
+
+---
+
+## 3. 교육 철학 (모든 기능이 여기서 파생된다)
+
+메르시모몽 교육의 핵심은 지식 암기가 아니라 **진단 결과를 실제 디자인으로 연결하는 능력**이다.
+
+기본 사고 구조:
+```
+관찰 → 진단 → 문제 정의 → 고객 니즈 이해 → 이미지 방향 설정
+     → 디자인 전략 → 디자인 요소 선택 → 시술 → 결과 확인 → 피드백
+```
+
+이 중 **핵심 역량으로 특별 취급하는 연결**:
+> **진단 → 디자인 연결 (Diagnosis → Design)**
+
+평가·피드백·CustomerCase 설계는 모두 이 연결을 관찰·기록·성장시키는 방향으로 만든다.
+
+---
+
+## 4. 개발 순서 (절대 규칙)
+
+**절대 이 순서로 개발하지 않는다:** `UI → DB → 기능`
+
+**반드시 이 순서를 따른다:**
+```
+Problem → User → Behavior → Data → Relationship → UX → UI → Implementation
+```
+
+기능을 추가·수정할 때마다 다음 7개 질문을 통과해야 한다:
+
+1. 어떤 문제를 해결하는가?
+2. 누가 사용하는가?
+3. 사용자의 행동이 실제로 변하는가?
+4. 어떤 데이터가 생성되는가?
+5. 기존 시스템과 어떻게 연결되는가?
+6. 관리자가 운영(수정)할 수 있는가?
+7. MVP에 반드시 필요한가?
+
+**필요성이 낮으면 만들지 않는다.**
+
+---
+
+## 5. 금지사항 (하지 말 것)
+
+- ❌ 예쁜 UI부터 만들기
+- ❌ 필요하지 않은 기능 추가
+- ❌ AI부터 개발
+- ❌ 교육 완료율을 성장률로 표시
+- ❌ Skill을 단순 점수 하나로 표현 (Skill은 다차원 데이터다 — §7 참조)
+- ❌ 교육 콘텐츠를 코드에 하드코딩
+- ❌ 관리자만 수정할 수 있어야 하는 데이터를 코드에 고정
+- ❌ 실제 사용자 데이터와 개발/시드 데이터를 혼합
+- ❌ 승급·인사·최종 역량 판정을 AI가 자동 결정
+
+---
+
+## 6. 데이터 원칙
+
+- **교육 콘텐츠는 코드에 하드코딩하지 않는다.** 관리자가 다음을 수정할 수 있어야 한다:
+  교육 과정 · 모듈 · 레슨 · 교육 내용 · 순서 · 필수/선택 · 대상 Level · 평가 기준 · 실습 과제.
+- **성장 단계(Level) 명칭·기준은 하드코딩하지 않는다.** DB의 `Level` 테이블에서 관리한다.
+  운영 데이터가 쌓이면 명칭·기준을 바꿀 수 있어야 한다.
+- **Skill은 점수 하나가 아니다.** 최소한 다음을 가진다:
+  `current_level, target_level, practice_count, application_count, evaluation_count, feedback_count, growth_history`.
+- **개발/시드 데이터와 실데이터를 섞지 않는다.** 시드는 명확히 표시(`is_seed` 또는 별도 환경)한다.
+- **CustomerCase는 개인정보를 최소한으로 저장한다.**
+
+---
+
+## 7. Skill 데이터 (한 줄 요약)
+
+Skill을 "70점" 같은 단일 값으로 표현하지 않는다. 각 Skill은 최소한:
+`current_level` / `target_level` / `practice_count` / `application_count` /
+`evaluation_count` / `feedback_count` / `growth_history` 를 갖는다.
+자세한 내용은 `docs/DATA_MODEL.md`.
+
+---
+
+## 8. 평가 원칙
+
+평가는 **사람이 아니라 행동·역량**을 평가한다. 평가 항목은 가능한 한 다음을 포함한다:
+`Criteria / Observation / Strength / Gap / Next Action / Score`.
+
+- 나쁜 평가: "아쉬움."
+- 좋은 평가: "얼굴의 가로 비율은 정확히 관찰했지만, 그 특징을 디자인 요소로 연결하는 설명이 부족함."
+
+피드백은 반드시 **다음 행동(Next Action)으로 연결**되어야 한다.
+
+---
+
+## 9. AI 원칙
+
+- AI는 교육자를 대체하지 않는다. MVP에서 AI는 핵심 기능이 아니다.
+- AI가 자동으로 결정하면 안 되는 것: **승급 · 인사 · 최종 역량 판정.**
+- 최종 판단은 **항상 사람**이 한다.
+- 향후 AI는 보조 도구로만: 자료 검색 · 요약 · 퀴즈 생성 · 복습 질문 · 취약 역량 분석 · 피드백 초안 · 유사 CustomerCase 검색 등.
+
+---
+
+## 10. UX / 브랜드 원칙
+
+메르시모몽 브랜드 방향성을 유지한다.
+
+- 색: White · Black · Gray · Minimal Accent
+- 톤: Editorial · Premium · Calm
+- 일반적인 LMS의 복잡한 Dashboard UI를 만들지 않는다.
+- "사내 LMS"가 아니라 **메르시모몽의 내부 성장 플랫폼**처럼 느껴져야 한다.
+- 과도한 카드/배지/그래프/색상/아이콘을 쓰지 않는다.
+
+자세한 내용은 `docs/DESIGN_SYSTEM.md`.
+
+---
+
+## 11. MVP 범위 (지금 만드는 것만)
+
+- **Auth**: Login, Role
+- **Designer**: Home, Curriculum, Lesson, Practice, Evaluation, Feedback, My Growth
+- **Admin**: Dashboard, Designer List, Designer Detail, Curriculum Management, Evaluation Management
+- **Data**: User, Role, Skill, Curriculum, Lesson, Practice, Evaluation, Feedback, LearningProgress, SkillProgress
+- **CustomerCase / PromotionCriteria**: 초기 구조만 준비, 이후 확장.
+- **AI**: MVP 핵심 기능 아님.
+
+자세한 범위·비범위는 `docs/PRD.md` §MVP.
+
+---
+
+## 12. 기술 스택 (제안 — 확정 전 사용자 확인 필요)
+
+현재 환경: Node 22, pnpm 10, Python 3.11, Docker, Supabase MCP 사용 가능.
+
+**제안 스택** (단순·유지보수·현대적 기준):
+- Frontend: React + Vite + TypeScript (`app/frontend`)
+- Backend: Node.js + TypeScript, Fastify (`app/backend`)
+- DB: PostgreSQL (로컬 Docker / Supabase), ORM: Prisma — schema를 데이터 모델의 single source of truth로 사용
+- Auth: 이메일+비밀번호 세션 기반 (MVP), Role 기반 접근제어
+
+이 스택은 **확정이 아니다.** 구현 착수 전 사용자 승인을 받는다.
+
+---
+
+## 13. 문서 지도
+
+| 문서 | 내용 |
+|------|------|
+| `docs/PRD.md` | 제품 요구사항, 사용자, MVP 범위, 사용자 Flow |
+| `docs/EDUCATION_SYSTEM.md` | 교육 방법론, 콘텐츠 계층, 성장/평가 로직 |
+| `docs/DATA_MODEL.md` | Entity, 관계(ERD), 필드, Skill/성장 모델 |
+| `docs/DESIGN_SYSTEM.md` | 색·타이포·컴포넌트·화면 톤 |
+
+---
+
+## 14. 현재 상태
+
+- [x] 프로젝트 구조 생성
+- [x] 설계 문서 작성 (PRD / EDUCATION_SYSTEM / DATA_MODEL / DESIGN_SYSTEM)
+- [ ] 기술 스택 사용자 승인
+- [ ] DB 스키마 구현
+- [ ] 백엔드 API
+- [ ] 프론트엔드 화면
+- [ ] 시드 데이터 (실데이터와 분리)
+
+> 지금은 **문서와 데이터 구조** 단계다. 구현은 사용자 승인 후 진행한다.
