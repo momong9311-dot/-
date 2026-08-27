@@ -7,9 +7,13 @@ import { bumpSkillCount } from "../lib/growth.js";
 const fbSchema = z.object({
   subjectUserId: z.string(),
   evaluationId: z.string().optional(),
+  customerCaseId: z.string().optional(),
   skillId: z.string().optional(),
+  strength: z.string().default(""),
+  gap: z.string().default(""),
   message: z.string().min(1),
   nextAction: z.string().default(""),
+  dueDate: z.string().datetime().optional(),
 });
 
 export async function feedbackRoutes(app: FastifyInstance) {
@@ -24,9 +28,13 @@ export async function feedbackRoutes(app: FastifyInstance) {
     });
     return rows.map((f) => ({
       id: f.id,
+      strength: f.strength,
+      gap: f.gap,
       message: f.message,
       nextAction: f.nextAction,
+      dueDate: f.dueDate,
       skillName: f.skill?.name ?? null,
+      customerCaseId: f.customerCaseId,
       authorName: f.author.name,
       acknowledged: !!f.acknowledgedAt,
       createdAt: f.createdAt,
@@ -54,9 +62,13 @@ export async function feedbackRoutes(app: FastifyInstance) {
         subjectUserId: d.subjectUserId,
         authorId: user.id,
         evaluationId: d.evaluationId,
+        customerCaseId: d.customerCaseId,
         skillId: d.skillId,
+        strength: d.strength,
+        gap: d.gap,
         message: d.message,
         nextAction: d.nextAction,
+        dueDate: d.dueDate ? new Date(d.dueDate) : undefined,
       },
     });
     if (d.skillId) await bumpSkillCount(d.subjectUserId, d.skillId, "feedbackCount");

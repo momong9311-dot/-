@@ -31,20 +31,23 @@ export function Layout({ children }: { children: ReactNode }) {
 
       <main className="container">{children}</main>
 
-      {/* Bottom tabs: designer flow (always), admin gets extra manager tabs) */}
+      {/* Bottom tabs. Employee flow: HOME / TRAINING / CASES / GROWTH / MY.
+          Managers also get an ADMIN tab. */}
       {!inAdmin ? (
         <nav className="tabbar">
-          <Tab to="/" label="홈" end />
-          <Tab to="/curriculum" label="교육" />
-          <Tab to="/practice" label="실습" />
-          <Tab to="/feedback" label="피드백" />
-          <Tab to="/growth" label="성장" />
+          <Tab to="/" label="HOME" end />
+          <Tab to="/curriculum" label="TRAINING" />
+          <Tab to="/cases" label="CASES" />
+          <Tab to="/growth" label="GROWTH" />
+          <Tab to="/my" label="MY" />
+          {manager && <Tab to="/admin" label="ADMIN" />}
         </nav>
       ) : (
         <nav className="tabbar">
           <Tab to="/admin" label="대시보드" end />
           <Tab to="/admin/designers" label="디자이너" />
           <Tab to="/admin/evaluation" label="평가" />
+          <Tab to="/admin/cases" label="사례" />
           <Tab to="/admin/curriculum" label="커리큘럼" />
         </nav>
       )}

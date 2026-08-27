@@ -190,3 +190,22 @@ textarea { min-height: 90px; resize: vertical; }
 .stat .l { font-size: 12px; color: var(--color-text-muted); }
 
 .back { font-size: 13px; color: var(--color-text-muted); margin-bottom: var(--space-4); display: inline-block; cursor: pointer; }
+
+/* ---- Case: design strategy grid (form) ---- */
+.ds-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 var(--space-3); }
+@media (max-width: 420px) { .ds-grid { grid-template-columns: 1fr; } }
+
+/* ---- Case: design strategy view (detail) ---- */
+.ds-view { border: var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: var(--space-3); }
+.ds-item { display: flex; justify-content: space-between; gap: var(--space-4); padding: var(--space-2) var(--space-3); border-bottom: var(--border); font-size: 14px; }
+.ds-item:last-child { border-bottom: none; }
+.ds-item .k { color: var(--color-text-faint); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; }
+.ds-item .v { text-align: right; }
+
+/* ---- Skill chips (multi-select) ---- */
+.chip-select { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.chip {
+  font-size: 13px; padding: 6px 12px; border-radius: 999px; cursor: pointer;
+  border: var(--border); background: var(--color-bg); color: var(--color-text-muted); min-height: 36px;
+}
+.chip.on { border-color: var(--color-text); color: var(--color-text); background: var(--color-accent-soft); }

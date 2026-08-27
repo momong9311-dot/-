@@ -8,11 +8,16 @@ import { LessonPage } from "./pages/designer/Lesson";
 import { PracticePage } from "./pages/designer/Practice";
 import { FeedbackPage } from "./pages/designer/Feedback";
 import { MyGrowth } from "./pages/designer/MyGrowth";
+import { Cases } from "./pages/designer/Cases";
+import { CaseForm } from "./pages/designer/CaseForm";
+import { CaseDetail } from "./pages/designer/CaseDetail";
+import { My } from "./pages/designer/My";
 import { AdminDashboard } from "./pages/admin/Dashboard";
 import { Designers } from "./pages/admin/Designers";
 import { DesignerDetail } from "./pages/admin/DesignerDetail";
 import { CurriculumMgmt } from "./pages/admin/CurriculumMgmt";
 import { EvaluationMgmt } from "./pages/admin/EvaluationMgmt";
+import { CasesReview } from "./pages/admin/CasesReview";
 
 export function App() {
   const { me, loading } = useAuth();
@@ -29,6 +34,13 @@ export function App() {
         <Route path="/practice" element={<PracticePage />} />
         <Route path="/feedback" element={<FeedbackPage />} />
         <Route path="/growth" element={<MyGrowth />} />
+        <Route path="/my" element={<My />} />
+
+        {/* CASES */}
+        <Route path="/cases" element={<Cases />} />
+        <Route path="/cases/new" element={<CaseForm />} />
+        <Route path="/cases/:id" element={<CaseDetail />} />
+        <Route path="/cases/:id/edit" element={<CaseForm />} />
 
         {/* Admin / manager */}
         {isManager(me.roleKey) && (
@@ -38,6 +50,7 @@ export function App() {
             <Route path="/admin/designers/:id" element={<DesignerDetail />} />
             <Route path="/admin/curriculum" element={<CurriculumMgmt />} />
             <Route path="/admin/evaluation" element={<EvaluationMgmt />} />
+            <Route path="/admin/cases" element={<CasesReview />} />
           </>
         )}
 

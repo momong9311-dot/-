@@ -9,6 +9,8 @@ const evalSchema = z.object({
   skillId: z.string().optional(),
   practiceId: z.string().optional(),
   customerCaseId: z.string().optional(),
+  // competency dimension; design_connection is the core one
+  dimension: z.enum(["observation", "diagnosis", "problem", "design_connection", "execution", "communication"]).optional(),
   criteria: z.string().default(""),
   observation: z.string().default(""),
   strength: z.string().default(""),
@@ -67,6 +69,7 @@ export async function evaluationRoutes(app: FastifyInstance) {
         skillId: d.skillId,
         practiceId: d.practiceId,
         customerCaseId: d.customerCaseId,
+        dimension: d.dimension,
         criteria: d.criteria,
         observation: d.observation,
         strength: d.strength,

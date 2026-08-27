@@ -132,6 +132,7 @@ export async function adminRoutes(app: FastifyInstance) {
           },
         },
         practices: { orderBy: { submittedAt: "desc" }, include: { skill: true, evaluations: true } },
+        customerCases: { orderBy: { createdAt: "desc" }, include: { skill: true, evaluations: true } },
         evaluationsAbout: { orderBy: { createdAt: "desc" }, include: { skill: true, evaluator: { select: { name: true } } } },
         feedbackReceived: { orderBy: { createdAt: "desc" }, include: { skill: true, author: { select: { name: true } } } },
       },
@@ -158,6 +159,7 @@ export async function adminRoutes(app: FastifyInstance) {
         history: sp.growthHistory.map((h) => ({ from: h.fromLevel?.name ?? null, to: h.toLevel?.name ?? null, causeType: h.causeType, createdAt: h.createdAt })),
       })),
       practices: d.practices.map((p) => ({ id: p.id, skillName: p.skill?.name ?? null, evidence: p.evidence, reflection: p.reflection, status: p.status, submittedAt: p.submittedAt, evaluated: p.evaluations.length > 0 })),
+      cases: d.customerCases.map((c) => ({ id: c.id, skillName: c.skill?.name ?? null, status: c.status, diagnosis: c.diagnosis, createdAt: c.createdAt, evaluated: c.evaluations.length > 0 })),
       evaluations: d.evaluationsAbout,
       feedback: d.feedbackReceived,
     };

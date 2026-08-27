@@ -197,29 +197,36 @@ Lesson에 붙는 과제 정의. `id`, `lesson_id FK`, `title`, `instructions`, `
 | status | enum | `submitted` / `reviewed` |
 | created_at | datetime | |
 
-### 3.13 CustomerCase `[later, 구조만]` — 축3: 고객에 적용했다
-장기적으로 가장 중요한 데이터. **개인정보 최소 저장.**
+### 3.13 CustomerCase `[MVP 구현됨]` — 축3: 고객에 적용했다
+**직원이 실제 고객에게 적용한 내용을 내부 교육 목적으로 기록**하는 기능(고객용 CRM 아님).
+장기적으로 가장 중요한 데이터. **개인정보(이름·전화·주소·생년월일) 저장 금지.**
 | 필드 | 타입 | 설명 |
 |------|------|------|
-| id `PK` | uuid | |
+| id `PK` | uuid | Case ID |
 | designer_id `FK` | → User | |
-| skill_id `FK?` | → Skill | |
-| customer_alias | string? | 익명/최소 식별 (실명·연락처 저장 안 함) |
+| branch_id `FK?` | → Branch | 지점 |
+| skill_id `FK?` | → Skill | 주요 역량(적용 횟수 반영) |
+| status | string | draft / applied / completed |
 | customer_need | text? | 고객 니즈 |
-| current_state | text? | 현재 상태 |
-| observation | text? | 관찰 |
-| diagnosis | text? | 진단 |
-| problem_definition | text? | 문제 정의 |
-| image_direction | text? | 이미지 방향 |
-| design_strategy | text? | 디자인 전략 |
-| design_elements | text? | 디자인 요소 |
-| procedure | text? | 시술 |
-| before_ref / after_ref | media ref? | Before/After (참조만) |
-| result | text? | 결과 |
-| education_point | text? | 교육 포인트 |
-| created_at | datetime | |
+| desired_image | text? | 원하는 이미지 |
+| current_concern | text? | 현재 고민 |
+| observation / diagnosis | text? | 관찰 / 진단 |
+| problem_definition / image_direction | text? | 문제 정의 / 이미지 방향 |
+| **Design Strategy (구조화)** | | design_goal · ds_length · ds_silhouette · ds_volume · ds_line · ds_weight · ds_texture · ds_curl · ds_parting · ds_fringe · ds_color · **ds_reason** |
+| procedure / result | text? | 시술 / 결과 |
+| before_ref / after_ref | media ref? | Before/After (참조만, 권한 제한) |
+| designer_reflection | text? | 디자이너 회고 |
+| completed_at | datetime? | 실제 고객 적용 완료 시각 |
+| created_at / updated_at | datetime | |
 
-> 필드는 교육 사고 구조(관찰→진단→…→결과)와 1:1 매핑. 평가·피드백은 Evaluation/Feedback로 연결.
+관계: `relatedSkills`(CustomerCaseSkill 다대다) · `evaluations` · `feedback`.
+
+> Design Strategy는 **시술명 나열이 아니라 진단→디자인 연결의 근거(ds_reason)** 를 담는다.
+> **완료(complete) 시에만** 주요·관련 Skill의 `application_count`가 1회 증가한다(중복 방지).
+> 나머지 필드는 교육 사고 구조(관찰→진단→…→결과)와 1:1 매핑.
+
+### 3.13b CustomerCaseSkill `[MVP]` — 사례 × 관련 Skill (다대다)
+`id`, `customer_case_id FK`, `skill_id FK`, `@@unique`. 한 사례가 훈련한 여러 Skill을 연결.
 
 ### 3.14 Evaluation `[MVP]` — 축4: 평가받았다
 사람(행동·역량)을 아니라 **행동·역량**을 평가.

@@ -12,6 +12,7 @@ async function main() {
   await prisma.feedback.deleteMany();
   await prisma.evaluation.deleteMany();
   await prisma.practice.deleteMany();
+  await prisma.customerCaseSkill.deleteMany();
   await prisma.customerCase.deleteMany();
   await prisma.learningProgress.deleteMany();
   await prisma.skillProgress.deleteMany();
@@ -175,7 +176,7 @@ async function main() {
       currentLevelId: levelByOrder[1].id,
       targetLevelId: levelByOrder[3].id,
       practiceCount: 2,
-      applicationCount: 0,
+      applicationCount: 1,
       evaluationCount: 1,
       feedbackCount: 1,
     },
@@ -251,6 +252,58 @@ async function main() {
       causeType: "evaluation",
       evaluationId: evaluation.id,
       note: "첫 평가로 FOUNDATION 확인.",
+    },
+  });
+
+  // --- A completed CustomerCase (real application, internal education record) ---
+  const kase = await prisma.customerCase.create({
+    data: {
+      designerId: designer.id,
+      branchId: branch.id,
+      skillId: coreSkill.id,
+      status: "completed",
+      isSeed: true,
+      completedAt: new Date(),
+      customerNeed: "다운펌 없이 부드럽고 단정한 인상을 원함.",
+      desiredImage: "차분하고 세련된 세미 단발.",
+      currentConcern: "가로로 넓어 보이는 얼굴, 옆볼륨이 부담스러움.",
+      observation: "얼굴 가로 비율이 넓고, 옆쪽 볼륨이 강조되어 있음.",
+      diagnosis: "가로 비율 강조형 — 세로 흐름이 부족해 인상이 넓어 보임.",
+      problemDefinition: "옆 볼륨을 줄이고 세로 실루엣을 만들어야 함.",
+      imageDirection: "세로 흐름 강조의 차분한 세미 단발.",
+      designGoal: "세로 실루엣 강조로 가로 비율 완화",
+      dsLength: "쇄골 길이 단발",
+      dsSilhouette: "세로형 A라인",
+      dsVolume: "옆볼륨 축소, 정수리 볼륨 유지",
+      dsLine: "얼굴 옆선을 감싸는 세로 라인",
+      dsWeight: "끝단 무게 최소화",
+      dsTexture: "부드러운 표면 질감",
+      dsCurl: "C컬 인컬",
+      dsParting: "약간의 사이드 파팅",
+      dsFringe: "시스루 앞머리로 세로 흐름 보조",
+      dsColor: "저채도 브라운(대비 완화)",
+      dsReason: "가로 비율이 강조된 진단 결과에 따라, 옆볼륨을 줄이고 세로 라인을 만들어 인상을 좁혀 보이게 하기 위함.",
+      procedure: "레이어드 컷 + C컬 인컬 + 시스루 뱅",
+      result: "옆볼륨이 정리되고 세로 흐름이 생겨 인상이 한결 차분해짐.",
+      designerReflection: "진단은 정확했고 디자인 연결 설명도 구체적으로 기록함. 컬러 대비 설명을 더 다듬고 싶음.",
+    },
+  });
+  await prisma.customerCaseSkill.createMany({
+    data: [
+      { customerCaseId: kase.id, skillId: coreSkill.id },
+      { customerCaseId: kase.id, skillId: faceSkill.id },
+    ],
+  });
+  await prisma.feedback.create({
+    data: {
+      subjectUserId: designer.id,
+      authorId: leader.id,
+      customerCaseId: kase.id,
+      skillId: coreSkill.id,
+      strength: "진단(가로 비율)에서 디자인 전략(세로 실루엣)으로의 연결이 명확함.",
+      gap: "컬러 선택의 근거가 다소 짧음.",
+      message: "진단 → 디자인 연결이 좋아졌습니다. 컬러 선택 이유를 진단과 더 연결해보세요.",
+      nextAction: "다음 3건의 케이스에서 컬러 선택 이유를 '진단 근거'와 함께 기록하기.",
     },
   });
 

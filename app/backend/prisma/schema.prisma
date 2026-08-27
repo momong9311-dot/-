@@ -37,11 +37,12 @@ model Role {
 }
 
 model Branch {
-  id       String  @id @default(uuid())
-  name     String
-  region   String?
-  isActive Boolean @default(true)
-  users    User[]
+  id            String  @id @default(uuid())
+  name          String
+  region        String?
+  isActive      Boolean @default(true)
+  users         User[]
+  customerCases CustomerCase[]
 }
 
 model User {
@@ -113,6 +114,7 @@ model Skill {
   skillProgress SkillProgress[]
   practices     Practice[]
   customerCases CustomerCase[]
+  caseSkills    CustomerCaseSkill[]
   evaluations   Evaluation[]
   feedback      Feedback[]
   promotionReqs PromotionCriteria[]
@@ -235,34 +237,75 @@ model Practice {
 }
 
 // ---------------------------------------------------------------------------
-// Axis 3 — Application (CustomerCase). STRUCTURE ONLY for MVP. Min PII.
+// Axis 3 — Application (CustomerCase). Employee-only internal education record
+// of how a designer applied learning to a REAL customer. NOT a customer CRM.
+// Minimal PII: no name / phone / address / birthdate — ever.
 // ---------------------------------------------------------------------------
 
 model CustomerCase {
   id                String   @id @default(uuid())
   designerId        String
   designer          User     @relation(fields: [designerId], references: [id])
-  skillId           String?
+  branchId          String?
+  branch            Branch?  @relation(fields: [branchId], references: [id])
+  skillId           String? // primary related skill (drives application count)
   skill             Skill?   @relation(fields: [skillId], references: [id])
-  customerAlias     String? // anonymized minimal identifier only
+  status            String   @default("draft") // draft | applied | completed
+
+  // The customer-facing intent (no identity, only need/desire/concern)
   customerNeed      String?
-  currentState      String?
+  desiredImage      String?
+  currentConcern    String?
+
+  // The education thinking-structure: observe -> diagnose -> problem ->
+  // image direction -> design strategy -> procedure -> result
   observation       String?
   diagnosis         String?
   problemDefinition String?
   imageDirection    String?
-  designStrategy    String?
-  designElements    String?
+
+  // Design Strategy — the CORE. Never just a procedure name. Structured so the
+  // "diagnosis -> design" reasoning is captured, not a bare label.
+  designGoal        String?
+  dsLength          String?
+  dsSilhouette      String?
+  dsVolume          String?
+  dsLine            String?
+  dsWeight          String?
+  dsTexture         String?
+  dsCurl            String?
+  dsParting         String?
+  dsFringe          String?
+  dsColor           String?
+  dsReason          String? // WHY this strategy follows from the diagnosis
+
   procedure         String?
-  beforeRef         String? // media reference only
-  afterRef          String?
   result            String?
-  educationPoint    String?
+  beforeRef         String? // media reference only (URL/ref, access-controlled)
+  afterRef          String?
+  designerReflection String?
+
   isSeed            Boolean  @default(false)
   createdAt         DateTime @default(now())
+  completedAt       DateTime?
+  updatedAt         DateTime @updatedAt
 
-  practices   Practice[]
-  evaluations Evaluation[]
+  relatedSkills CustomerCaseSkill[]
+  practices     Practice[]
+  evaluations   Evaluation[]
+  feedback      Feedback[]
+}
+
+// Additional skills a case exercised (many-to-many). The primary skillId above
+// stays the main one; these broaden which skills get an application credit.
+model CustomerCaseSkill {
+  id             String       @id @default(uuid())
+  customerCaseId String
+  customerCase   CustomerCase @relation(fields: [customerCaseId], references: [id], onDelete: Cascade)
+  skillId        String
+  skill          Skill        @relation(fields: [skillId], references: [id])
+
+  @@unique([customerCaseId, skillId])
 }
 
 // ---------------------------------------------------------------------------
@@ -281,6 +324,9 @@ model Evaluation {
   practice       Practice? @relation(fields: [practiceId], references: [id])
   customerCaseId String?
   customerCase   CustomerCase? @relation(fields: [customerCaseId], references: [id])
+  // Which competency dimension this evaluation is about. Design Connection is
+  // the core dimension (docs/EDUCATION_SYSTEM.md §1).
+  dimension      String? // observation | diagnosis | problem | design_connection | execution | communication
   criteria       String    @default("")
   observation    String    @default("")
   strength       String    @default("")
@@ -308,8 +354,13 @@ model Feedback {
   author         User      @relation("FeedbackAuthor", fields: [authorId], references: [id])
   skillId        String?
   skill          Skill?    @relation(fields: [skillId], references: [id])
+  customerCaseId String? // feedback given directly on a customer case
+  customerCase   CustomerCase? @relation(fields: [customerCaseId], references: [id])
+  strength       String    @default("")
+  gap            String    @default("")
   message        String    @default("")
   nextAction     String    @default("") // required in spirit
+  dueDate        DateTime? // when the next action should be done by
   acknowledgedAt DateTime?
   createdAt      DateTime  @default(now())
 }

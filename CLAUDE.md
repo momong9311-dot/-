@@ -3,6 +3,11 @@
 이 문서는 이 저장소에서 작업하는 모든 세션(사람 · Claude)이 **반드시 먼저 읽는** 기준 문서다.
 설계 철학과 금지사항을 지키기 위한 것이며, 세부 사양은 `docs/` 문서를 참조한다.
 
+> **직원 전용 앱.** 이 앱은 **메르시모몽 직원(Designer/Leader/Educator/Admin)만** 로그인한다.
+> **고객용 기능은 만들지 않는다** — 고객 회원가입·로그인·홈·예약·결제·상담·커뮤니티·리포트·
+> 마케팅·공개 프로필·고객용 AI 등. **CustomerCase는 고객용이 아니라, 직원이 실제 고객에게
+> 적용한 내용을 내부 교육 목적으로 기록하는 기능이다** (§6, `docs/DATA_MODEL.md` §3.13).
+
 ---
 
 ## 1. 이 프로젝트가 무엇인가
@@ -221,8 +226,17 @@ pnpm dev       # backend(:4000) + frontend(:5173) 동시 실행
 - 스키마는 **Postgres 이식 가능**하게 작성됨 (enum/json → String). 운영 전환 시
   `schema.prisma`의 `provider`를 `postgresql`로 바꾸고 `DATABASE_URL` 설정.
 
+### CASES (CustomerCase 실기능) — 구현 완료 (검증됨)
+- 직원 전용 하단 내비게이션: **HOME / TRAINING / CASES / GROWTH / MY** (+관리자 ADMIN)
+- CASE CRUD: 생성(draft)·편집·상세·완료 + MY CASES 목록
+- CASE 필드: 고객 맥락 + 관찰→진단→문제→이미지방향 + **Design Strategy 구조화(ds_* + ds_reason)** + 시술/결과 + 회고 + 관련 역량(다대다)
+- **완료(complete) 시에만** 주요·관련 Skill의 `applicationCount` 1회 증가 → Application 축 실동작
+- 관리자: 사례 리뷰 큐(`/admin/cases`) + 사례 상세에서 평가(dimension=design_connection)+피드백
+- 권한: 일반 Designer는 **타인의 사례 열람 불가**(403), 관리자만 열람/평가
+- 개인정보 최소화: 이름·전화·주소·생년월일 미저장
+
 ### 다음 Phase (아직 안 함)
-- CustomerCase 실제 기능 (현재는 스키마/구조만)
 - PromotionCriteria 기반 승급 후보 표시 (자동 승급은 영구 금지)
+- CASE 이미지 실제 업로드(현재는 참조 URL/메모)
 - AI 보조 기능 (검색/요약/피드백 초안 등)
 - 관리자 콘텐츠 CRUD 확장 (Curriculum/Course/Module 생성 UI — 현재 Lesson 중심)
