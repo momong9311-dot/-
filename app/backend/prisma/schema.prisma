@@ -1,0 +1,373 @@
+// Merci Momong — Education & Growth Platform
+// Source of truth for the data model. See docs/DATA_MODEL.md.
+//
+// DB: SQLite for the dev/MVP (no Docker in this env). Postgres-ready:
+//   to move to Postgres, change provider to "postgresql" and set DATABASE_URL.
+// SQLite notes: no native enum / Json types, so enum-like values are String
+//   (validated in app code) and JSON blobs are stored as String (text).
+//
+// INVARIANTS (see docs/EDUCATION_SYSTEM.md §10, DATA_MODEL.md §6):
+//  - The 6 axes are separate tables: LearningProgress / Practice / CustomerCase
+//    / Evaluation / Feedback / SkillProgress. Completion is NEVER growth.
+//  - Levels, content, criteria are DATA, not hardcoded.
+//  - Skill state is multi-dimensional (levels + counts + growth history),
+//    never a single score.
+//  - Promotion is decision-support only; never auto-decided.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Organization / People
+// ---------------------------------------------------------------------------
+
+model Role {
+  id          String   @id @default(uuid())
+  key         String   @unique // designer | leader | educator | admin
+  name        String
+  permissions String   @default("[]") // JSON array of permission strings
+  users       User[]
+  createdAt   DateTime @default(now())
+}
+
+model Branch {
+  id       String  @id @default(uuid())
+  name     String
+  region   String?
+  isActive Boolean @default(true)
+  users    User[]
+}
+
+model User {
+  id           String    @id @default(uuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  roleId       String
+  role         Role      @relation(fields: [roleId], references: [id])
+  branchId     String?
+  branch       Branch?   @relation(fields: [branchId], references: [id])
+  levelId      String? // current overall growth stage
+  level        Level?    @relation("UserLevel", fields: [levelId], references: [id])
+  isActive     Boolean   @default(true)
+  isSeed       Boolean   @default(false) // separate seed vs real data
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // owned activity
+  skillProgress      SkillProgress[]
+  learningProgress   LearningProgress[]
+  practices          Practice[]
+  customerCases      CustomerCase[]
+  evaluationsAbout   Evaluation[]       @relation("EvaluationSubject")
+  evaluationsAuthored Evaluation[]      @relation("EvaluationAuthor")
+  feedbackReceived   Feedback[]         @relation("FeedbackSubject")
+  feedbackAuthored   Feedback[]         @relation("FeedbackAuthor")
+}
+
+// ---------------------------------------------------------------------------
+// Growth axes (reference): Level & Skill — DATA, not hardcoded
+// ---------------------------------------------------------------------------
+
+model Level {
+  id          String  @id @default(uuid())
+  order       Int     @unique // 1..6
+  code        String  @unique // FOUNDATION, PRACTICE, ...
+  name        String
+  description String?
+  criteria    String? // JSON: tunable attainment criteria
+
+  usersAtLevel        User[]          @relation("UserLevel")
+  lessonsTargeting    Lesson[]        @relation("LessonTargetLevel")
+  curriculaTargeting  Curriculum[]    @relation("CurriculumTargetLevel")
+  skillProgressCurrent SkillProgress[] @relation("SkillProgressCurrentLevel")
+  skillProgressTarget  SkillProgress[] @relation("SkillProgressTargetLevel")
+  growthFrom          SkillGrowthEvent[] @relation("GrowthFromLevel")
+  growthTo            SkillGrowthEvent[] @relation("GrowthToLevel")
+  promotionFrom       PromotionCriteria[] @relation("PromotionFromLevel")
+  promotionTo         PromotionCriteria[] @relation("PromotionToLevel")
+}
+
+model EducationArea {
+  id     String  @id @default(uuid())
+  name   String
+  order  Int     @default(0)
+  skills Skill[]
+}
+
+model Skill {
+  id              String   @id @default(uuid())
+  educationAreaId String
+  educationArea   EducationArea @relation(fields: [educationAreaId], references: [id])
+  name            String
+  isCore          Boolean  @default(false) // e.g. Diagnosis->Design connection
+  order           Int      @default(0)
+
+  curricula     Curriculum[]
+  skillProgress SkillProgress[]
+  practices     Practice[]
+  customerCases CustomerCase[]
+  evaluations   Evaluation[]
+  feedback      Feedback[]
+  promotionReqs PromotionCriteria[]
+}
+
+// ---------------------------------------------------------------------------
+// Content hierarchy: Curriculum -> Course -> Module -> Lesson -> Assignment
+// All content is DATA (admin-editable). Never hardcoded.
+// ---------------------------------------------------------------------------
+
+model Curriculum {
+  id            String   @id @default(uuid())
+  title         String
+  description   String?
+  order         Int      @default(0)
+  isActive      Boolean  @default(true)
+  isSeed        Boolean  @default(false)
+  skillId       String?
+  skill         Skill?   @relation(fields: [skillId], references: [id])
+  targetLevelId String?
+  targetLevel   Level?   @relation("CurriculumTargetLevel", fields: [targetLevelId], references: [id])
+  courses       Course[]
+  createdAt     DateTime @default(now())
+}
+
+model Course {
+  id           String     @id @default(uuid())
+  curriculumId String
+  curriculum   Curriculum @relation(fields: [curriculumId], references: [id])
+  title        String
+  description  String?
+  order        Int        @default(0)
+  isActive     Boolean    @default(true)
+  isSeed       Boolean    @default(false)
+  modules      Module[]
+}
+
+model Module {
+  id       String   @id @default(uuid())
+  courseId String
+  course   Course   @relation(fields: [courseId], references: [id])
+  title    String
+  description String?
+  order    Int      @default(0)
+  isActive Boolean  @default(true)
+  isSeed   Boolean  @default(false)
+  lessons  Lesson[]
+}
+
+model Lesson {
+  id               String   @id @default(uuid())
+  moduleId         String
+  module           Module   @relation(fields: [moduleId], references: [id])
+  title            String
+  content          String   @default("") // rich content stored in DB, not code
+  order            Int      @default(0)
+  isRequired       Boolean  @default(true)
+  targetLevelId    String?
+  targetLevel      Level?   @relation("LessonTargetLevel", fields: [targetLevelId], references: [id])
+  estimatedMinutes Int?
+  isActive         Boolean  @default(true)
+  isSeed           Boolean  @default(false)
+
+  assignments      Assignment[]
+  learningProgress LearningProgress[]
+  practices        Practice[]
+}
+
+model Assignment {
+  id           String   @id @default(uuid())
+  lessonId     String
+  lesson       Lesson   @relation(fields: [lessonId], references: [id])
+  title        String
+  instructions String   @default("")
+  type         String   @default("task") // read | quiz | task
+  order        Int      @default(0)
+  practices    Practice[]
+}
+
+// ---------------------------------------------------------------------------
+// Axis 1 — Learning (completion). NOT growth.
+// ---------------------------------------------------------------------------
+
+model LearningProgress {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  lessonId    String
+  lesson      Lesson    @relation(fields: [lessonId], references: [id])
+  status      String    @default("not_started") // not_started | in_progress | completed
+  progressPct Int       @default(0) // 0..100
+  startedAt   DateTime?
+  completedAt DateTime?
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([userId, lessonId])
+}
+
+// ---------------------------------------------------------------------------
+// Axis 2 — Practice
+// ---------------------------------------------------------------------------
+
+model Practice {
+  id             String    @id @default(uuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id])
+  lessonId       String?
+  lesson         Lesson?   @relation(fields: [lessonId], references: [id])
+  assignmentId   String?
+  assignment     Assignment? @relation(fields: [assignmentId], references: [id])
+  skillId        String?
+  skill          Skill?    @relation(fields: [skillId], references: [id])
+  customerCaseId String? // if applied to a real customer -> promotes to Application
+  customerCase   CustomerCase? @relation(fields: [customerCaseId], references: [id])
+  evidence       String    @default("") // what was done (submission / evidence)
+  reflection     String    @default("") // designer's own reflection
+  status         String    @default("submitted") // submitted | reviewed
+  submittedAt    DateTime  @default(now())
+  evaluations    Evaluation[]
+}
+
+// ---------------------------------------------------------------------------
+// Axis 3 — Application (CustomerCase). STRUCTURE ONLY for MVP. Min PII.
+// ---------------------------------------------------------------------------
+
+model CustomerCase {
+  id                String   @id @default(uuid())
+  designerId        String
+  designer          User     @relation(fields: [designerId], references: [id])
+  skillId           String?
+  skill             Skill?   @relation(fields: [skillId], references: [id])
+  customerAlias     String? // anonymized minimal identifier only
+  customerNeed      String?
+  currentState      String?
+  observation       String?
+  diagnosis         String?
+  problemDefinition String?
+  imageDirection    String?
+  designStrategy    String?
+  designElements    String?
+  procedure         String?
+  beforeRef         String? // media reference only
+  afterRef          String?
+  result            String?
+  educationPoint    String?
+  isSeed            Boolean  @default(false)
+  createdAt         DateTime @default(now())
+
+  practices   Practice[]
+  evaluations Evaluation[]
+}
+
+// ---------------------------------------------------------------------------
+// Axis 4 — Evaluation. Evaluates behavior/competency, not the person.
+// ---------------------------------------------------------------------------
+
+model Evaluation {
+  id             String    @id @default(uuid())
+  subjectUserId  String
+  subjectUser    User      @relation("EvaluationSubject", fields: [subjectUserId], references: [id])
+  evaluatorId    String
+  evaluator      User      @relation("EvaluationAuthor", fields: [evaluatorId], references: [id])
+  skillId        String?
+  skill          Skill?    @relation(fields: [skillId], references: [id])
+  practiceId     String?
+  practice       Practice? @relation(fields: [practiceId], references: [id])
+  customerCaseId String?
+  customerCase   CustomerCase? @relation(fields: [customerCaseId], references: [id])
+  criteria       String    @default("")
+  observation    String    @default("")
+  strength       String    @default("")
+  gap            String    @default("")
+  nextAction     String    @default("") // -> connects to Feedback
+  score          Int? // optional; never the sole growth signal
+  status         String    @default("completed") // pending | completed
+  createdAt      DateTime  @default(now())
+
+  feedback      Feedback[]
+  growthEvents  SkillGrowthEvent[]
+}
+
+// ---------------------------------------------------------------------------
+// Axis 5 — Feedback. Always connects to a Next Action.
+// ---------------------------------------------------------------------------
+
+model Feedback {
+  id             String    @id @default(uuid())
+  evaluationId   String?
+  evaluation     Evaluation? @relation(fields: [evaluationId], references: [id])
+  subjectUserId  String
+  subjectUser    User      @relation("FeedbackSubject", fields: [subjectUserId], references: [id])
+  authorId       String
+  author         User      @relation("FeedbackAuthor", fields: [authorId], references: [id])
+  skillId        String?
+  skill          Skill?    @relation(fields: [skillId], references: [id])
+  message        String    @default("")
+  nextAction     String    @default("") // required in spirit
+  acknowledgedAt DateTime?
+  createdAt      DateTime  @default(now())
+}
+
+// ---------------------------------------------------------------------------
+// Axis 6 — Skill Growth. Rises ONLY as a result of the other axes.
+// ---------------------------------------------------------------------------
+
+model SkillProgress {
+  id               String   @id @default(uuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id])
+  skillId          String
+  skill            Skill    @relation(fields: [skillId], references: [id])
+  currentLevelId   String?
+  currentLevel     Level?   @relation("SkillProgressCurrentLevel", fields: [currentLevelId], references: [id])
+  targetLevelId    String?
+  targetLevel      Level?   @relation("SkillProgressTargetLevel", fields: [targetLevelId], references: [id])
+  practiceCount    Int      @default(0)
+  applicationCount Int      @default(0)
+  evaluationCount  Int      @default(0)
+  feedbackCount    Int      @default(0)
+  updatedAt        DateTime @updatedAt
+
+  growthHistory SkillGrowthEvent[]
+
+  @@unique([userId, skillId])
+}
+
+// growth_history: WHY the skill moved. There is no "rose from completion".
+model SkillGrowthEvent {
+  id              String   @id @default(uuid())
+  skillProgressId String
+  skillProgress   SkillProgress @relation(fields: [skillProgressId], references: [id])
+  fromLevelId     String?
+  fromLevel       Level?   @relation("GrowthFromLevel", fields: [fromLevelId], references: [id])
+  toLevelId       String?
+  toLevel         Level?   @relation("GrowthToLevel", fields: [toLevelId], references: [id])
+  causeType       String // evaluation | feedback | application | practice
+  causeId         String?
+  evaluationId    String?
+  evaluation      Evaluation? @relation(fields: [evaluationId], references: [id])
+  note            String?
+  createdAt       DateTime @default(now())
+}
+
+// ---------------------------------------------------------------------------
+// Promotion — decision SUPPORT only. Never auto-decides.
+// ---------------------------------------------------------------------------
+
+model PromotionCriteria {
+  id                String  @id @default(uuid())
+  fromLevelId       String
+  fromLevel         Level   @relation("PromotionFromLevel", fields: [fromLevelId], references: [id])
+  toLevelId         String
+  toLevel           Level   @relation("PromotionToLevel", fields: [toLevelId], references: [id])
+  skillId           String?
+  skill             Skill?  @relation(fields: [skillId], references: [id])
+  skillRequirements String  @default("{}") // JSON: e.g. {"minLevelOrder":3,"minApplication":2}
+  notes             String?
+}

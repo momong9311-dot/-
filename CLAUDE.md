@@ -192,14 +192,37 @@ Skill을 "70점" 같은 단일 값으로 표현하지 않는다. 각 Skill은 �
 
 ---
 
-## 14. 현재 상태
+## 14. 현재 상태 — MVP 구현 완료 (검증됨)
 
 - [x] 프로젝트 구조 생성
-- [x] 설계 문서 작성 (PRD / EDUCATION_SYSTEM / DATA_MODEL / DESIGN_SYSTEM)
-- [ ] 기술 스택 사용자 승인
-- [ ] DB 스키마 구현
-- [ ] 백엔드 API
-- [ ] 프론트엔드 화면
-- [ ] 시드 데이터 (실데이터와 분리)
+- [x] 설계 문서 (PRD / EDUCATION_SYSTEM / DATA_MODEL / DESIGN_SYSTEM)
+- [x] STEP 1 — DB 스키마 (엔티티 19개 + 관계), Prisma
+- [x] STEP 2 — 인증 + Role 기반 접근제어 (designer/leader/educator/admin)
+- [x] STEP 3 — Designer Home (TODAY/CURRENT FOCUS/PRACTICE/FEEDBACK/MY GROWTH/NEXT STEP)
+- [x] STEP 4 — Education (Curriculum→Course→Module→Lesson) + 학습 진행 저장
+- [x] STEP 5 — Practice (Assignment/User/Skill/Status/SubmittedAt/Evidence/Reflection)
+- [x] STEP 6 — Evaluation (Criteria/Observation/Strength/Gap/Next Action/Score/Evaluator)
+- [x] STEP 7 — Feedback (→ 다음 행동 연결)
+- [x] STEP 8 — My Growth (Skill별 다차원 + Growth History, 왜 성장/정체인지)
+- [x] STEP 9 — Admin Dashboard (성장/막힘/취약 Skill/실습부족/평가대기/피드백필요)
+- [x] 시드 데이터 (`isSeed=true`로 실데이터와 분리)
+- [x] E2E 검증 (로그인→학습→실습→평가→피드백→성장→관리자 현황)
 
-> 지금은 **문서와 데이터 구조** 단계다. 구현은 사용자 승인 후 진행한다.
+### 실행 방법
+```bash
+pnpm setup     # 설치 + prisma generate + migrate + seed (최초 1회)
+pnpm dev       # backend(:4000) + frontend(:5173) 동시 실행
+```
+데모 계정 (비밀번호 `password123`): `designer@merci.dev` · `leader@merci.dev`
+· `educator@merci.dev` · `admin@merci.dev`
+
+### DB 관련 결정 (중요)
+- 이 컨테이너에 Docker 데몬이 없어 dev/MVP는 **SQLite(Prisma)** 로 구동한다.
+- 스키마는 **Postgres 이식 가능**하게 작성됨 (enum/json → String). 운영 전환 시
+  `schema.prisma`의 `provider`를 `postgresql`로 바꾸고 `DATABASE_URL` 설정.
+
+### 다음 Phase (아직 안 함)
+- CustomerCase 실제 기능 (현재는 스키마/구조만)
+- PromotionCriteria 기반 승급 후보 표시 (자동 승급은 영구 금지)
+- AI 보조 기능 (검색/요약/피드백 초안 등)
+- 관리자 콘텐츠 CRUD 확장 (Curriculum/Course/Module 생성 UI — 현재 Lesson 중심)

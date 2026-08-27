@@ -1,0 +1,10 @@
+packages:
+  - "app/frontend"
+  - "app/backend"
+
+# Approved package build scripts (pnpm 10 records these here).
+allowBuilds:
+  esbuild: true
+  "@prisma/client": true
+  "@prisma/engines": true
+  prisma: true

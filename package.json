@@ -1,0 +1,14 @@
+{
+  "name": "merci-momong",
+  "version": "0.1.0",
+  "private": true,
+  "description": "메르시모몽 디자이너 교육 및 성장관리 플랫폼",
+  "scripts": {
+    "dev": "pnpm --parallel -r dev",
+    "dev:backend": "pnpm --filter merci-momong-backend dev",
+    "dev:frontend": "pnpm --filter merci-momong-frontend dev",
+    "setup": "pnpm install && pnpm --filter merci-momong-backend exec prisma generate && pnpm --filter merci-momong-backend exec prisma migrate deploy && pnpm --filter merci-momong-backend db:seed",
+    "db:seed": "pnpm --filter merci-momong-backend db:seed",
+    "build": "pnpm -r build"
+  }
+}

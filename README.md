@@ -46,16 +46,31 @@
 
 ---
 
-## 현재 상태
+## 현재 상태 — MVP 구현 완료 (E2E 검증됨)
 
-**문서 · 데이터 구조 설계 단계.** 앱 구현은 아직 시작하지 않았다.
+교육 → 학습 → 실습 → 평가 → 피드백 → 성장 확인 흐름이 실제로 작동한다.
 
-- [x] 프로젝트 구조
-- [x] 설계 문서 (PRD / EDUCATION_SYSTEM / DATA_MODEL / DESIGN_SYSTEM)
-- [ ] 기술 스택 확정 (사용자 승인 대기)
-- [ ] 구현
+- [x] STEP 1 DB 스키마 · [x] STEP 2 인증/권한 · [x] STEP 3 Designer Home
+- [x] STEP 4 Education · [x] STEP 5 Practice · [x] STEP 6 Evaluation
+- [x] STEP 7 Feedback · [x] STEP 8 My Growth · [x] STEP 9 Admin Dashboard
 
-## 기술 스택 (제안)
+## 실행
 
-React + Vite + TypeScript (frontend) · Node + Fastify + TypeScript (backend) ·
-PostgreSQL + Prisma (data). **확정 전 사용자 승인 필요** — 자세한 내용은 `CLAUDE.md §12`.
+```bash
+pnpm setup     # 설치 + DB 마이그레이션 + 시드 (최초 1회)
+pnpm dev       # backend(:4000) + frontend(:5173)
+```
+
+데모 계정 (비밀번호 `password123`):
+`designer@merci.dev` · `leader@merci.dev` · `educator@merci.dev` · `admin@merci.dev`
+
+## 기술 스택
+
+| 영역 | 스택 |
+|------|------|
+| Frontend | React + Vite + TypeScript (`app/frontend`) |
+| Backend | Node + Fastify + TypeScript (`app/backend`) |
+| Data | Prisma ORM · **SQLite (dev)** — 스키마는 PostgreSQL 이식 가능 |
+| Auth | 서명 쿠키 세션 · Role 기반 접근제어 |
+
+> dev/MVP는 이 환경에 Docker가 없어 SQLite로 구동한다. 운영 전환은 `CLAUDE.md §14` 참조.

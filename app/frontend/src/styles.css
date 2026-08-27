@@ -1,0 +1,192 @@
+/* Merci Momong design tokens — see docs/DESIGN_SYSTEM.md
+   White · Black · Gray · Minimal accent. Editorial · Premium · Calm. */
+
+:root {
+  --color-bg: #ffffff;
+  --color-surface: #fafafa;
+  --color-border: #ececec;
+  --color-text: #111111;
+  --color-text-muted: #6b6b6b;
+  --color-text-faint: #9b9b9b;
+  --color-accent: #111111;
+  --color-accent-soft: #f0efec;
+
+  --font-sans: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", Roboto,
+    "Helvetica Neue", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+
+  --radius: 10px;
+  --border: 1px solid var(--color-border);
+  --maxw: 640px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; }
+
+/* ---- Layout ---- */
+.app { min-height: 100vh; display: flex; flex-direction: column; }
+.container {
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-4) var(--space-12);
+}
+.wordmark {
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* ---- Top bar ---- */
+.topbar {
+  position: sticky; top: 0; z-index: 10;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: saturate(120%) blur(6px);
+  border-bottom: var(--border);
+}
+.topbar-inner {
+  max-width: var(--maxw); margin: 0 auto;
+  padding: var(--space-3) var(--space-4);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.topbar .meta { font-size: 12px; color: var(--color-text-muted); display: flex; gap: var(--space-3); align-items: center; }
+
+/* ---- Section ---- */
+.section { margin-top: var(--space-8); }
+.section:first-child { margin-top: var(--space-4); }
+.section-label {
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+}
+.section-divider { height: 1px; background: var(--color-border); margin: var(--space-2) 0 var(--space-4); }
+
+/* ---- Headings ---- */
+h1.page-title { font-size: 30px; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 var(--space-2); }
+h2 { font-size: 20px; font-weight: 600; margin: 0 0 var(--space-2); }
+.muted { color: var(--color-text-muted); }
+.faint { color: var(--color-text-faint); }
+.small { font-size: 13px; }
+
+/* ---- List row ---- */
+.row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--space-4) 0;
+  border-bottom: var(--border);
+  cursor: default;
+}
+.row.link { cursor: pointer; }
+.row.link:hover { opacity: 0.7; }
+.row:last-child { border-bottom: none; }
+.row-main { min-width: 0; }
+.row-title { font-weight: 500; }
+.row-sub { font-size: 13px; color: var(--color-text-muted); margin-top: 2px; }
+.chev { color: var(--color-text-faint); flex: none; margin-left: var(--space-4); }
+
+/* ---- Growth row (level move, kept separate from completion) ---- */
+.growth-row { padding: var(--space-4) 0; border-bottom: var(--border); }
+.growth-row:last-child { border-bottom: none; }
+.growth-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); }
+.growth-name { font-weight: 500; }
+.growth-level { font-size: 13px; color: var(--color-text); white-space: nowrap; }
+.growth-counts { display: flex; gap: var(--space-4); margin-top: var(--space-2); font-size: 12px; color: var(--color-text-muted); flex-wrap: wrap; }
+.growth-counts b { color: var(--color-text); font-weight: 600; }
+.growth-history { margin-top: var(--space-3); padding-left: var(--space-3); border-left: 2px solid var(--color-border); }
+.growth-history .h { font-size: 12px; color: var(--color-text-muted); margin-bottom: var(--space-1); }
+
+/* ---- Feedback block ---- */
+.feedback-block {
+  background: var(--color-surface);
+  border: var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+  margin-bottom: var(--space-3);
+}
+.feedback-msg { font-size: 15px; }
+.next-action {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: var(--border);
+  font-size: 13px;
+}
+.next-action .label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-faint); }
+
+/* ---- Buttons ---- */
+.btn {
+  display: inline-block; border: none; border-radius: var(--radius);
+  background: var(--color-accent); color: #fff;
+  padding: var(--space-3) var(--space-6);
+  font-size: 14px; font-weight: 500; cursor: pointer;
+  min-height: 44px;
+}
+.btn:hover { opacity: 0.9; }
+.btn:disabled { opacity: 0.4; cursor: default; }
+.btn.ghost { background: transparent; color: var(--color-text); border: var(--border); }
+.btn.block { display: block; width: 100%; }
+
+/* ---- Tag ---- */
+.tag {
+  display: inline-block; font-size: 11px; letter-spacing: 0.04em;
+  padding: 3px 8px; border-radius: 6px;
+  border: var(--border); color: var(--color-text-muted); background: var(--color-bg);
+  white-space: nowrap;
+}
+.tag.core { border-color: var(--color-text); color: var(--color-text); }
+
+/* ---- Empty state ---- */
+.empty { padding: var(--space-8) 0; text-align: center; color: var(--color-text-faint); font-size: 14px; }
+
+/* ---- Forms ---- */
+label.field { display: block; margin-bottom: var(--space-4); }
+label.field .lbl { display: block; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-faint); margin-bottom: var(--space-2); }
+input, textarea, select {
+  width: 100%; padding: var(--space-3); font-size: 15px; font-family: inherit;
+  border: var(--border); border-radius: var(--radius); background: var(--color-bg); color: var(--color-text);
+}
+textarea { min-height: 90px; resize: vertical; }
+.error { color: #a11; font-size: 13px; margin-top: var(--space-2); }
+
+/* ---- Login ---- */
+.login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: var(--space-4); }
+.login-card { width: 100%; max-width: 360px; }
+.login-card .wordmark { display: block; text-align: center; margin-bottom: var(--space-8); }
+.hint { font-size: 12px; color: var(--color-text-faint); margin-top: var(--space-6); line-height: 1.7; }
+
+/* ---- Nav (bottom for designer, inline for admin) ---- */
+.tabbar {
+  position: sticky; bottom: 0; background: var(--color-bg); border-top: var(--border);
+  display: flex; justify-content: space-around; padding: var(--space-2) 0;
+}
+.tabbar a { font-size: 11px; color: var(--color-text-muted); padding: var(--space-2); letter-spacing: 0.04em; }
+.tabbar a.active { color: var(--color-text); font-weight: 600; }
+
+.stat-row { display: flex; gap: var(--space-6); flex-wrap: wrap; margin-bottom: var(--space-4); }
+.stat .n { font-size: 26px; font-weight: 600; }
+.stat .l { font-size: 12px; color: var(--color-text-muted); }
+
+.back { font-size: 13px; color: var(--color-text-muted); margin-bottom: var(--space-4); display: inline-block; cursor: pointer; }
