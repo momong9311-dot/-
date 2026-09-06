@@ -14,6 +14,8 @@ import { CaseDetail } from "./pages/designer/CaseDetail";
 import { Manuals } from "./pages/designer/Manuals";
 import { ManualDetail } from "./pages/designer/ManualDetail";
 import { Resources } from "./pages/designer/Resources";
+import { Store } from "./pages/designer/Store";
+import { ChecklistRun } from "./pages/designer/ChecklistRun";
 import { My } from "./pages/designer/My";
 import { AdminDashboard } from "./pages/admin/Dashboard";
 import { Designers } from "./pages/admin/Designers";
@@ -23,6 +25,7 @@ import { EvaluationMgmt } from "./pages/admin/EvaluationMgmt";
 import { CasesReview } from "./pages/admin/CasesReview";
 import { ManualMgmt } from "./pages/admin/ManualMgmt";
 import { ResourceMgmt } from "./pages/admin/ResourceMgmt";
+import { StoreMgmt } from "./pages/admin/StoreMgmt";
 
 export function App() {
   const { me, loading } = useAuth();
@@ -36,6 +39,8 @@ export function App() {
         <Route path="/" element={<DesignerHome />} />
         <Route path="/curriculum" element={<Curriculum />} />
         <Route path="/resources" element={<Resources />} />
+        <Route path="/store" element={<Store />} />
+        <Route path="/store/checklist/:id" element={<ChecklistRun />} />
         <Route path="/lesson/:id" element={<LessonPage />} />
         <Route path="/practice" element={<PracticePage />} />
         <Route path="/feedback" element={<FeedbackPage />} />
@@ -61,6 +66,7 @@ export function App() {
             <Route path="/admin/curriculum" element={<CurriculumMgmt />} />
             <Route path="/admin/manuals" element={<ManualMgmt />} />
             <Route path="/admin/resources" element={<ResourceMgmt />} />
+            <Route path="/admin/store" element={<StoreMgmt />} />
             <Route path="/admin/evaluation" element={<EvaluationMgmt />} />
             <Route path="/admin/cases" element={<CasesReview />} />
           </>

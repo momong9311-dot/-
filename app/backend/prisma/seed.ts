@@ -8,6 +8,10 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("Seeding… (clearing existing dev data first)");
   // Delete in FK-safe order.
+  await prisma.checklistRun.deleteMany();
+  await prisma.checklistItem.deleteMany();
+  await prisma.checklistTemplate.deleteMany();
+  await prisma.notice.deleteMany();
   await prisma.resource.deleteMany();
   await prisma.resourceCategory.deleteMany();
   await prisma.manualReadReceipt.deleteMany();
@@ -443,6 +447,49 @@ async function main() {
         isSeed: true,
       },
     ],
+  });
+
+  // --- Store System (매장 시스템) — sample checklists + notices (isSeed) ---
+  const openTpl = await prisma.checklistTemplate.create({
+    data: { name: "오픈 준비", type: "open", order: 1, isSeed: true },
+  });
+  await prisma.checklistItem.createMany({
+    data: [
+      { templateId: openTpl.id, label: "조명·음악·냉난방 확인", order: 1 },
+      { templateId: openTpl.id, label: "시술 도구 세팅 및 소독 상태 확인", order: 2 },
+      { templateId: openTpl.id, label: "오늘 예약 명단 확인", order: 3 },
+      { templateId: openTpl.id, label: "수건·비품 재고 확인", order: 4 },
+    ],
+  });
+  const closeTpl = await prisma.checklistTemplate.create({
+    data: { name: "마감 정리", type: "close", order: 2, isSeed: true },
+  });
+  await prisma.checklistItem.createMany({
+    data: [
+      { templateId: closeTpl.id, label: "정산 완료", order: 1 },
+      { templateId: closeTpl.id, label: "기구 소독 및 소독 로그 작성", order: 2 },
+      { templateId: closeTpl.id, label: "청소 및 정리 정돈", order: 3 },
+      { templateId: closeTpl.id, label: "전원·가스·문단속", order: 4 },
+    ],
+  });
+
+  await prisma.notice.create({
+    data: {
+      title: "9월 브랜드 컬러 교육 일정 안내",
+      body: "9월 셋째 주 목요일 오후 2시, 본점에서 브랜드 컬러 교육이 진행됩니다. 전 지점 디자이너는 교육자료실의 사전 자료를 확인해주세요.",
+      isPinned: true,
+      authorId: admin.id,
+      isSeed: true,
+    },
+  });
+  await prisma.notice.create({
+    data: {
+      branchId: branch.id,
+      title: "본점 정기 소독 안내 (매주 월요일)",
+      body: "매주 월요일 오전 소독을 실시합니다. 마감 시 소독 로그를 반드시 작성해주세요.",
+      authorId: admin.id,
+      isSeed: true,
+    },
   });
 
   console.log("Seed complete.");

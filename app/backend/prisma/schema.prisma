@@ -43,6 +43,11 @@ model Branch {
   isActive      Boolean @default(true)
   users         User[]
   customerCases CustomerCase[]
+
+  // Store system (매장 시스템)
+  checklistTemplates ChecklistTemplate[]
+  checklistRuns      ChecklistRun[]
+  notices            Notice[]
 }
 
 model User {
@@ -77,6 +82,10 @@ model User {
 
   // Training resources (교육자료실)
   resourcesAuthored  Resource[]            @relation("ResourceAuthor")
+
+  // Store system (매장 시스템)
+  checklistRuns      ChecklistRun[]        @relation("ChecklistPerformer")
+  noticesAuthored    Notice[]              @relation("NoticeAuthor")
 }
 
 // ---------------------------------------------------------------------------
@@ -514,6 +523,69 @@ model Resource {
   order       Int      @default(0)
   authorId    String?
   author      User?    @relation("ResourceAuthor", fields: [authorId], references: [id])
+  isSeed      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Store System (매장 시스템) — daily store operations for staff + owners.
+// Checklists (오픈/마감) performed per store per day, and store notices (공지).
+// A branchId of null on a template/notice means "applies to all stores".
+// All content is DATA (admin-editable), never hardcoded (CLAUDE.md §6).
+// ---------------------------------------------------------------------------
+
+model ChecklistTemplate {
+  id        String   @id @default(uuid())
+  name      String
+  type      String   @default("open") // open | close | custom
+  branchId  String?  // null = all stores
+  branch    Branch?  @relation(fields: [branchId], references: [id])
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  isSeed    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  items ChecklistItem[]
+  runs  ChecklistRun[]
+}
+
+model ChecklistItem {
+  id         String   @id @default(uuid())
+  templateId String
+  template   ChecklistTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  label      String
+  order      Int      @default(0)
+}
+
+// One performed instance of a checklist, per template per store per day.
+model ChecklistRun {
+  id             String   @id @default(uuid())
+  templateId     String
+  template       ChecklistTemplate @relation(fields: [templateId], references: [id])
+  branchId       String
+  branch         Branch   @relation(fields: [branchId], references: [id])
+  date           String   // YYYY-MM-DD (store-local day)
+  checkedItemIds String   @default("[]") // JSON array of ChecklistItem ids
+  note           String   @default("")
+  performedById  String?
+  performedBy    User?    @relation("ChecklistPerformer", fields: [performedById], references: [id])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([templateId, branchId, date])
+}
+
+model Notice {
+  id          String   @id @default(uuid())
+  branchId    String?  // null = all stores
+  branch      Branch?  @relation(fields: [branchId], references: [id])
+  title       String
+  body        String   @default("")
+  isPinned    Boolean  @default(false)
+  isPublished Boolean  @default(true)
+  authorId    String?
+  author      User?    @relation("NoticeAuthor", fields: [authorId], references: [id])
   isSeed      Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

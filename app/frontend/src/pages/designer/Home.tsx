@@ -45,6 +45,11 @@ export function DesignerHome() {
         )}
       </Section>
 
+      {/* STORE — daily checklists & notices */}
+      <Section label="Store">
+        <ListRow title="매장" sub="오늘의 체크리스트 · 공지" onClick={() => nav("/store")} />
+      </Section>
+
       {/* CURRENT FOCUS */}
       {data.currentFocus && (
         <Section label="Current Focus">

@@ -245,7 +245,10 @@ pnpm dev       # backend(:4000) + frontend(:5173) 동시 실행
 - [x] **교육자료실 (교육자료실)** — 영상·PDF·링크 자료를 카테고리별로 정리, 유형 필터·검색,
   역할별 공개(`targetRoles`), **레슨 연결**(교육과 연결), 관리자 CRUD. URL 참조 방식
   (파일 업로드는 이후). 모델: `ResourceCategory / Resource`. 진입: TRAINING 화면 상단 링크.
-- [ ] 매장 시스템(체크리스트·공지), 가맹점 관리 — 이후 단계.
+- [x] **매장 시스템 (매장 시스템)** — 오픈/마감 **체크리스트**(매장·날짜별 수행 기록, 항목 체크+메모)
+  + **공지**(전체/매장 대상, 고정). 관리자 CRUD. 모델: `ChecklistTemplate / ChecklistItem /
+  ChecklistRun / Notice`. 진입: HOME 화면 상단 "매장". 하단 탭 유지(직원 진입은 HOME).
+- [ ] 가맹점 관리(다매장 운영), CASE/자료 파일 실제 업로드 — 이후 단계.
 
 ### 다음 Phase (아직 안 함)
 - PromotionCriteria 기반 승급 후보 표시 (자동 승급은 영구 금지)
