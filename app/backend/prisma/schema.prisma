@@ -74,6 +74,9 @@ model User {
   // Operations manual (운영 매뉴얼)
   manualsAuthored    Manual[]              @relation("ManualAuthor")
   manualReads        ManualReadReceipt[]   @relation("ManualReader")
+
+  // Training resources (교육자료실)
+  resourcesAuthored  Resource[]            @relation("ResourceAuthor")
 }
 
 // ---------------------------------------------------------------------------
@@ -185,6 +188,7 @@ model Lesson {
   assignments      Assignment[]
   learningProgress LearningProgress[]
   practices        Practice[]
+  resources        Resource[]
 }
 
 model Assignment {
@@ -475,4 +479,42 @@ model ManualReadReceipt {
   readAt   DateTime @default(now())
 
   @@unique([manualId, userId])
+}
+
+// ---------------------------------------------------------------------------
+// Training Resources (교육자료실) — a catalogued library of training materials
+// (video / pdf / image / link / doc) referenced by URL. Connected to education:
+// a resource may optionally attach to a Lesson. All DATA (admin-editable).
+// Files are referenced by URL/ref for now (upload comes later, per CLAUDE.md).
+// ---------------------------------------------------------------------------
+
+model ResourceCategory {
+  id        String     @id @default(uuid())
+  name      String
+  order     Int        @default(0)
+  isActive  Boolean    @default(true)
+  isSeed    Boolean    @default(false)
+  resources Resource[]
+  createdAt DateTime   @default(now())
+}
+
+model Resource {
+  id          String   @id @default(uuid())
+  categoryId  String
+  category    ResourceCategory @relation(fields: [categoryId], references: [id])
+  title       String
+  description String?
+  type        String   @default("link") // video | pdf | image | link | doc
+  url         String   @default("")      // reference URL to the material
+  tags        String   @default("[]")    // JSON array of tag strings
+  targetRoles String   @default("[]")    // JSON array of role keys; [] = everyone
+  lessonId    String?                     // optional link to a Lesson
+  lesson      Lesson?  @relation(fields: [lessonId], references: [id])
+  isPublished Boolean  @default(true)
+  order       Int      @default(0)
+  authorId    String?
+  author      User?    @relation("ResourceAuthor", fields: [authorId], references: [id])
+  isSeed      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

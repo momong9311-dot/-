@@ -8,6 +8,8 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("Seeding… (clearing existing dev data first)");
   // Delete in FK-safe order.
+  await prisma.resource.deleteMany();
+  await prisma.resourceCategory.deleteMany();
   await prisma.manualReadReceipt.deleteMany();
   await prisma.manual.deleteMany();
   await prisma.manualCategory.deleteMany();
@@ -390,6 +392,53 @@ async function main() {
         targetRoles: JSON.stringify(["owner", "admin"]),
         isRequired: false,
         order: 2,
+        authorId: admin.id,
+        isSeed: true,
+      },
+    ],
+  });
+
+  // --- Training Resources (교육자료실) — sample content (isSeed) ----------
+  const rcVideo = await prisma.resourceCategory.create({ data: { name: "커트 · 시술 영상", order: 1, isSeed: true } });
+  const rcDoc = await prisma.resourceCategory.create({ data: { name: "이론 자료", order: 2, isSeed: true } });
+
+  await prisma.resource.createMany({
+    data: [
+      {
+        categoryId: rcVideo.id,
+        title: "레이어드 컷 기본 시연",
+        description: "세로 흐름을 만드는 레이어드 컷 시연 영상.",
+        type: "video",
+        url: "https://www.youtube.com/",
+        tags: JSON.stringify(["커트", "레이어드"]),
+        targetRoles: JSON.stringify([]),
+        lessonId: lesson1.id,
+        order: 1,
+        authorId: admin.id,
+        isSeed: true,
+      },
+      {
+        categoryId: rcVideo.id,
+        title: "C컬 인컬 드라이 방법",
+        description: "단정한 인상을 만드는 C컬 인컬 드라이.",
+        type: "video",
+        url: "https://www.youtube.com/",
+        tags: JSON.stringify(["드라이", "C컬"]),
+        targetRoles: JSON.stringify([]),
+        order: 2,
+        authorId: admin.id,
+        isSeed: true,
+      },
+      {
+        categoryId: rcDoc.id,
+        title: "얼굴 비율 진단 가이드 (PDF)",
+        description: "가로·세로 비율로 얼굴형을 진단하는 기준 자료.",
+        type: "pdf",
+        url: "https://example.com/face-ratio.pdf",
+        tags: JSON.stringify(["진단", "얼굴분석"]),
+        targetRoles: JSON.stringify([]),
+        lessonId: lesson2.id,
+        order: 1,
         authorId: admin.id,
         isSeed: true,
       },

@@ -242,7 +242,10 @@ pnpm dev       # backend(:4000) + frontend(:5173) 동시 실행
   **필독(isRequired)** 지정 시 버전별 읽음 확인(ReadReceipt), 관리자 CRUD + 확인 현황.
   콘텐츠는 전부 DB(관리자 편집), 코드 하드코딩 X. 모델: `ManualCategory / Manual / ManualReadReceipt`.
 - [x] `owner`(점주) 역할 추가 (로그인 `owner@merci.dev`), 하단 탭에 **매뉴얼** 추가.
-- [ ] 교육자료실, 매장 시스템(체크리스트·공지), 가맹점 관리 — 이후 단계.
+- [x] **교육자료실 (교육자료실)** — 영상·PDF·링크 자료를 카테고리별로 정리, 유형 필터·검색,
+  역할별 공개(`targetRoles`), **레슨 연결**(교육과 연결), 관리자 CRUD. URL 참조 방식
+  (파일 업로드는 이후). 모델: `ResourceCategory / Resource`. 진입: TRAINING 화면 상단 링크.
+- [ ] 매장 시스템(체크리스트·공지), 가맹점 관리 — 이후 단계.
 
 ### 다음 Phase (아직 안 함)
 - PromotionCriteria 기반 승급 후보 표시 (자동 승급은 영구 금지)

@@ -51,6 +51,7 @@ export function Layout({ children }: { children: ReactNode }) {
           <Tab to="/admin/cases" label="사례" />
           <Tab to="/admin/curriculum" label="커리큘럼" />
           <Tab to="/admin/manuals" label="매뉴얼" />
+          <Tab to="/admin/resources" label="자료실" />
         </nav>
       )}
     </div>

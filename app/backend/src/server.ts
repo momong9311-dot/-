@@ -8,6 +8,7 @@ import { evaluationRoutes } from "./routes/evaluation.js";
 import { feedbackRoutes } from "./routes/feedback.js";
 import { caseRoutes } from "./routes/cases.js";
 import { manualRoutes } from "./routes/manual.js";
+import { resourceRoutes } from "./routes/resource.js";
 import { adminRoutes } from "./routes/admin.js";
 
 const PORT = Number(process.env.PORT ?? 4000);
@@ -39,6 +40,7 @@ await app.register(evaluationRoutes);
 await app.register(feedbackRoutes);
 await app.register(caseRoutes);
 await app.register(manualRoutes);
+await app.register(resourceRoutes);
 await app.register(adminRoutes);
 
 app.get("/api/health", async () => ({ ok: true }));

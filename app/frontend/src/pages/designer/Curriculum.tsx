@@ -28,6 +28,11 @@ export function Curriculum() {
     <div>
       <h1 className="page-title">교육</h1>
       <p className="muted small">배정된 커리큘럼과 진행 상태입니다.</p>
+      <ListRow
+        title="교육자료실"
+        sub="영상·PDF·링크 자료 모음"
+        onClick={() => nav("/resources")}
+      />
       {data.length === 0 && <Empty>배정된 커리큘럼이 없습니다.</Empty>}
       {data.map((c) => (
         <Section key={c.id} label={c.skillName ? `${c.title} · ${c.skillName}` : c.title}>
