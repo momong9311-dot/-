@@ -37,6 +37,7 @@ export function Layout({ children }: { children: ReactNode }) {
         <nav className="tabbar">
           <Tab to="/" label="HOME" end />
           <Tab to="/curriculum" label="TRAINING" />
+          <Tab to="/manuals" label="매뉴얼" />
           <Tab to="/cases" label="CASES" />
           <Tab to="/growth" label="GROWTH" />
           <Tab to="/my" label="MY" />
@@ -49,6 +50,7 @@ export function Layout({ children }: { children: ReactNode }) {
           <Tab to="/admin/evaluation" label="평가" />
           <Tab to="/admin/cases" label="사례" />
           <Tab to="/admin/curriculum" label="커리큘럼" />
+          <Tab to="/admin/manuals" label="매뉴얼" />
         </nav>
       )}
     </div>

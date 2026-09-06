@@ -5,7 +5,7 @@ export type Me = {
   id: string;
   name: string;
   email: string;
-  roleKey: "designer" | "leader" | "educator" | "admin";
+  roleKey: "designer" | "leader" | "educator" | "admin" | "owner";
   roleName: string;
   branchId: string | null;
   levelId: string | null;

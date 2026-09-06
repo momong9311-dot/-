@@ -3,7 +3,7 @@ import { getSessionUser, type SessionUser } from "./auth.js";
 
 // Role keys used across the app. Roles themselves live in the DB (Role table);
 // these are the built-in keys the MVP reasons about.
-export type RoleKey = "designer" | "leader" | "educator" | "admin";
+export type RoleKey = "designer" | "leader" | "educator" | "admin" | "owner";
 
 declare module "fastify" {
   interface FastifyRequest {

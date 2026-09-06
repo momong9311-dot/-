@@ -70,6 +70,10 @@ model User {
   evaluationsAuthored Evaluation[]      @relation("EvaluationAuthor")
   feedbackReceived   Feedback[]         @relation("FeedbackSubject")
   feedbackAuthored   Feedback[]         @relation("FeedbackAuthor")
+
+  // Operations manual (운영 매뉴얼)
+  manualsAuthored    Manual[]              @relation("ManualAuthor")
+  manualReads        ManualReadReceipt[]   @relation("ManualReader")
 }
 
 // ---------------------------------------------------------------------------
@@ -421,4 +425,54 @@ model PromotionCriteria {
   skill             Skill?  @relation(fields: [skillId], references: [id])
   skillRequirements String  @default("{}") // JSON: e.g. {"minLevelOrder":3,"minApplication":2}
   notes             String?
+}
+
+// ---------------------------------------------------------------------------
+// Operations Manual (운영 매뉴얼) — staff + franchise owners.
+// All manual content is DATA (admin-editable), never hardcoded (CLAUDE.md §6).
+// "필독(required)" manuals track a per-user read receipt for the current
+// version, so managers can see who has / hasn't acknowledged.
+// ---------------------------------------------------------------------------
+
+model ManualCategory {
+  id        String   @id @default(uuid())
+  name      String
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  isSeed    Boolean  @default(false)
+  manuals   Manual[]
+  createdAt DateTime @default(now())
+}
+
+model Manual {
+  id          String   @id @default(uuid())
+  categoryId  String
+  category    ManualCategory @relation(fields: [categoryId], references: [id])
+  title       String
+  summary     String?               // one-line summary for the list
+  content     String   @default("") // body (markdown/plain), stored in DB not code
+  targetRoles String   @default("[]") // JSON array of role keys; [] = everyone
+  isRequired  Boolean  @default(false) // 필독
+  isPublished Boolean  @default(true)
+  version     Int      @default(1)   // bumps when content changes → re-ack needed
+  order       Int      @default(0)
+  authorId    String?
+  author      User?    @relation("ManualAuthor", fields: [authorId], references: [id])
+  isSeed      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  readReceipts ManualReadReceipt[]
+}
+
+model ManualReadReceipt {
+  id       String   @id @default(uuid())
+  manualId String
+  manual   Manual   @relation(fields: [manualId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User     @relation("ManualReader", fields: [userId], references: [id])
+  version  Int      @default(1) // which manual version was acknowledged
+  readAt   DateTime @default(now())
+
+  @@unique([manualId, userId])
 }

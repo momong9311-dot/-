@@ -8,6 +8,9 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("Seeding… (clearing existing dev data first)");
   // Delete in FK-safe order.
+  await prisma.manualReadReceipt.deleteMany();
+  await prisma.manual.deleteMany();
+  await prisma.manualCategory.deleteMany();
   await prisma.skillGrowthEvent.deleteMany();
   await prisma.feedback.deleteMany();
   await prisma.evaluation.deleteMany();
@@ -36,6 +39,7 @@ async function main() {
       { key: "leader", name: "Leader", permissions: '["self","evaluate","view_admin"]' },
       { key: "educator", name: "Educator", permissions: '["self","evaluate","view_admin","manage_content"]' },
       { key: "admin", name: "Admin", permissions: '["self","evaluate","view_admin","manage_content","manage_all"]' },
+      { key: "owner", name: "점주", permissions: '["self"]' },
     ].map((r) => prisma.role.create({ data: r })),
   );
   const roleByKey = Object.fromEntries(roles.map((r) => [r.key, r]));
@@ -142,6 +146,9 @@ async function main() {
   });
   const leader = await prisma.user.create({
     data: { name: "리더", email: "leader@merci.dev", passwordHash: pw, roleId: roleByKey.leader.id, branchId: branch.id, isSeed: true },
+  });
+  await prisma.user.create({
+    data: { name: "점주", email: "owner@merci.dev", passwordHash: pw, roleId: roleByKey.owner.id, branchId: branch.id, isSeed: true },
   });
   const designer = await prisma.user.create({
     data: {
@@ -318,9 +325,80 @@ async function main() {
     },
   });
 
+  // --- Operations Manual (운영 매뉴얼) — sample content (isSeed) ----------
+  // All manual content is DATA; admins edit it in the app, never in code.
+  const mcBrand = await prisma.manualCategory.create({ data: { name: "브랜드 · 접객", order: 1, isSeed: true } });
+  const mcHygiene = await prisma.manualCategory.create({ data: { name: "위생 · 안전", order: 2, isSeed: true } });
+  const mcStore = await prisma.manualCategory.create({ data: { name: "매장 운영", order: 3, isSeed: true } });
+
+  await prisma.manual.createMany({
+    data: [
+      {
+        categoryId: mcBrand.id,
+        title: "메르시모몽 접객 기본 원칙",
+        summary: "모든 직원이 지켜야 할 고객 응대의 기본.",
+        content:
+          "# 접객 기본 원칙\n\n1. 고객이 들어오면 3초 안에 눈을 맞추고 인사한다.\n2. 상담은 '관찰 → 진단 → 제안' 순서로 진행한다.\n3. 시술 전 반드시 오늘의 디자인 방향을 한 문장으로 확인받는다.\n4. 배웅 시 다음 방문 주기를 안내한다.\n\n> BE YOURSELF — 고객이 스스로의 아름다움을 발견하도록 돕는다.",
+        targetRoles: JSON.stringify([]),
+        isRequired: true,
+        order: 1,
+        authorId: admin.id,
+        isSeed: true,
+      },
+      {
+        categoryId: mcBrand.id,
+        title: "전화 · 예약 응대 스크립트",
+        summary: "전화 응대와 예약 접수 표준 멘트.",
+        content:
+          "# 전화 응대\n\n- 인사: \"안녕하세요, 메르시모몽입니다.\"\n- 예약 확인 항목: 성함 / 연락처 / 원하는 시술 / 희망 시간\n- 마무리: 예약 일시를 다시 한 번 복창한다.",
+        targetRoles: JSON.stringify([]),
+        isRequired: false,
+        order: 2,
+        authorId: admin.id,
+        isSeed: true,
+      },
+      {
+        categoryId: mcHygiene.id,
+        title: "기구 소독 및 위생 관리",
+        summary: "시술 도구 소독 주기와 방법 (필독).",
+        content:
+          "# 위생 관리\n\n1. 가위·빗은 고객마다 소독한다.\n2. 수건은 1회 사용 후 세탁한다.\n3. 소독 로그를 매일 마감 시 기록한다.\n4. 소독액은 주 1회 교체한다.",
+        targetRoles: JSON.stringify([]),
+        isRequired: true,
+        order: 1,
+        authorId: admin.id,
+        isSeed: true,
+      },
+      {
+        categoryId: mcStore.id,
+        title: "오픈 / 마감 체크리스트",
+        summary: "매장 오픈·마감 시 확인 항목.",
+        content:
+          "# 오픈\n- 조명·음악·냉난방 확인\n- 시술 도구 세팅\n- 예약 명단 확인\n\n# 마감\n- 정산\n- 소독 로그 작성\n- 전원·문단속",
+        targetRoles: JSON.stringify(["owner", "leader", "admin", "educator"]),
+        isRequired: true,
+        order: 1,
+        authorId: admin.id,
+        isSeed: true,
+      },
+      {
+        categoryId: mcStore.id,
+        title: "가맹점 운영 가이드",
+        summary: "점주용 매장 운영 기준 (점주 전용).",
+        content:
+          "# 가맹점 운영 가이드\n\n- 브랜드 표준을 매장에 일관되게 적용한다.\n- 직원 교육은 교육 플랫폼의 커리큘럼을 따른다.\n- 월 1회 운영 리포트를 본사와 공유한다.",
+        targetRoles: JSON.stringify(["owner", "admin"]),
+        isRequired: false,
+        order: 2,
+        authorId: admin.id,
+        isSeed: true,
+      },
+    ],
+  });
+
   console.log("Seed complete.");
   console.log("Demo logins (password: password123):");
-  console.log("  admin@merci.dev / educator@merci.dev / leader@merci.dev / designer@merci.dev / designer2@merci.dev");
+  console.log("  admin@merci.dev / educator@merci.dev / leader@merci.dev / owner@merci.dev / designer@merci.dev / designer2@merci.dev");
 }
 
 main()
