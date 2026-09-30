@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth, isManager } from "../auth";
 
@@ -6,6 +7,9 @@ export function Layout({ children }: { children: ReactNode }) {
   const { me, logout } = useAuth();
   const loc = useLocation();
   const manager = isManager(me?.roleKey);
+  useEffect(() => {
+    window.scrollTo(0, 0); // new page always starts at top, no mid-scroll jump
+  }, [loc.pathname]);
   const inAdmin = loc.pathname.startsWith("/admin");
 
   return (
@@ -29,7 +33,11 @@ export function Layout({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      <main className="container">{children}</main>
+      <main className="container">
+        <div className="page" key={loc.pathname}>
+          {children}
+        </div>
+      </main>
 
       {/* Bottom tabs. Employee flow: HOME / TRAINING / CASES / GROWTH / MY.
           Managers also get an ADMIN tab. */}
