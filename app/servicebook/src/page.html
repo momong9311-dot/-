@@ -370,6 +370,14 @@ function pr(s, d = (state.me || state.des)){
   return {price:r[0], max:r[0], normal:r[1], note: r[2] || s.priceNote};
 }
 const offered = s => !!pr(s);
+/* 개인 메뉴판에서는 이름을 위에 한 번만 — 메뉴명·설명 속 디자이너 이름을 덜어 낸다 */
+function nm(t){
+  if(!state.me || !t) return t;
+  const d = meD(), n = d.name;
+  return t.replace(new RegExp(`${n}\\s?(대표원장|원장|부원장|실장|디자이너)의\\s*`, "g"), "")
+          .replace(new RegExp(`${n}(쌤|원장)\\s*`, "g"), "")
+          .replace(/^\s*[+·]\s*/, "").replace(/\s{2,}/g, " ").trim();
+}
 const priceTxt = s => { const p = pr(s); return p ? won(p.price) + ((p.max > p.price || s.from) ? "~" : "") : "진행하지 않아요"; };
 const hasNormal = s => { const p = pr(s); return !!(p && p.normal && p.normal > p.price); };
 const timeTxt = s => s.timeText || ("약 " + dur(s.min));
@@ -405,6 +413,7 @@ function go(v, opts={}){
 function rerender(){ const y = window.scrollY; render(); window.scrollTo(0,y); }
 
 function bar3(left, title, sub, right){
+  if(state.me && !["login","account"].includes(state.view)) sub = `${meD().name} ${meD().role} 메뉴판`;
   return `<header class="bar">${left}<div class="mid" data-staff><small>${sub}</small><b>${title}</b></div>${right}</header>`;
 }
 const backTile = to => `<button class="tile t press" data-go="${to}" aria-label="뒤로">${ic("back",2)}</button>`;
@@ -413,7 +422,7 @@ const cmpTile = () => `<button class="tile t press" data-go="compare" aria-label
 
 /* ---------- 디자이너 선택 (모몽 OS 역할 전환처럼) ---------- */
 function desBar(){
-  if(state.me){ const d = meD(); return `<div class="mebar g"><span class="tile gp av">${d.name[0]}</span><div><b>${d.name} ${d.role}의 메뉴판</b><small>${d.name} ${d.role}가 진행하는 메뉴와 가격이에요</small></div></div>`; }
+  if(state.me) return "";
   return `<div class="desbar">
     <div class="seg g dseg" role="group" aria-label="디자이너 선택">
       ${DES.map(d => `<button data-des="${d.key}" class="${state.des===d.key?"gp":""}" aria-pressed="${state.des===d.key}"><b>${d.name}</b><small>${d.role}</small></button>`).join("")}
@@ -428,8 +437,8 @@ function row(s, extra=""){
   return `<button class="row g press" data-open="${s.id}">
     <div class="well gw"><b>${s.min}</b><span>분</span></div>
     <div class="body">
-      <div class="nm"><b>${s.name}</b>${s.designer?`<span class="chip gp flat">${s.designer}</span>`:`<span class="chip gw">${c.ko}</span>`}</div>
-      <p class="tg">${s.tag}</p>${extra}
+      <div class="nm"><b>${nm(s.name)}</b>${s.designer && !state.me?`<span class="chip gp flat">${s.designer}</span>`:`<span class="chip gw">${s.designer?"시그니처":c.ko}</span>`}</div>
+      <p class="tg">${nm(s.tag)}</p>${extra}
     </div>
     <div class="pr">${hasNormal(s)?`<span class="strike">${won(pr(s).normal)}</span>`:""}<b>${priceTxt(s)}</b>${ic("next",2)}</div>
   </button>`;
@@ -440,9 +449,9 @@ function home(){
   const q = state.q.trim();
   const hits = q ? SERVICES.filter(offered).filter(s => (s.name + s.en + s.tag + cat(s.cat).ko).toLowerCase().includes(q.toLowerCase())) : [];
   return `<div class="app">
-    ${bar3(`<button class="tile t press" data-go="benefits" aria-label="혜택 안내">${ic("gift")}</button>`, state.me ? `${meD().name} ${meD().role} 메뉴판` : "Merci Momong", today, cmpTile())}
-    <h1 class="greet">${state.me ? `고객님, 반가워요<br>오늘은 <em>${meD().name} ${meD().role}</em>와 함께해요` : `고객님, 반가워요<br>오늘 받으실 시술을 <em>미리 살펴보세요</em>`}</h1>
-    ${state.me ? meCard() : ""}
+    ${bar3(`<button class="tile t press" data-go="benefits" aria-label="혜택 안내">${ic("gift")}</button>`, "Merci Momong", today, cmpTile())}
+    <h1 class="greet">고객님, 반가워요<br>오늘 받으실 시술을 <em>미리 살펴보세요</em></h1>
+    ${state.me ? meCard(false) : ""}
     <label class="search g">${ic("search")}<input id="q" type="search" value="${q.replace(/"/g,"&quot;")}" placeholder="시술 이름으로 찾기 · 예: 볼륨매직, 클리닉" aria-label="시술 검색" autocomplete="off"></label>
     ${q ? `<div class="results-inline">${hits.length ? hits.map(s => row(s)).join("") : `<div class="empty g"><h2>'${q}'에 맞는 시술이 없어요</h2><p class="sub">다른 이름으로 찾거나, 아래 '고민으로 찾기'를 눌러 보세요.</p></div>`}</div>` : ""}
 
@@ -464,7 +473,7 @@ function home(){
         <div class="big">${SERVICES.filter(offered).length}<span>가지 시술</span></div>
         <p class="sub" style="font-size:15px">시술마다 과정·시간·효과를 확인할 수 있어요</p>
         ${bar(100)}
-        <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--sub)"><span>최저 ${won(Math.min(...SERVICES.filter(offered).map(s=>pr(s).price)))}</span><span>${state.me ? `${meD().name} ${meD().role}` : `디자이너 ${DESIGNERS.length}명`}</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--sub)"><span>최저 ${won(Math.min(...SERVICES.filter(offered).map(s=>pr(s).price)))}</span><span>${state.me ? `시그니처 ${SERVICES.filter(s => s.designer && offered(s)).length}가지` : `디자이너 ${DESIGNERS.length}명`}</span></div>
         <button class="pill g press" data-go="menu" style="margin-top:auto">전체 메뉴 보기</button>
       </div>
     </section>
@@ -554,16 +563,16 @@ function detail(){
   const row_ = PRICES[s.id] || {};
   const desPrices = DES.filter(d => d.key !== "all").map(d => ({d, r:row_[d.key]}));
   return `<div class="app">
-    ${bar3(backTile("menu"), s.name, `${c.ko} · ${s.en}`, cmpTile())}
+    ${bar3(backTile("menu"), nm(s.name), `${c.ko} · ${s.en}`, cmpTile())}
     <section class="dhero">
       <div class="card g">
-        <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="chip gp flat">${c.ko}</span>${s.designer?`<span class="chip t">담당 · ${s.designer}</span>`:""}<span class="chip gw">${s.en}</span></div>
-        <h1>${s.name}</h1>
-        <p class="tag">${s.tag}</p>
-        <p class="desc">${s.desc}</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="chip gp flat">${c.ko}</span>${s.designer && !state.me?`<span class="chip t">담당 · ${s.designer}</span>`:""}<span class="chip gw">${s.en}</span></div>
+        <h1>${nm(s.name)}</h1>
+        <p class="tag">${nm(s.tag)}</p>
+        <p class="desc">${nm(s.desc)}</p>
       </div>
       <div class="card g price">
-        <div><span style="font-size:17px;font-weight:700">가격 · ${desName(state.me || state.des)}</span><p class="sub" style="font-size:13px">${p ? p.note : "이 디자이너는 진행하지 않는 메뉴예요"}</p></div>
+        <div><span style="font-size:17px;font-weight:700">${state.me ? "가격" : `가격 · ${desName(state.des)}`}</span><p class="sub" style="font-size:13px">${p ? p.note : "이 디자이너는 진행하지 않는 메뉴예요"}</p></div>
         ${p ? `<div>${hasNormal(s)?`<div style="display:flex;gap:10px;align-items:baseline;margin-bottom:6px"><span class="strike" style="font-size:16px">정가 ${won(p.normal)}</span><span class="off">${Math.round((1-p.price/p.normal)*100)}% ↓</span></div>`:""}<div class="v">${won(p.price).replace("원","")}<small>원${(p.max>p.price||s.from)?"~":""}</small></div></div>` : `<div class="v" style="color:var(--mute)">—</div>`}
         <p class="sub" style="font-size:12.5px">기장·모발 상태에 따라 추가될 수 있어요</p>
       </div>
@@ -584,8 +593,8 @@ function detail(){
     </div>
     <section class="panel">${panel}</section>
     <nav class="pager" aria-label="다른 시술">
-      <button class="g press" data-open="${prev.id}"><span class="tile t">${ic("back",2)}</span><span><small>이전 시술</small><b>${prev.name}</b></span></button>
-      <button class="g press" data-open="${next.id}"><span class="tile t">${ic("next",2)}</span><span><small>다음 시술</small><b>${next.name}</b></span></button>
+      <button class="g press" data-open="${prev.id}"><span class="tile t">${ic("back",2)}</span><span><small>이전 시술</small><b>${nm(prev.name)}</b></span></button>
+      <button class="g press" data-open="${next.id}"><span class="tile t">${ic("next",2)}</span><span><small>다음 시술</small><b>${nm(next.name)}</b></span></button>
     </nav>
   </div>`;
 }
@@ -601,13 +610,13 @@ function compare(){
     ${desBar()}
     <p class="lbl">비교할 시술을 최대 3개까지 골라 주세요</p>
     <div class="picks" role="group" aria-label="비교할 시술">
-      ${SERVICES.filter(s => offered(s) || state.compare.includes(s.id)).map(s => { const on = state.compare.includes(s.id); return `<button class="${on?"gp":"g"} press" data-cmp="${s.id}" aria-pressed="${on}">${s.name}</button>`; }).join("")}
+      ${SERVICES.filter(s => offered(s) || state.compare.includes(s.id)).map(s => { const on = state.compare.includes(s.id); return `<button class="${on?"gp":"g"} press" data-cmp="${s.id}" aria-pressed="${on}">${nm(s.name)}</button>`; }).join("")}
     </div>
     ${n === 0 ? `<div class="empty g"><h2>비교함이 비어 있어요</h2><p class="sub">위에서 시술 이름을 누르면 이 자리에 비교표가 만들어집니다.</p></div>` : `
     <div class="cmpwrap g"><table class="cmp">
-      <thead><tr><th></th>${sel.map(s => `<th><span class="chip gw">${cat(s.cat).ko}</span><span class="cn">${s.name}</span>${s.designer?`<small style="margin:-6px 0 8px">${s.designer}</small>`:""}<button class="x g flat" data-cmp="${s.id}">빼기</button></th>`).join("")}${n<3?`<th></th>`.repeat(3-n):""}</tr></thead>
+      <thead><tr><th></th>${sel.map(s => `<th><span class="chip gw">${cat(s.cat).ko}</span><span class="cn">${nm(s.name)}</span>${s.designer && !state.me?`<small style="margin:-6px 0 8px">${s.designer}</small>`:""}<button class="x g flat" data-cmp="${s.id}">빼기</button></th>`).join("")}${n<3?`<th></th>`.repeat(3-n):""}</tr></thead>
       <tbody>
-        ${r(`가격 · ${(state.me||state.des)==="all"?"전체":DES.find(d=>d.key===(state.me||state.des)).name}`, s => { const p = pr(s); return p ? `${hasNormal(s)?`<span class="strike">정가 ${won(p.normal)}</span><br>`:""}<span class="v">${priceTxt(s)}</span><small>${p.note}</small>` : `<span class="v" style="color:var(--mute)">진행 안 함</span>`; }, best(s=>pr(s)?pr(s).price:Infinity,"min"))}
+        ${r(state.me ? "가격" : `가격 · ${state.des==="all"?"전체":DES.find(d=>d.key===state.des).name}`, s => { const p = pr(s); return p ? `${hasNormal(s)?`<span class="strike">정가 ${won(p.normal)}</span><br>`:""}<span class="v">${priceTxt(s)}</span><small>${p.note}</small>` : `<span class="v" style="color:var(--mute)">진행 안 함</span>`; }, best(s=>pr(s)?pr(s).price:Infinity,"min"))}
         ${r("소요 시간", s => `<span class="v">${timeTxt(s)}</span><div style="margin-top:10px">${bar(s.min/MAXMIN*100)}</div>`, best(s=>s.min,"min"))}
         ${r("유지 기간", s => `<span class="v" style="font-size:18px">${s.keep}</span>`)}
         ${r("모발 부담", s => `${dots(s.damage)}<small>${DMG[s.damage]}</small>`, best(s=>s.damage,"min"))}
@@ -673,7 +682,7 @@ function benefits(){
 
 /* ---------- 디자이너 ---------- */
 function designers(){
-  if(state.me) return `<div class="app">${bar3(homeTile, `${meD().name} ${meD().role}`, "디자이너 소개", cmpTile())}${meCard()}</div>`;
+  if(state.me) return `<div class="app">${bar3(homeTile, "디자이너 소개", "", cmpTile())}${meCard(false)}</div>`;
   return `<div class="app">
     ${bar3(homeTile, "디자이너", `${DESIGNERS.length}명`, cmpTile())}
     <h1 class="greet">나에게 맞는<br><em>디자이너</em>를 찾아보세요</h1>
@@ -707,11 +716,11 @@ function login(){
     </div>
   </div>`;
 }
-function meCard(){
+function meCard(withName = true){
   const d = meD();
   const sig = SERVICES.filter(s => s.designer && offered(s));
   return `<section class="prof g">
-    <div class="hd"><span class="tile gp av">${d.name[0]}</span><div><h2>${d.name} <span class="sub" style="font-size:15px;font-weight:600">${d.role}</span></h2></div></div>
+    ${withName ? `<div class="hd"><span class="tile gp av">${d.name[0]}</span><div><h2>${d.name} <span class="sub" style="font-size:15px;font-weight:600">${d.role}</span></h2></div></div>` : `<span style="font-size:19px;font-weight:750">소개</span>`}
     <p class="sub" style="font-size:16px;line-height:1.65">${d.desc}</p>
     ${sig.length ? `<p class="lbl" style="padding:0">시그니처 메뉴</p><div class="results-inline">${sig.map(x => row(x)).join("")}</div>` : ""}
   </section>`;
@@ -758,7 +767,7 @@ function dockHtml(){
     return `<button class="cta ${inC?"g":"gp"} press" data-cmp="${state.id}">${inC ? "비교함에서 빼기" : `비교함에 담기 (${state.compare.length}/3)`}</button>
       <button class="tile t press" data-go="compare" aria-label="비교 화면 열기">${ic("compare")}${state.compare.length?`<span class="dotbadge gp flat">${state.compare.length}</span>`:""}</button>`;
   }
-  const items = [["home","홈","home"],["menu","서비스","grid"],["finder","고민 찾기","find"], ["designers", state.me ? meD().name : "디자이너", "user"],["benefits","혜택","gift"]];
+  const items = [["home","홈","home"],["menu","서비스","grid"],["finder","고민 찾기","find"], ["designers", state.me ? "소개" : "디자이너", "user"],["benefits","혜택","gift"]];
   return `<nav class="nav g" aria-label="메뉴">${items.map(([v,l,k]) => `<button data-go="${v}" ${state.view===v?'aria-current="page"':""}>${ic(k, state.view===v?2:1.8)}${l}</button>`).join("")}</nav>
     <button class="tile ${state.view==="compare"?"gp":"t"} press" data-go="compare" aria-label="비교하기">${ic("compare")}${state.compare.length && state.view!=="compare"?`<span class="dotbadge gp flat">${state.compare.length}</span>`:""}</button>`;
 }
