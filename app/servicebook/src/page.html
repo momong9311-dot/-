@@ -40,7 +40,7 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .bar{display:grid;grid-template-columns:56px minmax(0,1fr) 56px;align-items:center;gap:12px;padding-top:8px}
 .tile{width:56px;height:56px;border-radius:19px;display:flex;align-items:center;justify-content:center;position:relative;flex:none}
 .tile svg{width:24px;height:24px}
-.bar .mid{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;min-width:0}
+.bar .mid{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;min-width:0}
 .bar .mid small{font-size:13px;color:var(--sub);font-weight:500}
 .bar .mid b{font-size:19px;font-weight:700;letter-spacing:-0.2px}
 .dotbadge{position:absolute;top:-4px;right:-4px;min-width:22px;height:22px;padding:0 6px;border-radius:11px;font-size:12px;font-weight:800;display:grid;place-items:center;color:var(--ink)}
@@ -355,8 +355,8 @@ const IC = {
 const ic = (k, sw=1.8) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]}</svg>`;
 
 const won = n => n.toLocaleString("ko-KR") + "원";
-const DES = [{key:"all", name:"전체", role:"디자이너 비교"}, ...DESIGNERS.map(d => ({key:d.key, name:d.name, role:d.role})), {key:"first", name:"첫방문", role:"이벤트가"}];
-const desName = k => { const d = DES.find(x => x.key === k); return k === "all" ? "전체 디자이너" : k === "first" ? "첫방문 이벤트" : `${d.name} ${d.role}`; };
+const DES = [{key:"all", name:"전체", role:"디자이너 비교"}, ...DESIGNERS.map(d => ({key:d.key, name:d.name, role:d.role})), {key:"first", name:"첫방문", role:"첫방문 혜택가"}];
+const desName = k => { const d = DES.find(x => x.key === k); return k === "all" ? "전체 디자이너" : k === "first" ? "첫방문 혜택" : `${d.name} ${d.role}`; };
 function pr(s, d = (state.me || state.des)){
   const row = PRICES[s.id] || {};
   if(d === "all"){
@@ -370,10 +370,10 @@ function pr(s, d = (state.me || state.des)){
   return {price:r[0], max:r[0], normal:r[1], note: r[2] || s.priceNote};
 }
 const offered = s => !!pr(s);
-const priceTxt = s => { const p = pr(s); return p ? won(p.price) + ((p.max > p.price || s.from) ? "~" : "") : "진행 안 함"; };
+const priceTxt = s => { const p = pr(s); return p ? won(p.price) + ((p.max > p.price || s.from) ? "~" : "") : "진행하지 않아요"; };
 const hasNormal = s => { const p = pr(s); return !!(p && p.normal && p.normal > p.price); };
 const timeTxt = s => s.timeText || ("약 " + dur(s.min));
-const estChip = s => s.est ? `<span class="chip gw est">예상</span>` : `<span class="chip gp flat est">네이버 표기</span>`;
+const estChip = s => "";
 const dur = m => m < 60 ? `${m}분` : `${Math.floor(m/60)}시간${m%60 ? " " + m%60 + "분" : ""}`;
 const clock = m => `${Math.floor(m/60)}:${String(m%60).padStart(2,"0")}`;
 const cat = id => CATS.find(c => c.id === id);
@@ -405,7 +405,7 @@ function go(v, opts={}){
 function rerender(){ const y = window.scrollY; render(); window.scrollTo(0,y); }
 
 function bar3(left, title, sub, right){
-  return `<header class="bar">${left}<div class="mid"><small>${sub}</small><b>${title}</b></div>${right}</header>`;
+  return `<header class="bar">${left}<div class="mid" data-staff><small>${sub}</small><b>${title}</b></div>${right}</header>`;
 }
 const backTile = to => `<button class="tile t press" data-go="${to}" aria-label="뒤로">${ic("back",2)}</button>`;
 const homeTile = `<button class="tile t press" data-go="home" aria-label="처음 화면">${ic("home")}</button>`;
@@ -413,12 +413,12 @@ const cmpTile = () => `<button class="tile t press" data-go="compare" aria-label
 
 /* ---------- 디자이너 선택 (모몽 OS 역할 전환처럼) ---------- */
 function desBar(){
-  if(state.me){ const d = meD(); return `<div class="mebar g"><span class="tile gp av">${d.name[0]}</span><div><b>${d.name} ${d.role}의 메뉴판</b><small>${d.name} ${d.role}의 네이버 예약가로 보여 드려요</small></div><button class="pill g press" data-go="account" style="height:44px;font-size:14px;margin-left:auto">내 메뉴판 설정</button></div>`; }
+  if(state.me){ const d = meD(); return `<div class="mebar g"><span class="tile gp av">${d.name[0]}</span><div><b>${d.name} ${d.role}의 메뉴판</b><small>${d.name} ${d.role}가 진행하는 메뉴와 가격이에요</small></div></div>`; }
   return `<div class="desbar">
     <div class="seg g dseg" role="group" aria-label="디자이너 선택">
       ${DES.map(d => `<button data-des="${d.key}" class="${state.des===d.key?"gp":""}" aria-pressed="${state.des===d.key}"><b>${d.name}</b><small>${d.role}</small></button>`).join("")}
     </div>
-    <p class="fine">${state.des==="all" ? "디자이너를 고르면 그 디자이너의 네이버 예약가로 바뀌어요." : state.des==="first" ? "첫방문 이벤트로 예약한 가격이에요. 이벤트 예약은 디자이너를 지정할 수 없어요." : `${desName(state.des)}의 네이버 예약가로 보고 있어요. 진행하지 않는 메뉴는 빠집니다.`}</p>
+    <p class="fine">${state.des==="all" ? "디자이너를 고르면 그 디자이너의 가격으로 보여 드려요." : state.des==="first" ? "처음 오신 고객님 가격이에요. 첫방문 혜택으로 예약하면 디자이너를 지정할 수 없어요." : `${desName(state.des)}의 가격으로 보고 있어요.`}</p>
   </div>`;
 }
 
@@ -426,7 +426,7 @@ function desBar(){
 function row(s, extra=""){
   const c = cat(s.cat);
   return `<button class="row g press" data-open="${s.id}">
-    <div class="well gw"><b>${s.min}</b><span>${s.est?"분 · 예상":"분"}</span></div>
+    <div class="well gw"><b>${s.min}</b><span>분</span></div>
     <div class="body">
       <div class="nm"><b>${s.name}</b>${s.designer?`<span class="chip gp flat">${s.designer}</span>`:`<span class="chip gw">${c.ko}</span>`}</div>
       <p class="tg">${s.tag}</p>${extra}
@@ -440,7 +440,7 @@ function home(){
   const q = state.q.trim();
   const hits = q ? SERVICES.filter(offered).filter(s => (s.name + s.en + s.tag + cat(s.cat).ko).toLowerCase().includes(q.toLowerCase())) : [];
   return `<div class="app">
-    ${bar3(state.me ? `<button class="tile gp press" data-go="account" aria-label="내 메뉴판 설정" style="font-size:20px;font-weight:800">${meD().name[0]}</button>` : `<button class="tile t press" data-go="login" aria-label="디자이너 로그인">${ic("user")}</button>`, state.me ? `${meD().name} ${meD().role} 메뉴판` : "Merci Momong", today, cmpTile())}
+    ${bar3(`<button class="tile t press" data-go="benefits" aria-label="혜택 안내">${ic("gift")}</button>`, state.me ? `${meD().name} ${meD().role} 메뉴판` : "Merci Momong", today, cmpTile())}
     <h1 class="greet">${state.me ? `고객님, 반가워요<br>오늘은 <em>${meD().name} ${meD().role}</em>와 함께해요` : `고객님, 반가워요<br>오늘 받으실 시술을 <em>미리 살펴보세요</em>`}</h1>
     ${state.me ? meCard() : ""}
     <label class="search g">${ic("search")}<input id="q" type="search" value="${q.replace(/"/g,"&quot;")}" placeholder="시술 이름으로 찾기 · 예: 볼륨매직, 클리닉" aria-label="시술 검색" autocomplete="off"></label>
@@ -462,7 +462,7 @@ function home(){
       <div class="card g" style="display:flex;flex-direction:column;gap:14px">
         <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:17px;font-weight:700">서비스 메뉴</span><span class="sub" style="font-size:13px">${CATS.length}개 카테고리</span></div>
         <div class="big">${SERVICES.filter(offered).length}<span>가지 시술</span></div>
-        <p class="sub" style="font-size:15px">네이버 예약 메뉴 기준 · ${SOURCE_DATE} 확인</p>
+        <p class="sub" style="font-size:15px">시술마다 과정·시간·효과를 확인할 수 있어요</p>
         ${bar(100)}
         <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--sub)"><span>최저 ${won(Math.min(...SERVICES.filter(offered).map(s=>pr(s).price)))}</span><span>${state.me ? `${meD().name} ${meD().role}` : `디자이너 ${DESIGNERS.length}명`}</span></div>
         <button class="pill g press" data-go="menu" style="margin-top:auto">전체 메뉴 보기</button>
@@ -503,7 +503,7 @@ function menu(){
     ${list.map(c => { const items = SERVICES.filter(s => s.cat === c.id && offered(s)); return items.length ? `
       <div class="grp"><h2>${c.ko}</h2><span>${c.en.toUpperCase()}</span></div>
       <div class="list">${items.map(s => row(s)).join("")}</div>` : (state.cat === c.id ? `<div class="empty g"><h2>${desName(state.me || state.des)}은(는) 이 카테고리 메뉴가 없어요</h2><p class="sub">위에서 다른 디자이너를 골라 보세요.</p></div>` : ""); }).join("")}
-    <p class="fine">${SOURCE_DATE} 네이버 예약 기준 가격이에요. 디자이너·기장·모발 상태에 따라 달라질 수 있고, 정가가 표시된 메뉴는 결제 조건(N페이 등)에 따라 할인가가 적용됩니다.</p>
+    <p class="fine">금액은 디자이너·기장·모발 상태에 따라 달라질 수 있어요. 정확한 금액은 상담 후 안내드려요.</p>
   </div>`;
 }
 
@@ -524,7 +524,7 @@ function detail(){
       <div class="tl gw" role="group" aria-label="시술 타임라인">
         ${timed.map((st,i) => `<button style="flex-grow:${st.m}" class="${state.step===i?"gp":""}" data-step="${i}" aria-pressed="${state.step===i}" aria-label="${i+1}단계 ${st.t} ${st.m}분"></button>`).join("")}
       </div>
-      <div class="tlscale"><span>0:00 시작</span><span>${s.est?"예상 ":""}총 ${timeTxt(s)} · 단계를 누르면 강조돼요</span><span>${clock(s.min)} 완료</span></div>
+      <div class="tlscale"><span>0:00 시작</span><span>총 ${timeTxt(s)} · 단계를 누르면 강조돼요</span><span>${clock(s.min)} 완료</span></div>
       ${timed.map((st,i) => `<button class="step g ${state.step===i?"on":""}" data-step="${i}">
         <div class="well ${state.step===i?"gp":"gw"}"><b>${String(i+1).padStart(2,"0")}</b><span>단계</span></div>
         <div><span class="no">${clock(st.start)} – ${clock(st.end)}</span><h3>${st.t}</h3><p>${st.d}</p>
@@ -563,7 +563,7 @@ function detail(){
         <p class="desc">${s.desc}</p>
       </div>
       <div class="card g price">
-        <div><span style="font-size:17px;font-weight:700">네이버 예약가 · ${desName(state.me || state.des)}</span><p class="sub" style="font-size:13px">${p ? p.note : "이 디자이너는 진행하지 않는 메뉴예요"}</p></div>
+        <div><span style="font-size:17px;font-weight:700">가격 · ${desName(state.me || state.des)}</span><p class="sub" style="font-size:13px">${p ? p.note : "이 디자이너는 진행하지 않는 메뉴예요"}</p></div>
         ${p ? `<div>${hasNormal(s)?`<div style="display:flex;gap:10px;align-items:baseline;margin-bottom:6px"><span class="strike" style="font-size:16px">정가 ${won(p.normal)}</span><span class="off">${Math.round((1-p.price/p.normal)*100)}% ↓</span></div>`:""}<div class="v">${won(p.price).replace("원","")}<small>원${(p.max>p.price||s.from)?"~":""}</small></div></div>` : `<div class="v" style="color:var(--mute)">—</div>`}
         <p class="sub" style="font-size:12.5px">기장·모발 상태에 따라 추가될 수 있어요</p>
       </div>
@@ -571,14 +571,14 @@ function detail(){
     <section class="stats">
       <div class="stat g"><span>소요 시간 ${estChip(s)}</span><b style="font-size:${timeTxt(s).length>7?"21px":"26px"}">${timeTxt(s)}</b></div>
       <div class="stat g"><span>시술 단계</span><b>${s.steps.length}<small> 단계</small></b></div>
-      <div class="stat g"><span>${s.keepReal?"관리 주기":"유지 기간 · 예상"}</span><b style="font-size:${s.keep.length>8?"18px":"26px"}">${s.keep}</b></div>
-      <div class="stat g"><span>모발 부담 · 예상</span>${dots(s.damage)}</div>
+      <div class="stat g"><span>${s.keepReal?"관리 주기":"유지 기간"}</span><b style="font-size:${s.keep.length>8?"18px":"26px"}">${s.keep}</b></div>
+      <div class="stat g"><span>모발 부담</span>${dots(s.damage)}</div>
     </section>
     ${state.me ? "" : `<section class="card g" style="display:flex;flex-direction:column;gap:14px">
       <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap"><span style="font-size:18px;font-weight:750">디자이너별 가격</span><span class="sub" style="font-size:13px">누르면 그 디자이너 가격으로 바뀌어요</span></div>
       <div class="dp">${desPrices.map(({d,r}) => `<button class="${state.des===d.key?"gp":"t"} press ${r?"":"na"}" data-des="${d.key}" aria-pressed="${state.des===d.key}"><small>${d.name} ${d.role}</small>${r ? `${r[1]?`<span class="strike">${won(r[1])}</span>`:""}<b>${won(r[0])}</b>` : `<b style="font-size:15px">진행 안 함</b>`}</button>`).join("")}</div>
     </section>`}
-    <p class="fine">'예상' 표시와 시술 과정의 단계별 시간·효과 점수는 일반적인 기준이에요. 모발 상태와 디자이너에 따라 달라집니다.</p>
+    <p class="fine">시간·과정·효과는 일반적인 기준이에요. 모발 상태와 디자이너에 따라 달라질 수 있어요.</p>
     <div class="seg g" role="tablist" aria-label="상세 정보">
       ${TABS.map(([k,l]) => `<button role="tab" data-tab="${k}" class="${state.tab===k?"gp":""}" aria-pressed="${state.tab===k}" aria-selected="${state.tab===k}">${l}</button>`).join("")}
     </div>
@@ -608,10 +608,10 @@ function compare(){
       <thead><tr><th></th>${sel.map(s => `<th><span class="chip gw">${cat(s.cat).ko}</span><span class="cn">${s.name}</span>${s.designer?`<small style="margin:-6px 0 8px">${s.designer}</small>`:""}<button class="x g flat" data-cmp="${s.id}">빼기</button></th>`).join("")}${n<3?`<th></th>`.repeat(3-n):""}</tr></thead>
       <tbody>
         ${r(`가격 · ${(state.me||state.des)==="all"?"전체":DES.find(d=>d.key===(state.me||state.des)).name}`, s => { const p = pr(s); return p ? `${hasNormal(s)?`<span class="strike">정가 ${won(p.normal)}</span><br>`:""}<span class="v">${priceTxt(s)}</span><small>${p.note}</small>` : `<span class="v" style="color:var(--mute)">진행 안 함</span>`; }, best(s=>pr(s)?pr(s).price:Infinity,"min"))}
-        ${r("소요 시간", s => `<span class="v">${timeTxt(s)}</span>${s.est?`<small>예상</small>`:""}<div style="margin-top:10px">${bar(s.min/MAXMIN*100)}</div>`, best(s=>s.min,"min"))}
-        ${r("유지 기간 (예상)", s => `<span class="v" style="font-size:18px">${s.keep}</span>`)}
-        ${r("모발 부담 (예상)", s => `${dots(s.damage)}<small>${DMG[s.damage]}</small>`, best(s=>s.damage,"min"))}
-        ${r("기대 효과 (예상)", s => s.fx ? `<div class="mini">${FX.map((f,i)=>`<span>${f}</span>${bar(s.fx[i]*20)}`).join("")}</div>` : `<small>진단·제안 서비스</small>`)}
+        ${r("소요 시간", s => `<span class="v">${timeTxt(s)}</span><div style="margin-top:10px">${bar(s.min/MAXMIN*100)}</div>`, best(s=>s.min,"min"))}
+        ${r("유지 기간", s => `<span class="v" style="font-size:18px">${s.keep}</span>`)}
+        ${r("모발 부담", s => `${dots(s.damage)}<small>${DMG[s.damage]}</small>`, best(s=>s.damage,"min"))}
+        ${r("기대 효과", s => s.fx ? `<div class="mini">${FX.map((f,i)=>`<span>${f}</span>${bar(s.fx[i]*20)}`).join("")}</div>` : `<small>진단·제안 서비스</small>`)}
         ${r("추천 대상", s => `<ul>${s.rec.map(x=>`<li>${x}</li>`).join("")}</ul>`)}
         ${r("시술 단계", s => `<span class="v" style="font-size:18px">${s.steps.length}단계</span><small>${s.steps.map(x=>x.t).join(" → ")}</small>`)}
         <tr><th scope="row"></th>${sel.map(s => `<td><button class="pill gp press" data-open="${s.id}" style="height:48px;font-size:15px;padding:0 18px">자세히 보기</button></td>`).join("")}${pad()}</tr>
@@ -649,12 +649,12 @@ function finder(){
 /* ---------- 혜택 ---------- */
 function benefits(){
   return `<div class="app">
-    ${bar3(homeTile, "혜택 안내", "네이버 예약 기준", cmpTile())}
+    ${bar3(homeTile, "혜택 안내", "메르시모몽", cmpTile())}
     <h1 class="greet">메르시모몽에서<br><em>받을 수 있는 혜택</em>이에요</h1>
     <div class="gifts">
       ${GIFTS.map(g => `<div class="gift g"><span class="tile t">${svg(g.k)}</span><div><small>${g.eb}</small><h3>${g.h}</h3><p>${g.p}</p><p class="obj">${g.obj}</p></div></div>`).join("")}
     </div>
-    <p class="fine">${SOURCE_DATE} 네이버 예약 기준이에요. 혜택은 바뀔 수 있으니 디자이너에게 한 번 더 확인해 주세요.</p>
+    <p class="fine">혜택은 바뀔 수 있어요. 디자이너에게 한 번 더 확인해 주세요.</p>
     <section class="note g">
       <div>
         <span class="chip gp flat">FIT CUT · AFTER NOTE</span>
@@ -673,6 +673,7 @@ function benefits(){
 
 /* ---------- 디자이너 ---------- */
 function designers(){
+  if(state.me) return `<div class="app">${bar3(homeTile, `${meD().name} ${meD().role}`, "디자이너 소개", cmpTile())}${meCard()}</div>`;
   return `<div class="app">
     ${bar3(homeTile, "디자이너", `${DESIGNERS.length}명`, cmpTile())}
     <h1 class="greet">나에게 맞는<br><em>디자이너</em>를 찾아보세요</h1>
@@ -684,7 +685,7 @@ function designers(){
         ${d.sig.length ? `<div class="sigs">${d.sig.map(id => { const x = svcById(id); return `<button class="gw press" data-open="${id}">${x.name} · ${priceTxt(x)}</button>`; }).join("")}</div>` : ""}
       </div>`).join("")}
     </div>
-    <p class="fine">소개와 시그니처 메뉴는 ${SOURCE_DATE} 네이버 예약 기준입니다. 디자이너별 가격은 메뉴판과 다를 수 있어요.</p>
+    
   </div>`;
 }
 
@@ -698,7 +699,7 @@ function login(){
   return `<div class="app">
     ${bar3(homeTile, "디자이너 로그인", "개인 메뉴판으로 전환", `<span></span>`)}
     <div class="login">
-      <div class="logo"><span class="o g"><span class="i gp">${ic("user")}</span></span><h1>메르시모몽 서비스북</h1><p class="sub">내 이름을 고르고 매장 코드를 입력해 주세요</p></div>
+      <div class="logo"><span class="o g"><span class="i gp">${ic("user")}</span></span><h1>메르시모몽 서비스북</h1><p class="sub">직원 전용 · 내 이름을 고르고 매장 코드를 입력해 주세요</p><p class="sub" style="font-size:13px">가격 기준: 네이버 예약 ${SOURCE_DATE} 확인</p></div>
       <p class="lbl">디자이너</p>
       <div class="who" role="group" aria-label="디자이너 선택">${DESIGNERS.map(d => `<button class="${state.pick===d.key?"gp":"g"} press" data-pick="${d.key}" aria-pressed="${state.pick===d.key}"><span class="tile t av">${d.name[0]}</span><b>${d.name}</b><small>${d.role}</small></button>`).join("")}</div>
       ${state.pick ? `<p class="lbl">매장 코드</p>${keypad()}
@@ -719,7 +720,7 @@ function account(){
   const d = meD();
   if(!d) return login();
   return `<div class="app">
-    ${bar3(backTile("home"), "내 메뉴판 설정", `${d.name} ${d.role}`, `<span></span>`)}
+    ${bar3(backTile("home"), "내 메뉴판 설정", `${d.name} ${d.role} · 직원 전용`, `<span></span>`)}
     <div class="login">
       ${meCard()}
       <div class="card g" style="display:flex;flex-direction:column;gap:14px">
@@ -757,7 +758,7 @@ function dockHtml(){
     return `<button class="cta ${inC?"g":"gp"} press" data-cmp="${state.id}">${inC ? "비교함에서 빼기" : `비교함에 담기 (${state.compare.length}/3)`}</button>
       <button class="tile t press" data-go="compare" aria-label="비교 화면 열기">${ic("compare")}${state.compare.length?`<span class="dotbadge gp flat">${state.compare.length}</span>`:""}</button>`;
   }
-  const items = [["home","홈","home"],["menu","서비스","grid"],["finder","고민 찾기","find"], state.me ? ["account", meD().name, "user"] : ["designers","디자이너","user"],["benefits","혜택","gift"]];
+  const items = [["home","홈","home"],["menu","서비스","grid"],["finder","고민 찾기","find"], ["designers", state.me ? meD().name : "디자이너", "user"],["benefits","혜택","gift"]];
   return `<nav class="nav g" aria-label="메뉴">${items.map(([v,l,k]) => `<button data-go="${v}" ${state.view===v?'aria-current="page"':""}>${ic(k, state.view===v?2:1.8)}${l}</button>`).join("")}</nav>
     <button class="tile ${state.view==="compare"?"gp":"t"} press" data-go="compare" aria-label="비교하기">${ic("compare")}${state.compare.length && state.view!=="compare"?`<span class="dotbadge gp flat">${state.compare.length}</span>`:""}</button>`;
 }
@@ -784,6 +785,11 @@ function toggleCompare(id){
 function bind(root){
   root.querySelectorAll("[data-go]").forEach(b => b.onclick = () => go(b.dataset.go, b.dataset.go==="home" ? {q:""} : {}));
   root.querySelectorAll("[data-open]").forEach(b => b.onclick = () => go("detail", {id:b.dataset.open, step:0, tab:"process"}));
+  root.querySelectorAll("[data-staff]").forEach(el => {
+    let t; const clear = () => clearTimeout(t);
+    el.addEventListener("pointerdown", () => { t = setTimeout(() => go(state.me ? "account" : "login"), 1500); });
+    ["pointerup","pointerleave","pointercancel"].forEach(e => el.addEventListener(e, clear));
+  });
   root.querySelectorAll("[data-pick]").forEach(b => b.onclick = () => { state.pick = b.dataset.pick; state.pin = ""; state.pinErr = ""; rerender(); });
   root.querySelectorAll("[data-key]").forEach(b => b.onclick = () => pressKey(b.dataset.key));
   root.querySelectorAll("[data-keep]").forEach(b => b.onclick = () => { state.keep = !state.keep; rerender(); });

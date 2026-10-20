@@ -14,6 +14,8 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 
 def main() -> None:
+    import sys
+    fragment = "--fragment" in sys.argv
     page = (ROOT / "src/page.html").read_text(encoding="utf-8")
     data = (ROOT / "src/data.js").read_text(encoding="utf-8")
     icons = (ROOT / "src/icons.js").read_text(encoding="utf-8")
@@ -35,6 +37,12 @@ def main() -> None:
             '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n'
             '<meta name="apple-mobile-web-app-capable" content="yes">\n'
             '<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>\n')
+    if fragment:
+        # 아티팩트 게시용: 플랫폼이 문서 껍데기를 붙인다
+        out = pathlib.Path(sys.argv[sys.argv.index("--fragment") + 1]).resolve()
+        out.write_text(html, encoding="utf-8")
+        print(f"built fragment {out} ({out.stat().st_size / 1_000_000:.1f} MB)")
+        return
     html = head + html + "\n</html>\n"
 
     out = ROOT / "servicebook.html"
