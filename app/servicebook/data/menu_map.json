@@ -1,0 +1,184 @@
+{
+  "businessId": 30105,
+  "placeId": 36199663,
+  "designers": {
+    "미나 대표원장": "mina",
+    "유선 원장": "yusun",
+    "혜원 원장": "hyewon",
+    "순지 부원장": "sunji",
+    "원 실장": "won",
+    "훈렬 디자이너": "hunryul",
+    "이수 디자이너": "isu",
+    "첫방문 최대 40%혜택": "first"
+  },
+  "_comment": "services: 서비스 북 메뉴 id → 네이버 예약 옵션 이름(앞에서부터 먼저 찾은 것을 사용). designers: 네이버 예약 상품 이름 → 서비스 북 디자이너 key",
+  "services": {
+    "consult-basic": [
+      "헤어컨설팅(여)",
+      "헤어컨설팅(남)"
+    ],
+    "consult-color": [
+      "퍼스널컬러+헤어컨설팅(여)",
+      "퍼스널컬러+헤어컨설팅(남)"
+    ],
+    "consult-body": [
+      "퍼스널체형+헤어컨설팅(여)",
+      "퍼스널체형+헤어컨설팅(남)"
+    ],
+    "consult-full": [
+      "퍼스널컬러+퍼스널체형+헤어컨설팅 (여)",
+      "퍼스널컬러+퍼스널체형+헤어컨설팅(남)"
+    ],
+    "cut-design": [
+      "디자인컷"
+    ],
+    "cut-fit": [
+      "FIT CUT"
+    ],
+    "cut-spa": [
+      "스파컷"
+    ],
+    "cut-down": [
+      "다운펌 + 컷 패키지"
+    ],
+    "cut-bang": [
+      "앞머리컷"
+    ],
+    "perm-signature": [
+      "시그니처 디자인펌"
+    ],
+    "perm-setting": [
+      "셋팅패키지",
+      "셋팅"
+    ],
+    "perm-magic": [
+      "볼륨매직",
+      "볼륨매직패키지"
+    ],
+    "perm-magicsetting": [
+      "매직셋팅패키지",
+      "매직셋팅"
+    ],
+    "perm-newaging": [
+      "뉴에이징셋팅"
+    ],
+    "perm-newmagic": [
+      "뉴에이징볼륨매직"
+    ],
+    "perm-newmagicsetting": [
+      "뉴에이징매직셋팅"
+    ],
+    "perm-root": [
+      "[얼굴축소] 뿌리펌,잔머리펌"
+    ],
+    "mens-perm": [
+      "[남성 베이직 디자인펌] 맨즈펌",
+      "맨즈펌"
+    ],
+    "mens-magic": [
+      "[남성 곱슬/부시시함] 맨즈 볼륨매직",
+      "맨즈볼륨매직"
+    ],
+    "mens-down": [
+      "[옆머리 정돈] 다운펌"
+    ],
+    "mens-iron": [
+      "아이롱펌"
+    ],
+    "color-root": [
+      "뿌리염색"
+    ],
+    "color-rootpkg": [
+      "뿌리염색 패키지"
+    ],
+    "color-full": [
+      "전체염색"
+    ],
+    "color-carepkg": [
+      "[컬러+손상관리] 염색 패키지",
+      "[컬러+손상관리] 전체염색 패키지"
+    ],
+    "color-fit": [
+      "[퍼스널컬러 염색] FIT COLOR"
+    ],
+    "color-bleach": [
+      "탈색 패키지",
+      "탈색패키지"
+    ],
+    "color-ombre": [
+      "[옴브레/솜브레]디자인 탈색 패키지"
+    ],
+    "care-premium": [
+      "[집중 모발케어 + 휴식] 프리미엄 클리닉"
+    ],
+    "care-revive": [
+      "[극손상/탈색모] 리바이브 케어"
+    ],
+    "care-special": [
+      "[펌/염색 손상] 스페셜 클리닉"
+    ],
+    "care-nanoheal": [
+      "[펌/염색 손상] 나노힐 클리닉"
+    ],
+    "care-ayun": [
+      "[건조/푸석함] 아윤채 클리닉"
+    ],
+    "care-scaling": [
+      "[각질/유분관리] 스켈프 스케일링"
+    ],
+    "care-headspa": [
+      "[민감두피/건조] 릴렉싱 헤드스파"
+    ],
+    "care-forest": [
+      "[얇은모발/휴식] 포레스파"
+    ],
+    "sig-yusun": [
+      "유선쌤 시그니처펌"
+    ],
+    "sig-yusun-pkg": [
+      "유선쌤 시그니처펌 패키지"
+    ],
+    "sig-yusun-cut": [
+      "중단발레이어드컷+뿌리펌"
+    ],
+    "sig-sunji": [
+      "중,단발레이어드펌"
+    ],
+    "sig-sunji-pkg": [
+      "중,단발레이어드펌+뿌리펌"
+    ],
+    "sig-sunji-cut": [
+      "시그니처컷"
+    ],
+    "sig-won-leaf": [
+      "원쌤 시그니처 리프펌"
+    ],
+    "sig-won-slick": [
+      "원쌤 시그니처 슬릭애즈펌"
+    ],
+    "sig-won-long": [
+      "원쌤 시그니처 맨즈 장발&히피펌"
+    ],
+    "sig-hyewon": [
+      "[중단발/레이어드] 혜원원장 시그니처 디자인펌"
+    ],
+    "sig-hyewon-airfit": [
+      "[얼굴형 컨설팅시술] 에어핏 뿌리펌"
+    ],
+    "sig-hunryul": [
+      "FIT CUT + 훈렬쌤 시그니처 라인매직 패키지"
+    ],
+    "sig-mina-ombre": [
+      "옴브레패키지"
+    ],
+    "sig-mina-sombre": [
+      "솜브레패키지"
+    ],
+    "sig-mina-special": [
+      "스페셜탈색패키지"
+    ],
+    "sig-mina-newaging": [
+      "뉴에이징 펌,매직"
+    ]
+  }
+}

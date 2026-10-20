@@ -14,6 +14,13 @@
 
 ---
 
+## 매장 서비스 북 (고객용)
+
+매장 iPad에서 고객이 보는 서비스 브로셔는 [`app/servicebook`](./app/servicebook/README.md)에 있습니다.
+`app/servicebook/servicebook.html` 파일 하나로 동작하며, 직원용 플랫폼과 데이터·인증을 공유하지 않습니다 (`CLAUDE.md` §15).
+
+---
+
 ## 문서
 
 | 문서 | 내용 |
