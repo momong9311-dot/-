@@ -137,6 +137,11 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .sw span{width:30px;height:30px;border-radius:50%;background:linear-gradient(180deg,#FFFFFF,#E9EAEE);box-shadow:0 4px 10px rgba(40,52,80,.3)}
 .sw[aria-checked="true"]{justify-content:flex-end}
 .sw[aria-checked="true"] span{background:linear-gradient(180deg,#A7BBE6,#7F9BD6);box-shadow:0 4px 10px rgba(80,110,185,.45)}
+.vgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.vcard{border-radius:28px;padding:26px 24px;text-align:left;display:flex;flex-direction:column;gap:8px;min-height:150px}
+.vcard b{font-size:22px;font-weight:780;letter-spacing:-0.02em}
+.vcard span{font-size:15px;color:var(--sub);line-height:1.5}
+.vcard.gp span{color:var(--ink)}
 .prof{border-radius:30px;padding:24px;display:flex;flex-direction:column;gap:14px}
 .prof .hd{display:flex;align-items:center;gap:14px}
 .prof h2{font-size:24px;font-weight:780}
@@ -398,6 +403,12 @@ function pr(s, d = (state.me || state.des)){
     return {price:mn, max:mx, normal:nm, note: mn === mx ? s.priceNote : `디자이너에 따라 ${won(mn)} ~ ${won(mx)}`};
   }
   const r = row[d]; if(!r) return null;
+  if(state.me && d === state.me && state.visit === "first"){
+    const f = row.first;
+    if(!f) return {price:r[0], max:r[0], normal:r[1], note:"첫방문 혜택이 적용되지 않는 메뉴예요", firstNA:true};
+    const base = Math.max(r[0], f[1] || 0);
+    return {price:f[0], max:f[0], normal: base > f[0] ? base : null, note:"처음 오신 고객님께 드리는 가격이에요", first:true};
+  }
   return {price:r[0], max:r[0], normal:r[1], note: r[2] || s.priceNote};
 }
 const offered = s => !!pr(s);
@@ -430,21 +441,23 @@ const ME_KEY = "mm-servicebook-me";
 let savedMe = null; try { savedMe = localStorage.getItem(ME_KEY); } catch(e) {}
 if(savedMe && !DESIGNERS.some(d => d.key === savedMe)) savedMe = null;
 const meD = () => DESIGNERS.find(d => d.key === state.me);
-const state = {openGrp:null, me:savedMe, pick:null, pin:"", keep:true, pinErr:"", view:"home", des:"all", cat:"all", id:null, tab:"process", step:0, compare:[...DEFAULT_CMP], concerns:[], q:""};
+const VISIT_KEY = "mm-servicebook-visit";
+let savedVisit = "pick"; try { savedVisit = localStorage.getItem(VISIT_KEY) || "pick"; } catch(e) {}
+const state = {visit:savedVisit, unlocked:false, openGrp:null, me:savedMe, pick:null, pin:"", keep:true, pinErr:"", view:"home", des:"all", cat:"all", id:null, tab:"process", step:0, compare:[...DEFAULT_CMP], concerns:[], q:""};
 const view = document.getElementById("view");
 const dock = document.getElementById("dock");
 
 let entering = true;
 function go(v, opts={}){
   entering = true;
-  Object.assign(state, {view:v, pin:"", pinErr:""}, opts);
+  Object.assign(state, {view:v, pin:"", pinErr:"", unlocked: v === "account" ? state.unlocked : false}, opts);
   render();
   window.scrollTo(0,0);
 }
 function rerender(){ const y = window.scrollY; render(); window.scrollTo(0,y); }
 
 function bar3(left, title, sub, right){
-  if(state.me && !["login","account"].includes(state.view)) sub = `${meD().name} ${meD().role} 메뉴판`;
+  if(state.me && !["login","account","visit"].includes(state.view)) sub = `${meD().name} ${meD().role} 메뉴판${state.visit === "first" ? " · 첫방문 혜택" : ""}`;
   return `<header class="bar">${left}<div class="mid" data-staff><small>${sub}</small><b>${title}</b></div>${right}</header>`;
 }
 const backTile = to => `<button class="tile t press" data-go="${to}" aria-label="뒤로">${ic("back",2)}</button>`;
@@ -603,7 +616,7 @@ function detail(){
         <p class="desc">${nm(s.desc)}</p>
       </div>
       <div class="card g price">
-        <div><span style="font-size:17px;font-weight:700">${state.me ? "가격" : `가격 · ${desName(state.des)}`}</span><p class="sub" style="font-size:13px">${p ? p.note : "이 디자이너는 진행하지 않는 메뉴예요"}</p></div>
+        <div><span style="font-size:17px;font-weight:700">${state.me ? (state.visit === "first" && p && p.first ? "첫방문 혜택가" : "가격") : `가격 · ${desName(state.des)}`}</span><p class="sub" style="font-size:13px">${p ? p.note : "이 디자이너는 진행하지 않는 메뉴예요"}</p></div>
         ${p ? `<div>${hasNormal(s)?`<div style="display:flex;gap:10px;align-items:baseline;margin-bottom:6px"><span class="strike" style="font-size:16px">정가 ${won(p.normal)}</span><span class="off">${Math.round((1-p.price/p.normal)*100)}% ↓</span></div>`:""}<div class="v">${won(p.price).replace("원","")}<small>원${(p.max>p.price||s.from)?"~":""}</small></div></div>` : `<div class="v" style="color:var(--mute)">—</div>`}
         <p class="sub" style="font-size:12.5px">기장·모발 상태에 따라 추가될 수 있어요</p>
       </div>
@@ -768,17 +781,45 @@ function meCard(withName = true){
     ${sig.length ? `<p class="lbl" style="padding:0">시그니처 메뉴</p><div class="results-inline">${sig.map(x => row(x)).join("")}</div>` : ""}
   </section>`;
 }
+function visitCards(){
+  const opt = (k, t, d) => `<button class="${state.visit===k?"gp":"g"} press vcard" data-visit="${k}" aria-pressed="${state.visit===k}"><b>${t}</b><span>${d}</span></button>`;
+  return `<div class="vgrid">
+    ${opt("pick", "지정 예약 고객", "내 메뉴 가격으로 보여요")}
+    ${opt("first", "첫방문 고객", "첫방문 혜택가로 보여요. 혜택이 없는 메뉴는 일반 가격으로 보여요")}
+  </div>`;
+}
+function visit(){
+  const d = meD(); if(!d) return login();
+  return `<div class="app">
+    ${bar3(`<span></span>`, "고객 유형 선택", `${d.name} ${d.role} · 직원 전용`, `<span></span>`)}
+    <div class="login">
+      <div class="logo"><span class="o g"><span class="i gp">${ic("user")}</span></span><h1>이번 고객님은 어떤 예약인가요?</h1><p class="sub">고르는 대로 메뉴판 가격이 바뀌어요. 나중에 제목을 길게 눌러 바꿀 수 있어요.</p></div>
+      ${visitCards()}
+    </div>
+  </div>`;
+}
 function account(){
   const d = meD();
   if(!d) return login();
+  if(!state.unlocked) return `<div class="app">
+    ${bar3(backTile("home"), "내 메뉴판 설정", `${d.name} ${d.role} · 직원 전용`, `<span></span>`)}
+    <div class="login">
+      <div class="logo"><span class="o g"><span class="i gp">${ic("user")}</span></span><h1>매장 코드를 입력해 주세요</h1><p class="sub">고객 유형 변경과 로그아웃은 직원만 할 수 있어요</p><p class="sub" style="font-size:13px">가격 기준: 네이버 예약 ${SOURCE_DATE} 확인</p></div>
+      ${keypad()}
+    </div>
+  </div>`;
   return `<div class="app">
     ${bar3(backTile("home"), "내 메뉴판 설정", `${d.name} ${d.role} · 직원 전용`, `<span></span>`)}
     <div class="login">
+      <div class="card g" style="display:flex;flex-direction:column;gap:14px">
+        <span style="font-size:18px;font-weight:750">고객 유형</span>
+        ${visitCards()}
+      </div>
       ${meCard()}
       <div class="card g" style="display:flex;flex-direction:column;gap:14px">
         <span style="font-size:18px;font-weight:750">로그아웃</span>
-        <p class="sub" style="font-size:15px">로그아웃하면 이 iPad가 전체 디자이너 메뉴판으로 돌아가요. 고객님이 바꾸지 못하도록 매장 코드를 한 번 더 입력해 주세요.</p>
-        ${keypad()}
+        <p class="sub" style="font-size:15px">로그아웃하면 이 iPad가 전체 디자이너 메뉴판으로 돌아가요.</p>
+        <button class="pill g press" data-logout style="align-self:flex-start">로그아웃</button>
       </div>
     </div>
   </div>`;
@@ -791,13 +832,11 @@ function pressKey(k){
     if(state.pin.length < 4){ state.pinErr = "매장 코드 4자리를 입력해 주세요."; }
     else if(state.pin !== STORE_CODE){ state.pinErr = "매장 코드가 맞지 않아요. 다시 입력해 주세요."; state.pin = ""; }
     else if(state.view === "account"){
-      const n = meD(); state.me = null; state.pin = ""; try{ localStorage.removeItem(ME_KEY); }catch(e){}
-      toast(`${n.name} ${n.role} 메뉴판에서 로그아웃했어요`); go("home"); return;
+      state.unlocked = true; state.pin = "";
     } else {
       state.me = state.pick; state.des = "all"; state.pin = ""; state.pick = null;
       try{ state.keep ? localStorage.setItem(ME_KEY, state.me) : localStorage.removeItem(ME_KEY); }catch(e){}
-      state.compare = state.compare.filter(id => offered(svcById(id)));
-      toast(`${meD().name} ${meD().role} 메뉴판으로 바꿨어요`); go("home"); return;
+      go("visit"); return;
     }
   } else { state.pin += k; }
   rerender();
@@ -805,6 +844,7 @@ function pressKey(k){
 
 /* ---------- 하단 바 ---------- */
 function dockHtml(){
+  if(state.view === "visit") return "";
   if(state.view === "detail"){
     const inC = state.compare.includes(state.id);
     return `<button class="cta ${inC?"g":"gp"} press" data-cmp="${state.id}">${inC ? "비교함에서 빼기" : `비교함에 담기 (${state.compare.length}/3)`}</button>
@@ -816,7 +856,7 @@ function dockHtml(){
 }
 
 function render(){
-  view.innerHTML = ({home, menu, detail, compare, finder, benefits, designers, login, account})[state.view]();
+  view.innerHTML = ({home, menu, detail, compare, finder, benefits, designers, login, account, visit})[state.view]();
   dock.innerHTML = dockHtml();
   if(entering){ const el = view.querySelector(".app"); if(el) el.classList.add("enter"); entering = false; }
   bind(view); bind(dock);
@@ -837,6 +877,17 @@ function toggleCompare(id){
 function bind(root){
   root.querySelectorAll("[data-go]").forEach(b => b.onclick = () => go(b.dataset.go, b.dataset.go==="home" ? {q:""} : {}));
   root.querySelectorAll("[data-open]").forEach(b => b.onclick = () => go("detail", {id:b.dataset.open, step:0, tab:"process"}));
+  root.querySelectorAll("[data-visit]").forEach(b => b.onclick = () => {
+    state.visit = b.dataset.visit; try{ localStorage.setItem(VISIT_KEY, state.visit); }catch(e){}
+    state.compare = state.compare.filter(id => offered(svcById(id)));
+    toast(state.visit === "first" ? "첫방문 혜택가로 보여 드려요" : `${meD().name} ${meD().role} 가격으로 보여 드려요`);
+    go("home");
+  });
+  root.querySelectorAll("[data-logout]").forEach(b => b.onclick = () => {
+    const n = meD(); state.me = null; state.unlocked = false; state.visit = "pick";
+    try{ localStorage.removeItem(ME_KEY); localStorage.removeItem(VISIT_KEY); }catch(e){}
+    toast(`${n.name} ${n.role} 메뉴판에서 로그아웃했어요`); go("home");
+  });
   root.querySelectorAll("[data-grp]").forEach(b => b.onclick = () => { state.openGrp = state.openGrp === b.dataset.grp ? null : b.dataset.grp; rerender(); });
   root.querySelectorAll("[data-staff]").forEach(el => {
     let t; const clear = () => clearTimeout(t);
