@@ -40,7 +40,7 @@ p{margin:0}
 .two{columns:1}
 .pill{display:inline-flex;align-items:center;justify-content:center;height:26px;padding:0 14px;border:1px solid currentColor;border-radius:13px;font-size:11.5px;font-weight:500;white-space:nowrap}
 .plate{background:var(--plate);position:relative;overflow:hidden}
-.plate canvas{display:block;width:100%;height:100%}
+.plate canvas,.plate img{display:block;width:100%;height:100%;object-fit:cover}
 .plate .cap{position:absolute;left:10px;bottom:9px;font-size:10.5px;font-weight:500;color:#5E5E5C;background:rgba(236,236,234,.92);padding:2px 6px}
 .dark .plate{background:#1C1C1C}
 .dark .plate .cap{color:#A9A9A6;background:rgba(28,28,28,.92)}
@@ -49,6 +49,7 @@ p{margin:0}
 .cover-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;font-size:11.5px;line-height:1.35;font-weight:500;margin-bottom:auto}
 .cover-meta span:last-child{text-align:right}
 .cover h1{margin:44px 0 18px}
+.cover-img{margin:0 -22px}
 .cover .plate{aspect-ratio:4/5}
 .cover-foot{display:flex;justify-content:space-between;gap:12px;margin-top:12px}
 
@@ -57,6 +58,10 @@ p{margin:0}
 .st-row > .pill{justify-self:start}
 .st-bottom{display:grid;grid-template-columns:30% minmax(0,1fr);gap:14px;align-items:end;margin-top:auto;padding-top:40px}
 .st-bottom .plate{aspect-ratio:5/3}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:26px}
+.trio figure{margin:0;display:flex;flex-direction:column;gap:6px}
+.trio .plate{aspect-ratio:3/4}
+.trio b{font-weight:600}
 
 /* rules list (Design Principles) */
 .rules{display:flex;flex-direction:column}
@@ -66,18 +71,21 @@ p{margin:0}
 .rules .r span:last-child{color:var(--sub);font-weight:400}
 
 /* contents */
-.toc{display:flex;flex-direction:column;margin-top:auto}
-.toc a{text-decoration:none;display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:8px;align-items:baseline;padding:14px 0;min-height:48px;border-bottom:1px solid var(--line)}
+.toc{display:flex;flex-direction:column;margin-top:auto;padding-top:24px}
+.toc a{text-decoration:none;display:grid;grid-template-columns:46px 30px minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px 0;min-height:48px;border-bottom:1px solid var(--line)}
+.toc .plate{width:46px;height:46px}
 .toc a:first-child{border-top:1px solid var(--ink)}
 .toc .n{font-size:12px;font-weight:500}
 .toc .tt{font-size:clamp(17px,5vw,21px);font-weight:500;letter-spacing:-0.05em;text-transform:uppercase;line-height:1}
 .toc .k{font-size:13px;color:var(--sub);font-weight:500}
 
 /* favorite */
-.fav-mid{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:start;margin:30px 0 12px}
+.fav-mid{display:flex;gap:12px;align-items:flex-start;justify-content:flex-end;margin:30px 0 14px}
 .fav-mid .xs{text-align:left}
 .pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .pair .plate{aspect-ratio:3/4}
+.pair .fig{text-decoration:none;display:flex;flex-direction:column;gap:8px}
+.pair .price b{font-size:19px}
 .quote{font-size:clamp(18px,5.4vw,24px);line-height:1.02;letter-spacing:-0.045em;font-weight:500;text-transform:uppercase;margin:28px 0 24px}
 .fav-foot{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:end;margin-top:auto}
 .price{display:flex;flex-direction:column;align-items:flex-start}
@@ -86,8 +94,6 @@ p{margin:0}
 .dark .price span{color:#9A9A97}
 
 /* chapter */
-.ch-top{display:grid;grid-template-columns:minmax(0,1fr) 46%;gap:14px;align-items:start;margin-bottom:26px}
-.ch-top .sm{text-align:left}
 .ch-mid{display:grid;grid-template-columns:32% minmax(0,1fr);gap:12px;margin-bottom:26px}
 .ko-tag{display:block;font-size:14px;font-weight:600;letter-spacing:-0.02em;margin-top:10px}
 .labels{display:flex;flex-direction:column;justify-content:space-around;padding:8px 0}
@@ -95,6 +101,19 @@ p{margin:0}
 .labels .xs{font-size:13px}
 .labels .xs b{display:block;font-weight:600;font-size:12px;color:var(--sub)}
 .ch-mid .plate{aspect-ratio:3/4}
+.chap{display:flex;flex-direction:column;gap:14px;scroll-margin-top:62px}
+.pg.open .ov{position:absolute;left:22px;right:22px;bottom:24px;z-index:1;display:flex;flex-direction:column;gap:8px}
+.pg.open .ov .ko-tag{margin:0;font-size:14px;font-weight:500;word-break:keep-all;text-wrap:pretty}
+.pg.open::after{content:"";position:absolute;left:0;right:0;bottom:0;height:60%;background:linear-gradient(180deg,rgba(236,236,234,0),rgba(236,236,234,.97) 50%)}
+.pg.open.dark::after{background:linear-gradient(180deg,rgba(28,28,28,0),rgba(28,28,28,.95) 50%)}
+.pg.open .ov .disp{font-size:clamp(44px,14vw,72px)}
+.stack{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.stack .st{display:grid;grid-template-columns:34% minmax(0,1fr);gap:12px;text-decoration:none;align-items:stretch}
+.stack .st .plate{aspect-ratio:4/3}
+.stack .lb{display:flex;flex-direction:column;gap:2px;padding-top:2px;font-size:14px;font-weight:500;line-height:1.35;letter-spacing:-0.02em}
+.stack .lb b{font-size:12px;font-weight:600;color:var(--sub)}
+.stack .lb em{font-style:normal;margin-top:auto;font-size:13px;color:var(--sub)}
+.dark .stack .lb b,.dark .stack .lb em{color:#9A9A97}
 .ch-foot{display:grid;grid-template-columns:minmax(0,1fr) 44%;gap:14px;align-items:end;margin:6px 0 24px}
 .ch-foot .sm{text-align:left}
 
@@ -102,20 +121,26 @@ p{margin:0}
 .items{border-top:1px solid currentColor}
 details.it{border-bottom:1px solid var(--line)}
 .dark details.it{border-bottom-color:#2F2F2F}
-details.it summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:16px 0 14px;min-height:56px}
+details.it{scroll-margin-top:72px}
+details.it summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:64px minmax(0,1fr) auto;grid-template-rows:auto 1fr;column-gap:12px;row-gap:4px;align-items:start;padding:12px 0;min-height:88px}
+details.it summary > .plate{grid-row:1 / 3;width:64px;height:64px}
 details.it summary::-webkit-details-marker{display:none}
-.it .no{font-size:12px;font-weight:500;color:var(--sub)}
+.it .no{display:block;font-size:12px;font-weight:500;color:var(--sub);margin-bottom:1px}
 .it .nm{font-size:17px;font-weight:500;letter-spacing:-0.035em;line-height:1.3}
 .it .tg{display:block;font-size:13px;color:var(--sub);font-weight:400;margin-top:3px;line-height:1.45;letter-spacing:-0.01em}
 .dark .it .tg,.dark .it .no{color:#9A9A97}
 .it .pr{text-align:right;font-size:15px;font-weight:500;letter-spacing:-0.02em;white-space:nowrap}
 .it .pr s{display:block;color:var(--mute);font-size:11.5px;font-weight:400}
 .it .best{display:inline-flex;align-items:center;height:15px;font-size:8px;font-weight:600;letter-spacing:.04em;border:1px solid currentColor;border-radius:8px;padding:0 6px;margin-left:6px;vertical-align:2px}
-.it .more{grid-column:2 / 4;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--sub);font-weight:500;margin-top:2px}
+.it .more{grid-column:2 / 4;align-self:end;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--sub);font-weight:500;margin-top:2px}
 .it .more i{font-style:normal;display:inline-grid;place-items:center;width:26px;height:26px;border:1px solid currentColor;border-radius:50%;font-size:15px;line-height:1;transition:transform .2s}
 details.it[open] .more i{transform:rotate(45deg)}
 
-.det{padding:4px 0 20px 40px;display:flex;flex-direction:column;gap:14px}
+.det{padding:4px 0 20px;display:flex;flex-direction:column;gap:14px}
+.det-img .plate{aspect-ratio:16/9}
+.tl{display:flex;gap:2px;height:6px;margin:2px 0 6px}
+.tl span{background:currentColor;opacity:.75}
+.tl span:nth-child(even){opacity:.3}
 .facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .facts div{display:flex;flex-direction:column;gap:2px}
 .facts b{font-size:14.5px;font-weight:500}
@@ -126,6 +151,7 @@ details.it[open] .more i{transform:rotate(45deg)}
 .recs li::before{content:"— ";color:var(--mute)}
 
 /* note */
+#quote > .plate{aspect-ratio:16/10;margin:0 -22px 30px}
 .stair{display:flex;flex-direction:column;gap:4px;margin:auto 0 30px}
 .stair span{font-size:clamp(26px,8.4vw,42px);font-weight:500;letter-spacing:-0.065em;line-height:.95;text-transform:uppercase}
 .stair span:nth-child(2){padding-left:30%}
@@ -157,7 +183,7 @@ details.it[open] .more i{transform:rotate(45deg)}
 .fbar a{display:inline-flex;align-items:center;height:46px;padding:0 20px;border-radius:23px;text-decoration:none;font-size:14px;font-weight:600}
 .fbar a.book-btn{background:var(--ink);color:#fff}
 
-@media (min-width:520px){ .pg{padding:28px 32px 36px} }
+@media (min-width:520px){ .pg{padding:28px 32px 36px} .cover-img,#quote > .plate{margin-inline:-32px} .pg.open .ov{left:32px;right:32px} }
 @media (max-width:350px){ .two{columns:1} }
 
 /* ---------- 직원 화면 (서비스 북과 같은 모몽 OS 로그인) ---------- */
@@ -261,13 +287,13 @@ function nm(t){
 }
 
 const CAT_PAGES = [
-  {id:"consult", en:["3WAY", "Consulting"], intro:"얼굴·이목구비, 퍼스널컬러, 골격 이미지를 정밀 분석하고 헤어컨설팅을 진행합니다. 자신만의 아름다움으로 스스로를 사랑할 수 있도록 돕습니다.", plate:"rings"},
-  {id:"cut", en:["The", "Cut"], intro:"지금 스타일을 정돈하는 디자인컷부터, 오늘의 얼굴과 컨디션에 맞춰 방향을 바꾸는 FIT CUT까지.", plate:"cut"},
-  {id:"perm", en:["Perm", "& Magic"], intro:"얼굴형과 모질에 맞춘 컬과 볼륨. 손상이 걱정된다면 메르시모몽이 자체 개발한 '뉴에이징' 시스템으로.", plate:"wave"},
-  {id:"mens", en:["Men's", "Grooming"], intro:"얼굴형과 두상, 모질에 맞춰 매일 손질하기 편한 스타일을 만듭니다.", plate:"crop"},
-  {id:"color", en:["The", "Color"], intro:"'무슨 색을 할까?'보다 '오늘의 나에게 어떤 색이 어울릴까?'에서 시작합니다.", plate:"ombre"},
-  {id:"care", en:["Clinic", "& Scalp"], intro:"손상된 모발의 힘과 윤기를 되살리는 클리닉, 두피 관리와 휴식을 함께하는 헤드스파.", plate:"sheen"},
-  {id:"signature", en:["The", "Signature"], intro:"디자이너가 오래 다듬어 온 각자의 디자인. 이 메뉴는 해당 디자이너에게만 예약할 수 있어요.", plate:"curl", dark:true}
+  {id:"consult", en:["3WAY", "Consulting"], line:"얼굴 · 컬러 · 골격, 세 방향으로 나를 먼저 봅니다.", plate:"rings"},
+  {id:"cut", en:["The", "Cut"], line:"정돈하는 디자인컷부터 방향을 바꾸는 FIT CUT까지.", plate:"cut"},
+  {id:"perm", en:["Perm", "& Magic"], line:"얼굴형과 모질에 맞춘 컬과 볼륨.", plate:"wave"},
+  {id:"mens", en:["Men's", "Grooming"], line:"매일 손질하기 편한 스타일.", plate:"crop"},
+  {id:"color", en:["The", "Color"], line:"오늘의 나에게 어울리는 색.", plate:"ombre"},
+  {id:"care", en:["Clinic", "& Scalp"], line:"모발의 힘과 윤기, 두피의 휴식.", plate:"sheen"},
+  {id:"signature", en:["The", "Signature"], line:"이 디자이너에게만 예약할 수 있는 디자인.", plate:"curl", dark:true}
 ];
 
 /* ---------- hair study plates (generative, deterministic) ---------- */
@@ -279,33 +305,35 @@ function drawPlate(cv){
   const W = Math.max(10, box.width), H = Math.max(10, box.height);
   cv.width = W * dpr; cv.height = H * dpr;
   const c = cv.getContext("2d"); c.setTransform(dpr,0,0,dpr,0,0); c.clearRect(0,0,W,H);
-  const r = rng(type.length * 977 + Math.round(W));
+  const seed = [...(cv.dataset.seed || type)].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) >>> 0, 7);
+  const r = rng(seed + Math.round(W)), v = rng(seed)(), v2 = rng(seed * 7 + 3)();
   const ink = dark ? "rgba(240,240,236," : "rgba(20,20,20,";
+  const k = Math.min(1, Math.max(0.3, W / 320)); // 작은 썸네일은 결을 성기게
   c.lineCap = "round";
-  const strands = (n, fn, alpha=0.55, lw=0.9) => { for(let i=0;i<n;i++){ c.beginPath(); fn(i, n); c.strokeStyle = ink + (alpha * (0.45 + r()*0.55)) + ")"; c.lineWidth = lw * (0.6 + r()*0.8); c.stroke(); } };
+  const strands = (n, fn, alpha=0.55, lw=0.9) => { n = Math.round(n * k); for(let i=0;i<n;i++){ c.beginPath(); fn(i, n); c.strokeStyle = ink + (alpha * (0.45 + r()*0.55)) + ")"; c.lineWidth = lw * (0.6 + r()*0.8); c.stroke(); } };
   if(type === "cut"){ // 곧은 머리카락이 사선으로 잘린 끝
-    strands(140, (i, n) => { const x = W*0.12 + (W*0.76)*(i/n) + (r()-.5)*3; const end = H*0.30 + (x/W)*H*0.42 + (r()-.5)*4; c.moveTo(x, -5); c.bezierCurveTo(x + (r()-.5)*6, H*0.2, x + (r()-.5)*6, end*0.8, x + (r()-.5)*2, end); });
-    c.strokeStyle = ink + "0.9)"; c.lineWidth = 1; c.setLineDash([3,4]); c.beginPath(); c.moveTo(W*0.06, H*0.30); c.lineTo(W*0.94, H*0.72); c.stroke(); c.setLineDash([]);
+    strands(140, (i, n) => { const x = W*0.12 + (W*0.76)*(i/n) + (r()-.5)*3; const end = H*(0.22 + v*0.2) + (x/W)*H*(0.2 + v2*0.4) + (r()-.5)*4; c.moveTo(x, -5); c.bezierCurveTo(x + (r()-.5)*6, H*0.2, x + (r()-.5)*6, end*0.8, x + (r()-.5)*2, end); });
+    c.strokeStyle = ink + "0.9)"; c.lineWidth = 1; c.setLineDash([3,4]); c.beginPath(); const ya = H*(0.22 + v*0.2), yb = H*(0.2 + v2*0.4); c.moveTo(W*0.06, ya + 0.06*yb); c.lineTo(W*0.94, ya + 0.94*yb); c.stroke(); c.setLineDash([]);
   } else if(type === "wave" || type === "curl"){
-    const amp = type === "curl" ? 16 : 10, freq = type === "curl" ? 0.06 : 0.035;
+    const amp = (type === "curl" ? 12 : 7) * (0.7 + v*0.8) * Math.max(0.5, k), freq = (type === "curl" ? 0.05 : 0.03) * (0.7 + v2*0.7) / Math.max(0.5, k);
     strands(110, (i, n) => { const x0 = W*0.1 + W*0.8*(i/n); const ph = r()*0.6 + i*0.02; c.moveTo(x0, -5); for(let y=0; y<=H+5; y+=4){ const a = amp * (0.4 + y/H); c.lineTo(x0 + Math.sin(y*freq + ph*6) * a, y); } }, 0.5);
   } else if(type === "crop"){ // 짧게 세운 결
-    for(let row=0; row<14; row++) strands(36, (i, n) => { const x = W*0.08 + W*0.84*(i/n) + (r()-.5)*6; const y = H*0.12 + row*H*0.058; const ang = -Math.PI/2 + (x/W - .5)*0.9 + (r()-.5)*0.2; c.moveTo(x, y + 12); c.lineTo(x + Math.cos(ang)*14, y + 12 + Math.sin(ang)*14); }, 0.6, 1);
+    for(let row=0; row<10 + Math.round(v*6); row++) strands(36, (i, n) => { const x = W*0.08 + W*0.84*(i/n) + (r()-.5)*6; const y = H*0.12 + row*H*0.058; const L = 14 * Math.max(0.45, k), ang = -Math.PI/2 + (x/W - .5)*0.9 + (v2 - .5)*0.8 + (r()-.5)*0.2; c.moveTo(x, y + L); c.lineTo(x + Math.cos(ang)*L, y + L + Math.sin(ang)*L); }, 0.6, 1);
   } else if(type === "ombre"){ // 뿌리는 진하고 끝으로 갈수록 밝아지는 결
-    for(let i=0;i<150;i++){ const x = W*0.08 + W*0.84*(i/150) + (r()-.5)*3; const g = c.createLinearGradient(0,0,0,H); g.addColorStop(0, ink + "0.85)"); g.addColorStop(0.45, ink + "0.45)"); g.addColorStop(1, ink + "0.04)"); c.beginPath(); c.moveTo(x, -5); c.bezierCurveTo(x + (r()-.5)*10, H*0.35, x + (r()-.5)*14, H*0.7, x + (r()-.5)*10, H+5); c.strokeStyle = g; c.lineWidth = 0.6 + r()*0.8; c.stroke(); }
+    const on = Math.round(150 * k); for(let i=0;i<on;i++){ const x = W*0.08 + W*0.84*(i/on) + (r()-.5)*3; const g = c.createLinearGradient(0,0,0,H); g.addColorStop(0, ink + "0.85)"); g.addColorStop(0.25 + v*0.4, ink + "0.45)"); g.addColorStop(1, ink + "0.04)"); c.beginPath(); c.moveTo(x, -5); c.bezierCurveTo(x + (r()-.5)*10, H*0.35, x + (r()-.5)*14, H*0.7, x + (r()-.5)*10, H+5); c.strokeStyle = g; c.lineWidth = 0.6 + r()*0.8; c.stroke(); }
   } else if(type === "sheen"){ // 매끈한 결 + 윤기 띠
     strands(160, (i, n) => { const x = W*0.06 + W*0.88*(i/n); c.moveTo(x, -5); c.bezierCurveTo(x - 6, H*0.4, x + 6, H*0.6, x, H+5); }, 0.35, 0.7);
-    const g = c.createLinearGradient(0, H*0.34, 0, H*0.5); g.addColorStop(0, "rgba(255,255,255,0)"); g.addColorStop(.5, dark ? "rgba(255,255,255,.18)" : "rgba(255,255,255,.85)"); g.addColorStop(1, "rgba(255,255,255,0)"); c.fillStyle = g; c.fillRect(0, H*0.34, W, H*0.16);
+    const sy = H*(0.2 + v*0.4); const g = c.createLinearGradient(0, sy, 0, sy + H*0.16); g.addColorStop(0, "rgba(255,255,255,0)"); g.addColorStop(.5, dark ? "rgba(255,255,255,.18)" : "rgba(255,255,255,.85)"); g.addColorStop(1, "rgba(255,255,255,0)"); c.fillStyle = g; c.fillRect(0, sy, W, H*0.16);
   } else if(type === "rings"){ // 3WAY: 이목구비 · 컬러 · 골격
-    const R = Math.min(W, H) * 0.24, cx = W/2, cy = H*0.48;
+    const R = Math.min(W, H) * (0.2 + v*0.08), cx = W/2, cy = H*0.48, label = W > 140;
     [[cx, cy - R*0.62, "FACE"], [cx - R*0.62, cy + R*0.42, "COLOR"], [cx + R*0.62, cy + R*0.42, "BODY"]].forEach(([x, y, t]) => {
       c.beginPath(); c.arc(x, y, R, 0, Math.PI*2); c.strokeStyle = ink + "0.75)"; c.lineWidth = 1; c.stroke();
       for(let k=0;k<26;k++){ const rr = R - 3 - k*1.6; if(rr <= 1) break; c.beginPath(); c.arc(x, y, rr, 0, Math.PI*2); c.strokeStyle = ink + (0.06) + ")"; c.lineWidth = .6; c.stroke(); }
-      c.fillStyle = ink + "0.7)"; c.font = "500 10px " + getComputedStyle(document.body).getPropertyValue("--mono"); c.textAlign = "center"; c.fillText(t, x, y + (t === "FACE" ? -R*0.35 : R*0.45));
+      c.fillStyle = ink + "0.7)"; c.font = "500 10px " + getComputedStyle(document.body).getPropertyValue("--mono"); c.textAlign = "center"; if(label) c.fillText(t, x, y + (t === "FACE" ? -R*0.35 : R*0.45));
     });
-    c.fillStyle = ink + "0.9)"; c.font = "600 13px Pretendard, sans-serif"; c.fillText("나다움", cx, cy + 4);
+    if(label){ c.fillStyle = ink + "0.9)"; c.font = "600 13px Pretendard, sans-serif"; c.fillText("나다움", cx, cy + 4); }
   } else { // cover: 흘러내리는 긴 머리 한 다발
-    strands(220, (i, n) => { const t = i/n; const x0 = W*(0.18 + t*0.5); c.moveTo(x0, -5); c.bezierCurveTo(x0 + W*0.1, H*0.28, x0 - W*0.12 + t*W*0.1, H*0.62, x0 + W*0.22 - t*W*0.06 + (r()-.5)*10, H+5); }, 0.42, 0.8);
+    strands(220, (i, n) => { const t = i/n; const x0 = W*(0.12 + v*0.12 + t*0.5); c.moveTo(x0, -5); c.bezierCurveTo(x0 + W*(0.04 + v2*0.14), H*0.28, x0 - W*0.12 + t*W*0.1, H*0.62, x0 + W*0.22 - t*W*0.06 + (r()-.5)*10, H+5); }, 0.42, 0.8);
   }
 }
 function drawAll(){ document.querySelectorAll("canvas[data-plate]").forEach(drawPlate); }
@@ -313,7 +341,18 @@ function drawAll(){ document.querySelectorAll("canvas[data-plate]").forEach(draw
 /* ---------- pages ---------- */
 let page = 0;
 const run = () => `<div class="run"><span>Merci Momong</span><span>${++page}.</span></div>`;
-const plate = (type, cap, dark) => `<div class="plate"><canvas data-plate="${type}" data-dark="${dark?1:0}" aria-hidden="true"></canvas>${cap ? `<span class="cap">${cap}</span>` : ""}</div>`;
+/* 사진 자리: PHOTOS(data.js)에 사진이 있으면 사진, 없으면 헤어 스터디 그림 */
+const plate = (type, cap, dark, seed, photo) => `<div class="plate">${photo ? `<img src="${photo}" alt="" loading="lazy">` : `<canvas data-plate="${type}" data-seed="${seed || type}" data-dark="${dark?1:0}" aria-hidden="true"></canvas>`}${cap ? `<span class="cap">${cap}</span>` : ""}</div>`;
+const PLATE_BY_CAT = {consult:"rings", cut:"cut", perm:"wave", mens:"crop", color:"ombre", care:"sheen", signature:"curl"};
+function plateType(s){
+  const id = s.id;
+  if(/magic|iron|down/.test(id)) return s.cat === "mens" ? "crop" : "sheen";
+  if(/bleach|ombre/.test(id)) return "ombre";
+  if(/spa|scaling|headspa|forest/.test(id)) return "sheen";
+  if(s.cat === "signature") return /cut/.test(id) ? "cut" : /ombre/.test(id) ? "ombre" : /slick|leaf|long|hunryul|won/.test(id) ? "crop" : "curl";
+  return PLATE_BY_CAT[s.cat] || "cover";
+}
+const svcPlate = (s, cap, dark) => plate(plateType(s), cap, dark, s.id, PHOTOS[s.id]);
 const cat = id => CATS.find(c => c.id === id);
 const SUB = {consult:["Know Yourself", "First"], cut:["Shaped To", "Your Face"], perm:["Movement", "That Lasts"], mens:["Easy Every", "Morning"], color:["The Color", "That Is You"], care:["Strength", "From Within"], signature:["Signed By", "Designer"]};
 
@@ -321,15 +360,15 @@ function cover(){
   return `<section class="pg cover tall" id="cover">${run()}
     <div class="cover-meta"><span>${meD().name} ${meD().role}<br>메뉴판</span><span>Hair Consulting<br>& Design</span><span>Seoul, Sadang<br>2026</span></div>
     <h1 class="disp">Merci<br>Momong</h1>
-    ${plate("cover", "Hair Study 00")}
-    <div class="cover-foot"><span class="xs">서비스 · 과정 · 가격 안내</span><span class="xs">${SERVICES.length} Services</span></div>
+    <div class="cover-img">${plate("cover", "Hair Study 00", false, "cover", PHOTOS.cover)}</div>
+    <div class="cover-foot"><span class="xs">서비스 · 과정 · 가격</span><span class="xs">${SERVICES.filter(offered).length} Services</span></div>
   </section>`;
 }
 function statement(){
   return `<section class="pg tall" id="feature">${run()}
     <h2 class="disp" style="font-size:clamp(30px,9.4vw,48px)">Good hair<br>begins with<br>knowing<br>who you are.</h2>
-    <div class="st-row"><span class="pill">3WAY</span>
-      <p class="sm two">메르시모몽의 헤어컨설팅은 머리를 하기 전에 나를 먼저 봅니다. 얼굴과 이목구비, 퍼스널컬러, 골격 이미지를 분석하고, 고유의 이미지와 추구하는 이미지 사이를 연결해 어울리는 디자인을 찾습니다. 사전 인터뷰로 생활 습관까지 확인하고, 집에서도 같은 모양을 낼 수 있도록 스타일링을 코칭합니다.</p></div>
+    <div class="st-row"><span class="pill">3WAY</span><p class="sm">머리를 하기 전에, 나를 먼저 봅니다.</p></div>
+    <div class="trio">${[["cut","이목구비"],["ombre","퍼스널컬러"],["cover","골격"]].map(([t, k], i) => `<figure>${plate(t, "", false, "trio" + i)}<figcaption class="xs"><b>${pad(i + 1)}.</b> ${k}</figcaption></figure>`).join("")}</div>
     <div class="st-bottom"><span class="xs">Be<br>Yourself</span>${plate("rings", "")}</div>
   </section>`;
 }
@@ -338,66 +377,64 @@ function bleed(type, cap){
 }
 function contents(){
   const vis = visibleChapters();
-  const entries = [...vis.map((c, i) => ({no: i + 1, id: "ch-" + c.id, t: c.en.join(" "), k: cat(c.id).ko})),
-    {no: vis.length + 1, id: "designers", t: "Your Designer", k: "디자이너"},
-    {no: vis.length + 2, id: "benefits", t: "Good to Know", k: "혜택"}];
+  const entries = [...vis.map((c, i) => ({no: i + 1, id: "ch-" + c.id, t: c.en.join(" "), k: cat(c.id).ko, pl: c.plate})),
+    {no: vis.length + 1, id: "designers", t: "Your Designer", k: "디자이너", pl: "cover"},
+    {no: vis.length + 2, id: "benefits", t: "Good to Know", k: "혜택", pl: "sheen"}];
   return `<section class="pg tall" id="contents">${run()}
     <h2 class="h2">Table of<br>Contents</h2>
-    <nav class="toc" aria-label="목차">${entries.map(e => `<a href="#${e.id}"><span class="n">${pad(e.no)}.</span><span class="tt">${e.t}</span><span class="k">${e.k}</span></a>`).join("")}</nav>
+    <nav class="toc" aria-label="목차">${entries.map(e => `<a href="#${e.id}">${plate(e.pl, "", false, "toc-" + e.id)}<span class="n">${pad(e.no)}.</span><span class="tt">${e.t}</span><span class="k">${e.k}</span></a>`).join("")}</nav>
   </section>`;
 }
 function favorite(){
   const picks = NAVER_PICKS.map(id => SERVICES.find(s => s.id === id)).filter(offered);
   if(!picks.length) return "";
-  const top = picks[0];
   return `<section class="pg tall" id="favorite">${run()}
     <h2 class="disp">Customer<br>Favorite</h2>
-    <div class="fav-mid"><span></span><div style="display:flex;gap:12px;align-items:flex-start"><span class="pill">Best For</span><span class="xs">${top.rec.slice(0,3).join("<br>")}</span></div></div>
-    <div class="pair">${plate("rings", "Hair Study 01")}${plate("cut", "Hair Study 02")}</div>
+    <div class="fav-mid"><span class="pill">Best For</span><span class="xs">${picks[0].rec.slice(0,2).join("<br>")}</span></div>
+    <div class="pair">${picks.map((s, i) => { const r = range(s); return `<a href="#svc-${s.id}" class="fig">${svcPlate(s, "Hair Study " + pad(i + 1))}<span class="price"><b>${r.text}</b><span>${nm(strip(s.name))}</span></span></a>`; }).join("")}</div>
     <p class="quote">“Hair becomes timeless<br>when it fits<br>who you are.”</p>
-    <div class="fav-foot">
-      <p class="sm" style="text-align:left">메르시모몽이 먼저 권하는 두 가지. 어울리는 방향을 찾는 헤어컨설팅과, 지금의 스타일을 깔끔하게 정돈하는 디자인컷.</p>
-      <div style="display:flex;flex-direction:column;gap:12px">${picks.map(s => { const r = range(s); return `<div class="price"><b>${r.text}</b><span>${strip(s.name)} · ${state.visit === "first" ? "첫방문 혜택가" : "Price"}</span></div>`; }).join("")}</div>
-    </div>
   </section>`;
 }
 function item(s, i){
   const r = range(s);
   let acc = 0; const flow = s.steps.map(st => { const a = acc; acc += st.m; return `<div class="r"><span>${clock(a)}–${clock(acc)}</span><span>${st.t}</span></div>`; }).join("");
-  return `<details class="it"><summary>
-      <span class="no">${pad(i + 1)}.</span>
-      <span class="nm">${nm(strip(s.name))}${NAVER_PICKS.includes(s.id) ? `<span class="best">BEST</span>` : ""}<span class="tg">${nm(s.tag)}</span></span>
+  return `<details class="it" id="svc-${s.id}"><summary>
+      ${svcPlate(s)}
+      <span class="nm"><span class="no">${pad(i + 1)}.</span>${nm(strip(s.name))}${NAVER_PICKS.includes(s.id) ? `<span class="best">BEST</span>` : ""}</span>
       <span class="pr">${r.normal ? `<s>${won(r.normal)}</s>` : ""}${r.text}${s.from || r.mx > r.mn ? "~" : ""}</span>
-      <span class="more"><span>${timeTxt(s)} · 눌러서 과정 보기</span><i aria-hidden="true">+</i></span>
+      <span class="more"><span>${timeTxt(s)} · 과정 보기</span><i aria-hidden="true">+</i></span>
     </summary>
     <div class="det">
-      <p class="sm">${nm(s.desc)}</p>
+      <div class="det-img">${svcPlate(s)}</div>
+      <p class="sm"><b style="font-weight:600">${nm(s.tag)}</b><br>${nm(s.desc)}</p>
       <div class="facts"><div><span class="xs">Time</span><b>${timeTxt(s)}</b></div><div><span class="xs">Lasts</span><b>${s.keep}</b></div><div><span class="xs">Steps</span><b>${s.steps.length}단계</b></div></div>
-      <div class="rules flow"><span class="pill">Process</span>${flow}</div>
+      <div class="rules flow"><span class="pill">Process</span><div class="tl" aria-hidden="true">${s.steps.map(st => `<span style="flex:${st.m}"></span>`).join("")}</div>${flow}</div>
       <div><p class="xs" style="margin-bottom:5px">Recommended For</p><ul class="recs">${s.rec.map(x => `<li>${x}</li>`).join("")}</ul></div>
       ${r.note ? `<p class="xs" style="color:var(--sub)">${r.note}</p>` : ""}
     </div>
   </details>`;
 }
 function visibleChapters(){ return CAT_PAGES.filter(c => SERVICES.some(s => s.cat === c.id && offered(s))); }
+/* 챕터 = 큰 그림 한 장(제목) + 대표 메뉴 3컷 + 메뉴 목록 */
 function chapter(c, idx){
   const list = SERVICES.filter(s => s.cat === c.id && offered(s));
-  const head = list.slice(0, 3);
-  const intro = c.id === "signature" ? "오래 다듬어 온 시그니처 디자인. 이 메뉴는 이 메뉴판의 디자이너에게만 예약할 수 있어요." : c.intro;
-  return `<section class="pg ${c.dark ? "dark" : ""}" id="ch-${c.id}">${run()}
-    <div class="ch-top"><div><h2 class="h2">${c.en[0]}<br>${c.en[1]}</h2><span class="ko-tag">${cat(c.id).ko}</span></div><p class="sm">${intro}</p></div>
-    <div class="ch-mid">
-      <div class="labels">${head.map((s, i) => `<span class="xs"><b>${pad(i + 1)}.</b>${nm(strip(s.name))}</span>`).join("")}</div>
-      ${plate(c.plate, `Hair Study ${pad(idx + 3)}`, c.dark)}
-    </div>
-    <div class="ch-foot"><h3 class="h3">${SUB[c.id][0]}<br>${SUB[c.id][1]}</h3><div class="price"><b>${catRange(c.id)}</b><span>${list.length}가지 메뉴 · 가격</span></div></div>
-    <div class="items">${list.map(item).join("")}</div>
-  </section>`;
+  const head = list.slice(0, 3), dk = c.dark ? "dark" : "";
+  return `<div class="chap" id="ch-${c.id}">
+    <section class="pg bleed open ${dk}">${run()}${plate(c.plate, "", c.dark, "open-" + c.id, PHOTOS["cat:" + c.id])}
+      <div class="ov"><span class="xs">Chapter ${pad(idx + 1)}</span><h2 class="disp">${c.en[0]}<br>${c.en[1]}</h2><span class="ko-tag">${cat(c.id).ko} — ${c.line}</span></div>
+    </section>
+    <section class="pg ${dk}">${run()}
+      <div class="stack">${head.map((s, i) => `<a href="#svc-${s.id}" class="st"><span class="lb"><b>${pad(i + 1)}.</b><span>${nm(strip(s.name))}</span><em>${range(s).text}</em></span>${svcPlate(s, "", c.dark)}</a>`).join("")}</div>
+      <div class="ch-foot"><h3 class="h3">${SUB[c.id][0]}<br>${SUB[c.id][1]}</h3><div class="price"><b>${catRange(c.id)}</b><span>${list.length}가지 메뉴</span></div></div>
+      <div class="items">${list.map(item).join("")}</div>
+    </section>
+  </div>`;
 }
 function note(){
   return `<section class="pg tall" id="quote">${run()}
+    ${plate("wave", "", false, "note", PHOTOS.note)}
     <div class="stair"><span>Be</span><span>Yourself,</span><span>나 다움</span><span>Merci Momong</span></div>
-    <div class="st-row" style="margin-top:0"><span class="pill">Our Note</span><p class="sm">자신만의 아름다움으로 스스로를 사랑할 수 있도록 돕습니다. 당신만의 아름다움을 마주하고, 스스로를 사랑할 수 있도록 진심을 다해 함께합니다.</p></div>
+    <div class="st-row" style="margin-top:0"><span class="pill">Our Note</span><p class="sm">자신만의 아름다움으로 스스로를 사랑할 수 있도록.</p></div>
   </section>`;
 }
 function designers(){
@@ -517,6 +554,12 @@ function bindStaff(){
     render();
   });
 }
+/* 대표 메뉴 사진을 누르면 그 메뉴를 펼친다 */
+function openFromHash(){
+  const t = location.hash && document.getElementById(location.hash.slice(1));
+  if(t && t.matches("details.it")) t.open = true;
+}
+addEventListener("hashchange", openFromHash);
 function bindBook(){
   /* 숨겨진 입구: 페이지 머리줄을 1.5초 길게 누르면 설정 */
   book.querySelectorAll(".run").forEach(el => {
