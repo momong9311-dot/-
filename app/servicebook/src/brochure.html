@@ -355,9 +355,13 @@ function drawAll(){ document.querySelectorAll("canvas[data-plate]").forEach(draw
 let page = 0;
 const run = () => `<div class="run"><span>Merci Momong</span><span>${++page}.</span></div>`;
 /* 사진 자리: PHOTOS(data.js)에 사진이 있으면 사진, 없으면 헤어 스터디 그림 */
-const plate = (type, cap, dark, seed, photo) => `<div class="plate">${photo ? `<img src="${photo}" alt="" loading="lazy">` : `<canvas data-plate="${type}" data-seed="${seed || type}" data-dark="${dark?1:0}" aria-hidden="true"></canvas>`}${cap && !photo ? `<span class="cap">${cap}</span>` : ""}</div>`;
+const plate = (type, cap, dark, seed, ph) => { const photo = ph || moodFor(seed || type); return `<div class="plate">${photo ? `<img src="${photo}" alt="" loading="lazy">` : `<canvas data-plate="${type}" data-seed="${seed || type}" data-dark="${dark?1:0}" aria-hidden="true"></canvas>`}${cap && !photo ? `<span class="cap">${cap}</span>` : ""}</div>`; };
 /* PHOTOS 의 파일 경로 → 빌드 때 묶은 사진 (없으면 빈 값 → 헤어 스터디 그림) */
 const photo = k => { const f = PHOTOS[k]; return f ? (PHOTO_DATA[f] || "") : ""; };
+/* 사진이 정해지지 않은 자리는 감성 사진을 돌려 쓴다 (n: 순번, 없으면 seed로 고른다) */
+const MOOD = MOOD_PHOTOS.map(f => PHOTO_DATA[f]).filter(Boolean);
+const moodAt = n => MOOD.length ? MOOD[((n % MOOD.length) + MOOD.length) % MOOD.length] : "";
+const moodFor = seed => moodAt([...String(seed)].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) >>> 0, 7));
 const PLATE_BY_CAT = {consult:"rings", cut:"cut", perm:"wave", mens:"crop", color:"ombre", care:"sheen", signature:"curl"};
 function plateType(s){
   const id = s.id;
@@ -367,7 +371,7 @@ function plateType(s){
   if(s.cat === "signature") return /cut/.test(id) ? "cut" : /ombre/.test(id) ? "ombre" : /slick|leaf|long|hunryul|won/.test(id) ? "crop" : "curl";
   return PLATE_BY_CAT[s.cat] || "cover";
 }
-const svcPlate = (s, cap, dark) => plate(plateType(s), cap, dark, s.id, photo(s.id));
+const svcPlate = (s, cap, dark, n) => plate(plateType(s), cap, dark, s.id, photo(s.id) || (n == null ? "" : moodAt(n)));
 const cat = id => CATS.find(c => c.id === id);
 const SUB = {consult:["Know Yourself", "First"], cut:["Shaped To", "Your Face"], perm:["Movement", "That Lasts"], mens:["Easy Every", "Morning"], color:["The Color", "That Is You"], care:["Strength", "From Within"], signature:["Signed By", "Designer"]};
 
@@ -412,17 +416,17 @@ function favorite(){
     <p class="quote">“Hair becomes timeless<br>when it fits<br>who you are.”</p>
   </section>`;
 }
-function item(s, i){
+function item(s, i, n){
   const r = range(s);
   let acc = 0; const flow = s.steps.map(st => { const a = acc; acc += st.m; return `<div class="r"><span>${clock(a)}–${clock(acc)}</span><span>${st.t}</span></div>`; }).join("");
   return `<details class="it" id="svc-${s.id}"><summary>
-      ${svcPlate(s)}
+      ${svcPlate(s, "", false, n)}
       <span class="nm"><span class="no">${pad(i + 1)}.</span>${nm(strip(s.name))}${NAVER_PICKS.includes(s.id) ? `<span class="best">BEST</span>` : ""}</span>
       <span class="pr">${r.normal ? `<s>${won(r.normal)}</s>` : ""}${r.text}${s.from || r.mx > r.mn ? "~" : ""}</span>
       <span class="more"><span>${timeTxt(s)} · 과정 보기</span><i aria-hidden="true">+</i></span>
     </summary>
     <div class="det">
-      <div class="det-img">${svcPlate(s)}</div>
+      <div class="det-img">${svcPlate(s, "", false, n)}</div>
       <p class="sm"><b style="font-weight:600">${nm(s.tag)}</b><br>${nm(s.desc)}</p>
       <div class="facts"><div><span class="xs">Time</span><b>${timeTxt(s)}</b></div><div><span class="xs">Lasts</span><b>${s.keep}</b></div><div><span class="xs">Steps</span><b>${s.steps.length}단계</b></div></div>
       <div class="rules flow"><span class="pill">Process</span><div class="tl" aria-hidden="true">${s.steps.map(st => `<span style="flex:${st.m}"></span>`).join("")}</div>${flow}</div>
@@ -441,9 +445,9 @@ function chapter(c, idx){
       <div class="ov"><span class="xs">Chapter ${pad(idx + 1)}</span><h2 class="disp">${c.en[0]}<br>${c.en[1]}</h2><span class="ko-tag">${cat(c.id).ko} — ${c.line}</span></div>
     </section>
     <section class="pg ${dk}">${run()}
-      <div class="stack">${head.map((s, i) => `<a href="#svc-${s.id}" class="st"><span class="lb"><b>${pad(i + 1)}.</b><span>${nm(strip(s.name))}</span><em>${range(s).text}</em></span>${i === 0 && !photo(s.id) && photo("still:" + c.id) ? plate(plateType(s), "", c.dark, s.id, photo("still:" + c.id)) : svcPlate(s, "", c.dark)}</a>`).join("")}</div>
+      <div class="stack">${head.map((s, i) => `<a href="#svc-${s.id}" class="st"><span class="lb"><b>${pad(i + 1)}.</b><span>${nm(strip(s.name))}</span><em>${range(s).text}</em></span>${svcPlate(s, "", c.dark, idx * 5 + i)}</a>`).join("")}</div>
       <div class="ch-foot"><h3 class="h3">${SUB[c.id][0]}<br>${SUB[c.id][1]}</h3><div class="price"><b>${catRange(c.id)}</b><span>${list.length}가지 메뉴</span></div></div>
-      <div class="items">${list.map(item).join("")}</div>
+      <div class="items">${list.map((s, i) => item(s, i, idx * 5 + i)).join("")}</div>
     </section>
   </div>`;
 }
@@ -521,7 +525,7 @@ function accountView(){
 function bookHtml(){
   page = 0;
   return cover() + statement() + collage("a", ["mood2", "mood5", "mood4", "mood6"], "See your own beauty", "Merci Momong") + contents() + favorite()
-    + visibleChapters().map(chapter).join("") + collage("b", ["mood1", "mood3", "still:consult", "cat:mens"], "Be yourself", "3Way Hair Consulting") + note() + designers() + benefits() + back();
+    + visibleChapters().map(chapter).join("") + collage("b", ["mood1", "mood3", "mood9", "mood10"], "Be yourself", "3Way Hair Consulting") + note() + designers() + benefits() + back();
 }
 function render(){
   const v = state.me ? state.view : "login";
