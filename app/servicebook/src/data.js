@@ -648,6 +648,12 @@ SERVICES.push(...SIGNATURES.map(x => ({...x, care: x.care || [
 /* 실제 소요 시간이 있는 메뉴는 그 값으로 합계를 맞춥니다 */
 SERVICES.forEach(s => { s.min = s.steps.reduce((a,x)=>a+x.m,0); s.keep = s.keep || "상담 후 안내"; });
 
+/* 지점 — 로그인 화면의 '지점' 목록. code = 지점 공용 코드(꼭 바꿔 주세요), designers = 그 지점 디자이너 key.
+   네이버 예약에서 확인된 지점은 사당(서울 서초구 방배천로 5-1 우성빌딩 6층) 한 곳입니다. 다른 지점은 여기에 추가하세요. */
+const BRANCHES = [
+  {key:"sadang", name:"사당점", code:"0000", designers:["mina","yusun","hyewon","sunji","won","hunryul","isu"]}
+];
+
 const DESIGNERS = [
   {key:"mina", name:"미나", role:"대표원장", desc:"헤어컨설팅 / 퍼스널컬러 / 퍼스널체형. 당신만의 아름다움을 마주하고 스스로를 사랑할 수 있도록 진심을 다해 함께합니다.", sig:["sig-mina-ombre","sig-mina-sombre","sig-mina-special","sig-mina-newaging"]},
   {key:"yusun", name:"유선", role:"원장", desc:"중단발 레이어드컷 / 레이어드펌 / 퍼스널 헤어컨설팅 전문. 하고 싶은 헤어를 고객님만의 분위기로 소화할 수 있는 방향을 함께 제안합니다.", sig:["sig-yusun","sig-yusun-pkg","sig-yusun-cut"]},
