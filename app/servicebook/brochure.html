@@ -75,7 +75,7 @@ p{margin:0}
 .toc a{text-decoration:none;display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:8px;align-items:baseline;padding:11px 0;border-bottom:1px solid var(--line)}
 .toc a:first-child{border-top:1px solid var(--ink)}
 .toc .n{font-size:10px;font-weight:500}
-.toc .t{font-size:clamp(17px,5vw,21px);font-weight:500;letter-spacing:-0.05em;text-transform:uppercase;line-height:1}
+.toc .tt{font-size:clamp(17px,5vw,21px);font-weight:500;letter-spacing:-0.05em;text-transform:uppercase;line-height:1}
 .toc .k{font-size:10.5px;color:var(--sub)}
 
 /* favorite */
@@ -155,9 +155,70 @@ details.it:not([open]) .more::after{content:"  ·  자세히"}
 
 @media (min-width:520px){ .pg{padding:26px 30px 34px} .sm{font-size:11px} }
 @media (max-width:350px){ .two{columns:1} }
+
+/* ---------- 직원 화면 (서비스 북과 같은 모몽 OS 로그인) ---------- */
+#staff{position:fixed;inset:0;z-index:30;overflow:auto;background:radial-gradient(130% 90% at 50% 35%,#E7E7E9 0%,#D5D5D8 100%) #D5D5D8;
+  --ink:#1B1C1F;--sub:#5B5F68;--mute:#8A8E97;--point:#7F9BD6;--accent:#3F5FA8;color:var(--ink);font-size:17px;letter-spacing:-0.01em}
+#staff[hidden]{display:none}
+#staff button{font-family:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+@keyframes in{from{opacity:.001;transform:translateY(6px)}to{opacity:1;transform:none}}
+.g{background:linear-gradient(180deg,rgba(60,65,80,.05) 0%,rgba(255,255,255,0) 28%,rgba(255,255,255,0) 62%,rgba(255,255,255,.38) 100%);border:1px solid rgba(255,255,255,.95);box-shadow:0 0 0 1px rgba(105,110,125,.24),0 16px 24px -14px rgba(20,25,40,.34),0 4px 8px -4px rgba(20,25,40,.12),inset 0 3px 3px -2px #fff,inset 0 -3px 3px -1px rgba(255,255,255,.95),inset 0 0 0 2px rgba(255,255,255,.28),inset 0 0 0 3px rgba(110,115,130,.08),inset 0 5px 10px -5px rgba(50,55,70,.20);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.gp{background:linear-gradient(180deg,rgba(120,150,215,.42) 0%,rgba(125,155,220,.55) 60%,rgba(185,205,245,.70) 100%);border:1px solid rgba(255,255,255,.92);box-shadow:0 0 0 1px rgba(75,100,165,.28),0 16px 24px -12px rgba(70,100,170,.55),0 4px 8px -4px rgba(70,100,170,.22),inset 0 3px 3px -2px #fff,inset 0 -3px 3px -1px rgba(235,242,255,.95),inset 0 0 0 2px rgba(255,255,255,.22),inset 0 5px 10px -5px rgba(40,65,130,.25);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.gw{background:linear-gradient(180deg,rgba(50,55,70,.07) 0%,rgba(255,255,255,0) 45%,rgba(255,255,255,.22) 100%);border:1px solid rgba(255,255,255,.95);box-shadow:0 0 0 1px rgba(105,110,125,.24),0 10px 16px -12px rgba(20,25,40,.26),inset 0 4px 7px -3px rgba(40,45,60,.22),inset 0 -3px 3px -1px #fff,inset 0 0 0 2px rgba(255,255,255,.22)}
+.t{background:linear-gradient(180deg,#FBFBFC 0%,#F1F1F3 100%);border:0;box-shadow:0 14px 26px -12px rgba(30,35,50,.28),0 2px 5px rgba(30,35,50,.07),inset 0 1px 0 #fff,inset 0 -2px 3px rgba(0,0,0,.04)}
+.flat{box-shadow:none}
+.press{transition:transform .15s ease}
+.press:active{transform:scale(.97)}
+.pinrow{display:flex;justify-content:center;gap:14px;height:58px;border-radius:29px;align-items:center}
+.pinrow i{width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.7);box-shadow:inset 0 2px 3px rgba(40,45,60,.25)}
+.pinrow i.on{background:linear-gradient(180deg,#A7BBE6,#7F9BD6);box-shadow:0 3px 8px rgba(80,110,185,.45)}
+.keys{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-width:420px;margin:0 auto;width:100%}
+.keys button{height:64px;border-radius:22px;font-size:24px;font-weight:700}
+.err{color:#9B3A33;font-size:14.5px;font-weight:650;text-align:center;min-height:22px}
+.sw{width:64px;height:38px;border-radius:19px;padding:3px;display:flex;align-items:center}
+.sw span{width:30px;height:30px;border-radius:50%;background:linear-gradient(180deg,#FFFFFF,#E9EAEE);box-shadow:0 4px 10px rgba(40,52,80,.3)}
+.sw[aria-checked="true"]{justify-content:flex-end}
+.sw[aria-checked="true"] span{background:linear-gradient(180deg,#A7BBE6,#7F9BD6);box-shadow:0 4px 10px rgba(80,110,185,.45)}
+.lg{max-width:460px;margin:0 auto;min-height:calc(100vh - 40px);display:flex;flex-direction:column;justify-content:center;gap:22px;
+  padding-block:32px;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+.lg.enter{animation:in .28s ease both}
+.lglogo{display:flex;flex-direction:column;align-items:center;gap:16px;margin-bottom:18px}
+.lglogo .o{width:96px;height:96px;border-radius:32px;display:flex;align-items:center;justify-content:center}
+.lglogo .i{width:62px;height:62px;border-radius:22px;display:flex;align-items:center;justify-content:center}
+.lgt{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.lgt h1{font-size:26px;font-weight:780;letter-spacing:-0.6px;margin:0}
+.lgt p{font-size:15px;color:var(--sub)}
+.lgform{display:flex;flex-direction:column;gap:22px}
+.lgf{display:flex;flex-direction:column;gap:8px}
+.lgf label{font-size:13px;font-weight:600;color:var(--sub);padding-left:18px}
+.fld{height:58px;border-radius:29px;display:flex;align-items:center;gap:10px;padding:0 22px}
+.fld input{border:0;background:transparent;outline:none;font:inherit;font-size:17px;color:var(--ink);flex:1;min-width:0;letter-spacing:.02em}
+.fld input::placeholder{color:var(--mute)}
+.fld select{appearance:none;-webkit-appearance:none;border:0;background:transparent;outline:none;font:inherit;font-size:17px;color:var(--ink);flex:1;min-width:0;height:100%;cursor:pointer}
+.fld .chev{flex:none}
+.fld:focus-within{box-shadow:0 0 0 2px var(--point),inset 0 4px 7px -3px rgba(40,45,60,.22)}
+.lgform .err{margin:-10px 0 -8px;min-height:20px}
+.lgbtns{display:flex;gap:12px;margin-top:8px}
+.lgmain{flex:1;height:60px;border-radius:30px;font-size:17px;font-weight:700}
+.lgsub{flex:1;height:60px;border-radius:30px;font-size:16px;font-weight:600}
+.lgkeep{display:flex;align-items:center;justify-content:space-between;padding:6px 6px 0}
+.lgkeep > span{font-size:14px;color:var(--sub)}
+.lgfoot{font-size:12.5px;color:var(--mute);text-align:center}
+.vgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.vcard{border-radius:28px;padding:26px 24px;text-align:left;display:flex;flex-direction:column;gap:8px;min-height:150px}
+.vcard b{font-size:22px;font-weight:780;letter-spacing:-0.02em}
+.vcard span{font-size:15px;color:var(--sub);line-height:1.5}
+.vcard.gp span{color:var(--ink)}
+.staff-in{max-width:560px;margin:0 auto;padding:40px max(20px,env(safe-area-inset-left,0px)) 60px;display:flex;flex-direction:column;gap:22px}
+.staff-in h1{font-size:24px;font-weight:780;letter-spacing:-0.5px;margin:0;text-align:center}
+.staff-in .sub{color:var(--sub);font-size:15px;text-align:center}
+.staff-back{align-self:flex-start;height:48px;padding:0 18px;border-radius:24px;font-size:15px;font-weight:600}
+@media (max-width:520px){.vgrid{grid-template-columns:minmax(0,1fr)}.vcard{min-height:0}}
+.run{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 </style>
 
 <main class="book" id="book"></main>
+<div id="staff" hidden></div>
 <nav class="fbar" aria-label="바로가기"><div><a class="toc-btn" href="#contents">Contents</a><a class="book-btn" href="https://naver.me/FaOg9wsW" target="_blank" rel="noopener">네이버 예약</a></div></nav>
 
 <script>
@@ -866,17 +927,28 @@ const clock = m => `${Math.floor(m/60)}:${String(m%60).padStart(2,"0")}`;
 const pad = n => String(n).padStart(2, "0");
 /* 네이버 '추천' 표시가 붙은 메뉴 */
 const NAVER_PICKS = ["consult-basic", "cut-design"];
-function range(s){
-  const row = PRICES[s.id] || {};
-  const ks = Object.keys(row).filter(k => k !== "first");
-  const ps = ks.length ? ks.map(k => row[k][0]) : [s.price];
-  const mn = Math.min(...ps), mx = Math.max(...ps);
-  const nm = ks.length && mn === mx ? row[ks[0]][1] : null;
-  return {mn, mx, normal: nm, text: mn === mx ? won(mn) : `${won(mn)}–${won(mx)}`};
+/* 로그인한 디자이너 기준 가격 — 서비스 북과 같은 규칙 (지정 예약 / 첫방문) */
+function priceOf(s){
+  const row = PRICES[s.id] || {}, r = row[state.me];
+  if(!r) return null;
+  if(state.visit === "first"){
+    const f = row.first;
+    if(!f) return {p:r[0], n:r[1], note:"첫방문 혜택이 적용되지 않는 메뉴예요"};
+    const base = Math.max(r[0], f[1] || 0);
+    return {p:f[0], n: base > f[0] ? base : null, note:"첫방문 혜택가", first:true};
+  }
+  return {p:r[0], n:r[1], note:r[2] || s.priceNote};
 }
+const offered = s => !!priceOf(s);
+function range(s){ const x = priceOf(s); return {mn:x.p, mx:x.p, normal:x.n, text:won(x.p), note:x.note}; }
 const timeTxt = s => s.timeText || ("약 " + dur(s.min));
-const catRange = id => { const r = SERVICES.filter(s => s.cat === id).map(range); return `${won(Math.min(...r.map(x=>x.mn)))}–${won(Math.max(...r.map(x=>x.mx)))}`; };
+const catRange = id => { const r = SERVICES.filter(s => s.cat === id && offered(s)).map(range); return `${won(Math.min(...r.map(x=>x.mn)))}–${won(Math.max(...r.map(x=>x.mx)))}`; };
 const strip = t => t.replace(/^\[[^\]]+\]\s*/, "");
+/* 개인 메뉴판: 이름은 맨 위에 한 번만 — 메뉴명·설명 속 디자이너 이름을 덜어 낸다 */
+function nm(t){
+  const d = meD(); if(!d || !t) return t;
+  return t.replace(new RegExp(`${d.name}\\s?(대표원장|원장|부원장|실장|디자이너)의\\s*`, "g"), "").replace(new RegExp(`${d.name}(쌤|원장)\\s*`, "g"), "").replace(/\s{2,}/g, " ").trim();
+}
 
 const CAT_PAGES = [
   {id:"consult", en:["3WAY", "Consulting"], intro:"얼굴·이목구비, 퍼스널컬러, 골격 이미지를 정밀 분석하고 헤어컨설팅을 진행합니다. 자신만의 아름다움으로 스스로를 사랑할 수 있도록 돕습니다.", plate:"rings"},
@@ -937,7 +1009,7 @@ const SUB = {consult:["Know Yourself", "First"], cut:["Shaped To", "Your Face"],
 
 function cover(){
   return `<section class="pg cover tall" id="cover">${run()}
-    <div class="cover-meta"><span>The Service Book</span><span>Hair Consulting<br>& Design</span><span>Seoul, Sadang<br>2026</span></div>
+    <div class="cover-meta"><span>${meD().name} ${meD().role}<br>메뉴판</span><span>Hair Consulting<br>& Design</span><span>Seoul, Sadang<br>2026</span></div>
     <h1 class="disp">Merci<br>Momong</h1>
     ${plate("cover", "Hair Study 00")}
     <div class="cover-foot"><span class="xs">서비스 · 과정 · 가격 안내</span><span class="xs">${SERVICES.length} Services</span></div>
@@ -955,16 +1027,18 @@ function bleed(type, cap){
   return `<section class="pg bleed" aria-hidden="true">${run()}${plate(type, cap)}</section>`;
 }
 function contents(){
-  const entries = [...CAT_PAGES.map((c, i) => ({no: i + 1, id: "ch-" + c.id, t: c.en.join(" "), k: cat(c.id).ko})),
-    {no: CAT_PAGES.length + 1, id: "designers", t: "Designers", k: "디자이너"},
-    {no: CAT_PAGES.length + 2, id: "benefits", t: "Good to Know", k: "혜택"}];
+  const vis = visibleChapters();
+  const entries = [...vis.map((c, i) => ({no: i + 1, id: "ch-" + c.id, t: c.en.join(" "), k: cat(c.id).ko})),
+    {no: vis.length + 1, id: "designers", t: "Your Designer", k: "디자이너"},
+    {no: vis.length + 2, id: "benefits", t: "Good to Know", k: "혜택"}];
   return `<section class="pg tall" id="contents">${run()}
     <h2 class="h2">Table of<br>Contents</h2>
-    <nav class="toc" aria-label="목차">${entries.map(e => `<a href="#${e.id}"><span class="n">${pad(e.no)}.</span><span class="t">${e.t}</span><span class="k">${e.k}</span></a>`).join("")}</nav>
+    <nav class="toc" aria-label="목차">${entries.map(e => `<a href="#${e.id}"><span class="n">${pad(e.no)}.</span><span class="tt">${e.t}</span><span class="k">${e.k}</span></a>`).join("")}</nav>
   </section>`;
 }
 function favorite(){
-  const picks = NAVER_PICKS.map(id => SERVICES.find(s => s.id === id));
+  const picks = NAVER_PICKS.map(id => SERVICES.find(s => s.id === id)).filter(offered);
+  if(!picks.length) return "";
   const top = picks[0];
   return `<section class="pg tall" id="favorite">${run()}
     <h2 class="disp">Customer<br>Favorite</h2>
@@ -973,7 +1047,7 @@ function favorite(){
     <p class="quote">“Hair becomes timeless<br>when it fits<br>who you are.”</p>
     <div class="fav-foot">
       <p class="sm" style="text-align:left">메르시모몽이 먼저 권하는 두 가지. 어울리는 방향을 찾는 헤어컨설팅과, 지금의 스타일을 깔끔하게 정돈하는 디자인컷.</p>
-      <div style="display:flex;flex-direction:column;gap:12px">${picks.map(s => { const r = range(s); return `<div class="price"><b>${r.text}</b><span>${strip(s.name)} · Price Range</span></div>`; }).join("")}</div>
+      <div style="display:flex;flex-direction:column;gap:12px">${picks.map(s => { const r = range(s); return `<div class="price"><b>${r.text}</b><span>${strip(s.name)} · ${state.visit === "first" ? "첫방문 혜택가" : "Price"}</span></div>`; }).join("")}</div>
     </div>
   </section>`;
 }
@@ -982,26 +1056,28 @@ function item(s, i){
   let acc = 0; const flow = s.steps.map(st => { const a = acc; acc += st.m; return `<div class="r"><span>${clock(a)}–${clock(acc)}</span><span>${st.t}</span></div>`; }).join("");
   return `<details class="it"><summary>
       <span class="no">${pad(i + 1)}.</span>
-      <span class="nm">${strip(s.name)}${NAVER_PICKS.includes(s.id) ? `<span class="best">BEST</span>` : ""}<span class="tg">${s.designer ? s.designer + " · " : ""}${s.tag}</span></span>
+      <span class="nm">${nm(strip(s.name))}${NAVER_PICKS.includes(s.id) ? `<span class="best">BEST</span>` : ""}<span class="tg">${nm(s.tag)}</span></span>
       <span class="pr">${r.normal ? `<s>${won(r.normal)}</s>` : ""}${r.text}${s.from || r.mx > r.mn ? "~" : ""}</span>
       <span class="more">${timeTxt(s)}</span>
     </summary>
     <div class="det">
-      <p class="sm">${s.desc}</p>
+      <p class="sm">${nm(s.desc)}</p>
       <div class="facts"><div><span class="xs">Time</span><b>${timeTxt(s)}</b></div><div><span class="xs">Lasts</span><b>${s.keep}</b></div><div><span class="xs">Steps</span><b>${s.steps.length}단계</b></div></div>
       <div class="rules flow"><span class="pill">Process</span>${flow}</div>
       <div><p class="xs" style="margin-bottom:5px">Recommended For</p><ul class="recs">${s.rec.map(x => `<li>${x}</li>`).join("")}</ul></div>
-      ${s.priceNote ? `<p class="xs" style="color:var(--sub)">${s.priceNote}</p>` : ""}
+      ${r.note ? `<p class="xs" style="color:var(--sub)">${r.note}</p>` : ""}
     </div>
   </details>`;
 }
+function visibleChapters(){ return CAT_PAGES.filter(c => SERVICES.some(s => s.cat === c.id && offered(s))); }
 function chapter(c, idx){
-  const list = SERVICES.filter(s => s.cat === c.id);
+  const list = SERVICES.filter(s => s.cat === c.id && offered(s));
   const head = list.slice(0, 3);
+  const intro = c.id === "signature" ? "오래 다듬어 온 시그니처 디자인. 이 메뉴는 이 메뉴판의 디자이너에게만 예약할 수 있어요." : c.intro;
   return `<section class="pg ${c.dark ? "dark" : ""}" id="ch-${c.id}">${run()}
-    <div class="ch-top"><h2 class="h2">${c.en[0]}<br>${c.en[1]}</h2><p class="sm">${c.intro}</p></div>
+    <div class="ch-top"><h2 class="h2">${c.en[0]}<br>${c.en[1]}</h2><p class="sm">${intro}</p></div>
     <div class="ch-mid">
-      <div class="labels">${head.map((s, i) => `<span class="xs"><b>${pad(i + 1)}.</b>${strip(s.name)}</span>`).join("")}</div>
+      <div class="labels">${head.map((s, i) => `<span class="xs"><b>${pad(i + 1)}.</b>${nm(strip(s.name))}</span>`).join("")}</div>
       ${plate(c.plate, `Hair Study ${pad(idx + 3)}`, c.dark)}
     </div>
     <div class="ch-foot"><h3 class="h3">${SUB[c.id][0]}<br>${SUB[c.id][1]}</h3><div class="price"><b>${catRange(c.id)}</b><span>${cat(c.id).ko} · ${list.length} Menus · Price Range</span></div></div>
@@ -1015,9 +1091,11 @@ function note(){
   </section>`;
 }
 function designers(){
-  return `<section class="pg" id="designers">${run()}
-    <div class="ch-top"><h2 class="h2">Our<br>Designers</h2><p class="sm">헤어컨설팅을 바탕으로 각자의 전문 분야를 가진 디자이너들입니다. 디자이너마다 메뉴와 가격이 조금씩 달라요.</p></div>
-    <div class="des">${DESIGNERS.map((d, i) => `<div class="de"><div class="plate"><b>${d.name[0]}</b><span class="cap">${pad(i + 1)}.</span></div><div class="nm">${d.name}<span>${d.role}</span></div><p class="sm" style="text-align:left">${d.desc}</p></div>`).join("")}</div>
+  const d = meD();
+  return `<section class="pg tall" id="designers">${run()}
+    <h2 class="h2">Your<br>Designer</h2>
+    <div class="ch-mid" style="margin-top:30px"><div class="labels"><span class="xs"><b>${d.role}</b>${d.name}</span></div><div class="plate" style="aspect-ratio:4/5;display:grid;place-items:center"><b style="font-size:96px;font-weight:500;letter-spacing:-0.06em;color:#C4C4C1">${d.name[0]}</b></div></div>
+    <div class="st-row"><span class="pill">About</span><p class="sm">${d.desc}</p></div>
   </section>`;
 }
 function benefits(){
@@ -1035,9 +1113,106 @@ function back(){
     <a class="cta solid" href="https://naver.me/FaOg9wsW" target="_blank" rel="noopener"><span>네이버로 예약하기</span><span>→</span></a>
   </section>`;
 }
-document.getElementById("book").innerHTML = cover() + statement() + bleed("wave", "Hair Study — Movement") + contents() + favorite()
-  + CAT_PAGES.map(chapter).join("") + note() + designers() + benefits() + back();
-requestAnimationFrame(drawAll);
+/* ---------- 로그인 (서비스 북과 동일: 지점 · 이름 · 공용 코드 → 고객 유형) ---------- */
+const ME_KEY = "mm-servicebook-me", BRANCH_KEY = "mm-servicebook-branch", VISIT_KEY = "mm-servicebook-visit";
+const ls = { get: k => { try { return localStorage.getItem(k); } catch(e) { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch(e) {} }, del: k => { try { localStorage.removeItem(k); } catch(e) {} } };
+const branchOf = k => BRANCHES.find(b => b.key === k);
+const meD = () => DESIGNERS.find(d => d.key === state.me);
+const state = { me: ls.get(ME_KEY), branch: ls.get(BRANCH_KEY) || (BRANCHES.length === 1 ? BRANCHES[0].key : ""), visit: ls.get(VISIT_KEY) || "pick", keep: true, err: "", name: "", pin: "", unlocked: false, view: "login" };
+if(!meD() || !branchOf(state.branch)) state.me = null;
+state.view = state.me ? "book" : "login";
+const staff = document.getElementById("staff"), book = document.getElementById("book"), fbar = document.querySelector(".fbar");
+const heart = '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1B1C1F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.3-7-9.5A4 4 0 0 1 12 8a4 4 0 0 1 7 2.5C19 15.7 12 20 12 20z"/></svg>';
+const lockI = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8A8E97" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>';
+const pinI = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8A8E97" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/></svg>';
+
+function loginView(){
+  return `<div class="lg enter">
+    <div class="lglogo"><div class="g o"><div class="gp i">${heart}</div></div><div class="lgt"><h1>메르시모몽 브로셔</h1><p>지점 · 이름 · 공용 코드로 시작해요</p></div></div>
+    <form class="lgform" id="lgform" autocomplete="off">
+      <div class="lgf"><label for="lg-branch">지점</label><div class="gw fld">${pinI}<select id="lg-branch">${BRANCHES.length > 1 ? `<option value="">지점 선택</option>` : ""}${BRANCHES.map(b => `<option value="${b.key}" ${state.branch===b.key?"selected":""}>${b.name}</option>`).join("")}</select></div></div>
+      <div class="lgf"><label for="lg-name">이름</label><div class="gw fld"><input id="lg-name" list="lg-names" placeholder="디자이너 이름" value="${state.name}" autocomplete="off"></div></div>
+      <datalist id="lg-names">${DESIGNERS.map(d => `<option value="${d.name}">`).join("")}</datalist>
+      <div class="lgf"><label for="lg-code">공용 코드</label><div class="gw fld">${lockI}<input id="lg-code" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" placeholder="지점 공용 코드"></div></div>
+      <p class="err" role="alert">${state.err}</p>
+      <div class="lgbtns"><button type="submit" class="gp press lgmain">시작하기</button></div>
+      <div class="lgkeep"><span>이 기기에서 로그인 유지</span><button type="button" class="sw gw" role="switch" aria-checked="${state.keep}" aria-label="이 기기에서 로그인 유지" data-keep><span></span></button></div>
+    </form>
+    <p class="lgfoot">가격 기준 · 네이버 예약 ${SOURCE_DATE} 확인</p>
+  </div>`;
+}
+const visitCards = () => `<div class="vgrid">${[["pick","지정 예약 고객","내 메뉴 가격으로 보여요"],["first","첫방문 고객","첫방문 혜택가로 보여요. 혜택이 없는 메뉴는 일반 가격으로 보여요"]].map(([k,t,d]) => `<button class="${state.visit===k?"gp":"g"} press vcard" data-visit="${k}" aria-pressed="${state.visit===k}"><b>${t}</b><span>${d}</span></button>`).join("")}</div>`;
+const keypad = () => `<div class="pinrow gw" aria-label="공용 코드 ${state.pin.length}자리 입력됨">${[0,1,2,3].map(i => `<i class="${i<state.pin.length?"on":""}"></i>`).join("")}</div><p class="err" role="alert">${state.err}</p>
+  <div class="keys">${["1","2","3","4","5","6","7","8","9","del","0","ok"].map(k => k==="del" ? `<button class="g press" data-key="del" aria-label="지우기">←</button>` : k==="ok" ? `<button class="gp press" data-key="ok" style="font-size:17px">확인</button>` : `<button class="t press" data-key="${k}">${k}</button>`).join("")}</div>`;
+function visitView(){
+  return `<div class="staff-in"><div class="lglogo"><div class="g o"><div class="gp i">${heart}</div></div></div><h1>이번 고객님은 어떤 예약인가요?</h1><p class="sub">${meD().name} ${meD().role} · 직원 전용</p>${visitCards()}</div>`;
+}
+function accountView(){
+  if(!state.unlocked) return `<div class="staff-in"><button class="g press staff-back" data-close>← 브로셔로</button><h1>공용 코드를 입력해 주세요</h1><p class="sub">고객 유형 변경과 로그아웃은 직원만 할 수 있어요</p>${keypad()}</div>`;
+  return `<div class="staff-in"><button class="g press staff-back" data-close>← 브로셔로</button><h1>내 메뉴판 설정</h1><p class="sub">${meD().name} ${meD().role} · 직원 전용</p>
+    <p style="font-weight:750;margin:6px 0 -6px">고객 유형</p>${visitCards()}
+    <button class="g press lgsub" data-logout style="flex:none">로그아웃</button></div>`;
+}
+function bookHtml(){
+  page = 0;
+  return cover() + statement() + bleed("wave", "Hair Study — Movement") + contents() + favorite()
+    + visibleChapters().map(chapter).join("") + note() + designers() + benefits() + back();
+}
+function render(){
+  const v = state.me ? state.view : "login";
+  if(v === "book"){
+    staff.hidden = true; staff.innerHTML = ""; fbar.hidden = false;
+    book.innerHTML = bookHtml(); bindBook(); requestAnimationFrame(drawAll);
+  } else {
+    fbar.hidden = true; staff.hidden = false;
+    staff.innerHTML = v === "login" ? loginView() : v === "visit" ? visitView() : accountView();
+    bindStaff();
+  }
+}
+function finishLogin(key){
+  state.me = key; state.err = "";
+  if(state.keep){ ls.set(ME_KEY, key); ls.set(BRANCH_KEY, state.branch); } else { ls.del(ME_KEY); ls.del(BRANCH_KEY); }
+  state.view = "visit"; render();
+}
+function bindStaff(){
+  const f = staff.querySelector("#lgform");
+  if(f) f.onsubmit = e => {
+    e.preventDefault();
+    const v = id => (staff.querySelector("#" + id) || {}).value || "";
+    const branch = v("lg-branch"), name = v("lg-name").trim(), code = v("lg-code");
+    state.branch = branch; state.name = name;
+    const fail = m => { state.err = m; render(); };
+    if(!branch) return fail("지점을 골라 주세요.");
+    if(!name) return fail("이름을 입력해 주세요.");
+    const n = name.replace(/\s+/g, "");
+    const d = DESIGNERS.find(x => n === x.name || n === (x.name + x.role).replace(/\s+/g, "") || (n.startsWith(x.name) && n.length <= x.name.length + 4));
+    if(!d || !branchOf(branch).designers.includes(d.key)) return fail("이 지점에 등록된 디자이너 이름이 아니에요.");
+    if(!code) return fail("공용 코드를 입력해 주세요.");
+    if(code !== branchOf(branch).code) return fail("공용 코드가 맞지 않아요.");
+    state.name = ""; finishLogin(d.key);
+  };
+  staff.querySelectorAll("[data-keep]").forEach(b => b.onclick = () => { state.keep = !state.keep; b.setAttribute("aria-checked", state.keep); });
+  staff.querySelectorAll("[data-visit]").forEach(b => b.onclick = () => { state.visit = b.dataset.visit; ls.set(VISIT_KEY, state.visit); state.view = "book"; state.unlocked = false; render(); window.scrollTo(0, 0); });
+  staff.querySelectorAll("[data-close]").forEach(b => b.onclick = () => { state.view = "book"; state.unlocked = false; state.pin = ""; state.err = ""; render(); });
+  staff.querySelectorAll("[data-logout]").forEach(b => b.onclick = () => { state.me = null; state.unlocked = false; state.visit = "pick"; [ME_KEY, VISIT_KEY].forEach(ls.del); state.view = "login"; render(); });
+  staff.querySelectorAll("[data-key]").forEach(b => b.onclick = () => {
+    const k = b.dataset.key; state.err = "";
+    if(k === "del") state.pin = state.pin.slice(0, -1);
+    else { if(k !== "ok" && state.pin.length < 8) state.pin += k;
+      const need = branchOf(state.branch).code.length;
+      if(k === "ok" || state.pin.length >= need){ const ok = state.pin === branchOf(state.branch).code; state.pin = ""; if(ok) state.unlocked = true; else state.err = "공용 코드가 맞지 않아요."; } }
+    render();
+  });
+}
+function bindBook(){
+  /* 숨겨진 입구: 페이지 머리줄을 1.5초 길게 누르면 설정 */
+  book.querySelectorAll(".run").forEach(el => {
+    let t; const clear = () => clearTimeout(t);
+    el.addEventListener("pointerdown", () => { t = setTimeout(() => { state.view = "account"; state.unlocked = false; state.pin = ""; render(); }, 1500); });
+    ["pointerup","pointerleave","pointercancel"].forEach(e => el.addEventListener(e, clear));
+  });
+}
+render();
 let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawAll, 150); });
 document.fonts && document.fonts.ready.then(drawAll);
 </script>
