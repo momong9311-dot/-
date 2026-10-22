@@ -1,150 +1,159 @@
 <meta charset="utf-8">
 <title>Merci Momong Brochure</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
 @font-face{font-family:"Pretendard";src:url(data:font/woff2;base64,__FONT__) format("woff2");font-weight:45 920;font-style:normal;font-display:swap}
-/* Layout: 모바일 매거진. 페이지(섹션)마다 러닝 헤더 + 페이지 번호, 큰 그로테스크 헤드라인 + 모노 캡션.
-   흰 종이 페이지가 연한 회색 바탕 위에 쌓이고, 시그니처만 검은 페이지. 사진 대신 시술별 '헤어 스터디' 판화(캔버스). 단일 라이트 테마(인쇄물 톤). */
+/* Layout: 모바일 룩북. 흰 종이 페이지가 회색 책상 위에 쌓인다. 얇고 촘촘한 대문자 헤드라인, 작은 양쪽 정렬 본문,
+   테두리 알약 라벨, 얇은 선 목록, 넉넉한 여백과 비대칭 배치. 사진 자리는 시술별 '헤어 스터디' 판화. 단일 라이트 테마(인쇄물 톤). */
 :root{
-  --desk:#DEDEDC; --paper:#FFFFFF; --plate:#EFEFED; --ink:#111111; --sub:#5E5E5C; --mute:#9A9A97; --line:#E3E3E0;
+  --desk:#9C9C9A; --paper:#FFFFFF; --plate:#ECECEA; --ink:#141414; --body:#3A3A3A; --sub:#6B6B69; --mute:#A3A3A0; --line:#D9D9D6;
   --sans:"Pretendard",-apple-system,"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;
-  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,"Pretendard",monospace;
+  --mono:var(--sans);
   color-scheme:light;
 }
 *{box-sizing:border-box}
 html{background:var(--desk);scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-body{margin:0;background:var(--desk);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;letter-spacing:-0.01em;-webkit-font-smoothing:antialiased;
-  padding-left:max(10px,env(safe-area-inset-left,0px));padding-right:max(10px,env(safe-area-inset-right,0px));padding-block:10px 96px}
+body{margin:0;background:linear-gradient(180deg,#A6A6A4,#959593) fixed var(--desk);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.55;letter-spacing:-0.015em;-webkit-font-smoothing:antialiased;
+  padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px));padding-block:14px 100px;font-variant-numeric:tabular-nums}
 a{color:inherit}
-button{font:inherit;color:inherit;cursor:pointer}
 :focus-visible{outline:2px solid var(--ink);outline-offset:3px}
-.book{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
-.pg{background:var(--paper);border-radius:3px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 18px 40px -28px rgba(0,0,0,.35);padding:22px 22px 26px;position:relative;scroll-margin-top:10px;overflow:hidden}
-.pg.dark{background:#0E0E0E;color:#F3F3F1}
-.run{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--mono);font-size:10.5px;letter-spacing:.02em;color:var(--mute);margin-bottom:26px}
-.dark .run{color:#8A8A88}
-.mono{font-family:var(--mono);letter-spacing:.01em}
-.cap{font-family:var(--mono);font-size:11px;line-height:1.5;color:var(--sub);letter-spacing:.01em}
-.dark .cap{color:#A9A9A6}
-.up{text-transform:uppercase}
-h1,h2,h3{margin:0;font-weight:600;text-wrap:balance}
-.disp{font-size:clamp(46px,14vw,74px);line-height:.9;letter-spacing:-0.055em;font-weight:600;text-transform:uppercase}
-.h2{font-size:clamp(34px,10vw,52px);line-height:.92;letter-spacing:-0.05em;font-weight:600;text-transform:uppercase}
-.ko{font-size:15px;font-weight:600;letter-spacing:-0.02em;margin-top:10px}
+.book{max-width:540px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.pg{background:var(--paper);box-shadow:0 30px 50px -30px rgba(0,0,0,.55),0 2px 4px rgba(0,0,0,.08);padding:20px 22px 28px;position:relative;scroll-margin-top:14px;overflow:hidden;display:flex;flex-direction:column}
+.pg.tall{min-height:min(148vw,800px)}
+.pg.dark{background:#111111;color:#F1F1EF}
+.pg.bleed{padding:0;aspect-ratio:3/4}
+.pg.bleed .plate{position:absolute;inset:0;border-radius:0}
+.run{display:flex;justify-content:space-between;font-size:9.5px;font-weight:500;letter-spacing:0;color:#2A2A2A;margin-bottom:34px}
+.dark .run{color:#BDBDBA}
+.bleed .run{position:absolute;left:22px;right:22px;top:20px;z-index:1;margin:0}
+.grow{flex:1}
+h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
+.disp{font-size:clamp(38px,11.6vw,60px);line-height:.86;letter-spacing:-0.07em;font-weight:500;text-transform:uppercase}
+.h2{font-size:clamp(24px,7.4vw,36px);line-height:.88;letter-spacing:-0.06em;font-weight:500;text-transform:uppercase}
+.h3{font-size:clamp(17px,5vw,22px);line-height:.92;letter-spacing:-0.05em;font-weight:500;text-transform:uppercase}
 p{margin:0}
-.pill{display:inline-flex;align-items:center;height:26px;padding:0 14px;border:1px solid currentColor;border-radius:13px;font-family:var(--mono);font-size:11px}
-.plate{background:var(--plate);border-radius:2px;position:relative;overflow:hidden}
+.sm{font-size:10.5px;line-height:1.55;color:var(--body);text-align:left;word-break:keep-all;overflow-wrap:anywhere;letter-spacing:-0.01em}
+.dark .sm{color:#BDBDBA}
+.xs{font-size:9.5px;line-height:1.35;color:var(--body);font-weight:500}
+.dark .xs{color:#BDBDBA}
+.two{columns:2;column-gap:10px}
+.pill{display:inline-flex;align-items:center;justify-content:center;height:21px;padding:0 13px;border:1px solid currentColor;border-radius:11px;font-size:9.5px;font-weight:500;white-space:nowrap}
+.plate{background:var(--plate);position:relative;overflow:hidden}
 .plate canvas{display:block;width:100%;height:100%}
-.plate .cap{position:absolute;left:10px;bottom:10px;color:#5E5E5C;background:rgba(239,239,237,.9);padding:2px 7px;border-radius:2px}
-.dark .plate{background:#1B1B1B}
-.dark .plate .cap{color:#A9A9A6;background:rgba(27,27,27,.9)}
+.plate .cap{position:absolute;left:10px;bottom:9px;font-size:9px;font-weight:500;color:#5E5E5C;background:rgba(236,236,234,.92);padding:2px 6px}
+.dark .plate{background:#1C1C1C}
+.dark .plate .cap{color:#A9A9A6;background:rgba(28,28,28,.92)}
 
 /* cover */
-.cover-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;font-size:11.5px;line-height:1.35;font-weight:500;margin-bottom:30px}
+.cover-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;font-size:9.5px;line-height:1.35;font-weight:500;margin-bottom:auto}
 .cover-meta span:last-child{text-align:right}
-.cover-title{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:20px}
-.cover-title .yr{font-size:clamp(40px,12vw,64px);font-weight:600;letter-spacing:-0.05em;line-height:.9}
-.cover .plate{aspect-ratio:4/5;max-width:100%}
-.cover-foot{display:flex;justify-content:space-between;gap:12px;margin-top:14px}
+.cover h1{margin:44px 0 18px}
+.cover .plate{aspect-ratio:4/5}
+.cover-foot{display:flex;justify-content:space-between;gap:12px;margin-top:12px}
+
+/* statement */
+.st-row{display:grid;grid-template-columns:30% minmax(0,1fr);gap:14px;align-items:start;margin-top:26px}
+.st-row > .pill{justify-self:start}
+.st-bottom{display:grid;grid-template-columns:30% minmax(0,1fr);gap:14px;align-items:end;margin-top:auto;padding-top:40px}
+.st-bottom .plate{aspect-ratio:5/3}
+
+/* rules list (Design Principles) */
+.rules{display:flex;flex-direction:column}
+.rules > .pill{align-self:flex-start;margin-bottom:8px;min-width:58%}
+.rules .r{font-size:10.5px;font-weight:500;padding:7px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px}
+.dark .rules .r{border-bottom-color:#2F2F2F}
+.rules .r span:last-child{color:var(--sub);font-weight:400}
 
 /* contents */
-.toc{display:grid;grid-template-columns:1fr 1fr;gap:26px 18px;margin-top:6px}
-.toc a{text-decoration:none;display:flex;flex-direction:column;gap:6px;padding-top:12px;border-top:1px solid var(--ink)}
-.toc b{font-family:var(--mono);font-size:22px;font-weight:500;letter-spacing:-0.02em}
-.toc span{font-size:14.5px;font-weight:600;line-height:1.35}
-.toc small{font-size:12px;color:var(--sub);line-height:1.45}
+.toc{display:flex;flex-direction:column;margin-top:auto}
+.toc a{text-decoration:none;display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:8px;align-items:baseline;padding:11px 0;border-bottom:1px solid var(--line)}
+.toc a:first-child{border-top:1px solid var(--ink)}
+.toc .n{font-size:10px;font-weight:500}
+.toc .t{font-size:clamp(17px,5vw,21px);font-weight:500;letter-spacing:-0.05em;text-transform:uppercase;line-height:1}
+.toc .k{font-size:10.5px;color:var(--sub)}
 
-/* feature */
-.feat-body{display:grid;grid-template-columns:auto 1fr;gap:16px;margin:22px 0 26px;align-items:start}
-.cols{columns:2;column-gap:14px;font-size:12.5px;line-height:1.6;color:var(--sub)}
-.principles{border-top:1px solid var(--ink)}
-.principles div{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:14px;font-weight:600}
-.principles div span{font-family:var(--mono);font-size:11px;color:var(--sub);font-weight:400;text-align:right}
-.range{display:flex;flex-direction:column;align-items:flex-end;margin-top:24px}
-.range b{font-size:26px;font-weight:600;letter-spacing:-0.04em}
-.range span{font-family:var(--mono);font-size:11px;color:var(--sub)}
+/* favorite */
+.fav-mid{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:start;margin:30px 0 12px}
+.fav-mid .xs{text-align:left}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pair .plate{aspect-ratio:3/4}
+.quote{font-size:clamp(15px,4.6vw,20px);line-height:1.02;letter-spacing:-0.045em;font-weight:500;text-transform:uppercase;margin:28px 0 24px}
+.fav-foot{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:end;margin-top:auto}
+.price{display:flex;flex-direction:column;align-items:flex-start}
+.price b{font-size:19px;font-weight:500;letter-spacing:-0.04em;line-height:1.1}
+.price span{font-size:9px;color:var(--sub);font-weight:500}
+.dark .price span{color:#9A9A97}
 
-/* category opener */
-.opener{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:end;margin-bottom:22px}
-.opener .plate{aspect-ratio:3/4}
-.opener .txt{display:flex;flex-direction:column;gap:14px;padding-bottom:4px}
-.intro{font-size:13.5px;line-height:1.65;color:var(--sub)}
-.dark .intro{color:#B9B9B6}
+/* chapter */
+.ch-top{display:grid;grid-template-columns:minmax(0,1fr) 42%;gap:14px;align-items:start;margin-bottom:26px}
+.ch-top .sm{text-align:left}
+.ch-mid{display:grid;grid-template-columns:30% minmax(0,1fr);gap:12px;margin-bottom:26px}
+.labels{display:flex;flex-direction:column;justify-content:space-around;padding:8px 0}
+.labels .xs{display:block}
+.labels .xs b{display:block;font-weight:500}
+.ch-mid .plate{aspect-ratio:3/4}
+.ch-foot{display:grid;grid-template-columns:minmax(0,1fr) 44%;gap:14px;align-items:end;margin:6px 0 24px}
+.ch-foot .sm{text-align:left}
 
-/* service entries */
+/* entries */
 .items{border-top:1px solid currentColor}
 details.it{border-bottom:1px solid var(--line)}
-.dark details.it{border-bottom-color:#2A2A2A}
-details.it summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:16px 0 15px}
+.dark details.it{border-bottom-color:#2F2F2F}
+details.it summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:8px;align-items:baseline;padding:13px 0 12px}
 details.it summary::-webkit-details-marker{display:none}
-.it .no{font-family:var(--mono);font-size:11px;color:var(--mute)}
-.it .nm{font-size:17px;font-weight:600;letter-spacing:-0.025em;line-height:1.3}
-.it .tg{display:block;font-size:12.5px;color:var(--sub);font-weight:400;margin-top:4px;line-height:1.5;letter-spacing:-0.01em}
-.dark .it .tg{color:#A9A9A6}
-.it .pr{text-align:right;font-family:var(--mono);font-size:12.5px;white-space:nowrap}
-.it .pr s{display:block;color:var(--mute);font-size:10.5px}
-.it .fav{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;border:1px solid currentColor;border-radius:9px;padding:0 7px;margin-left:6px;vertical-align:3px}
-.it .more{grid-column:2 / 4;font-family:var(--mono);font-size:10.5px;color:var(--mute);margin-top:2px}
-details.it[open] .more::after{content:" — 닫기"}
-details.it:not([open]) .more::after{content:" — 자세히"}
-.det{padding:0 0 20px 50px;display:flex;flex-direction:column;gap:16px}
-.det .desc{font-size:13.5px;line-height:1.7;color:var(--sub)}
-.dark .det .desc{color:#B9B9B6}
-.flow{border-top:1px solid currentColor}
-.flow div{display:grid;grid-template-columns:86px minmax(0,1fr);gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
-.dark .flow div{border-bottom-color:#2A2A2A}
-.flow div span:first-child{font-family:var(--mono);font-size:11px;color:var(--sub)}
-.dark .flow div span:first-child{color:#8F8F8C}
-.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.facts div{display:flex;flex-direction:column;gap:3px}
-.facts b{font-size:14px;font-weight:600}
-.recs{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px;font-size:13px}
+.it .no{font-size:9.5px;font-weight:500;color:var(--sub)}
+.it .nm{font-size:15px;font-weight:500;letter-spacing:-0.035em;line-height:1.3}
+.it .tg{display:block;font-size:10.5px;color:var(--sub);font-weight:400;margin-top:3px;line-height:1.45;letter-spacing:-0.01em}
+.dark .it .tg,.dark .it .no{color:#9A9A97}
+.it .pr{text-align:right;font-size:12px;font-weight:500;letter-spacing:-0.02em;white-space:nowrap}
+.it .pr s{display:block;color:var(--mute);font-size:9.5px;font-weight:400}
+.it .best{display:inline-flex;align-items:center;height:15px;font-size:8px;font-weight:600;letter-spacing:.04em;border:1px solid currentColor;border-radius:8px;padding:0 6px;margin-left:6px;vertical-align:2px}
+.it .more{grid-column:2 / 4;font-size:9.5px;color:var(--mute);font-weight:500}
+details.it[open] .more::after{content:"  ·  닫기"}
+details.it:not([open]) .more::after{content:"  ·  자세히"}
+.det{padding:2px 0 18px 38px;display:flex;flex-direction:column;gap:14px}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.facts div{display:flex;flex-direction:column;gap:2px}
+.facts b{font-size:12.5px;font-weight:500}
+.flow .r{display:grid;grid-template-columns:70px minmax(0,1fr);font-weight:400}
+.recs{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px}
+.recs li{font-size:11px;color:var(--body)}
+.dark .recs li{color:#BDBDBA}
 .recs li::before{content:"— ";color:var(--mute)}
 
-/* quote */
-.quote{font-size:clamp(24px,7.2vw,34px);line-height:1.18;letter-spacing:-0.04em;font-weight:600;margin:6px 0 26px}
-.stair{display:flex;flex-direction:column;gap:6px;margin:10px 0 24px}
-.stair span{font-size:clamp(26px,8vw,38px);font-weight:600;letter-spacing:-0.045em;line-height:1.05}
-.stair span:nth-child(2){padding-left:28%}
-.stair span:nth-child(3){padding-left:10%}
-.stair span:nth-child(4){padding-left:46%}
+/* note */
+.stair{display:flex;flex-direction:column;gap:4px;margin:auto 0 30px}
+.stair span{font-size:clamp(26px,8.4vw,42px);font-weight:500;letter-spacing:-0.065em;line-height:.95;text-transform:uppercase}
+.stair span:nth-child(2){padding-left:30%}
+.stair span:nth-child(3){padding-left:12%}
+.stair span:nth-child(4){padding-left:48%}
 
 /* designers */
-.des{display:grid;grid-template-columns:1fr 1fr;gap:22px 14px}
-.de{display:flex;flex-direction:column;gap:8px}
-.de .plate{aspect-ratio:1/1;display:grid;place-items:center}
-.de .plate b{font-size:46px;font-weight:600;letter-spacing:-0.05em;color:#BEBEBB}
-.de h3{font-size:16px;font-weight:600;letter-spacing:-0.02em}
-.de h3 small{font-family:var(--mono);font-size:10.5px;color:var(--sub);font-weight:400;margin-left:6px}
-.de p{font-size:12px;color:var(--sub);line-height:1.55}
+.des{display:grid;grid-template-columns:1fr 1fr;gap:20px 12px;margin-top:26px}
+.de{display:flex;flex-direction:column;gap:6px}
+.de .plate{aspect-ratio:4/5;display:grid;place-items:center}
+.de .plate b{font-size:40px;font-weight:500;letter-spacing:-0.06em;color:#C4C4C1}
+.de .nm{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;font-weight:500;letter-spacing:-0.03em}
+.de .nm span{font-size:9.5px;color:var(--sub)}
 
-/* benefits */
-.ben{border-top:1px solid var(--ink)}
-.ben div{display:grid;grid-template-columns:40px minmax(0,1fr);gap:10px;padding:16px 0;border-bottom:1px solid var(--line)}
-.ben b{display:block;font-size:16px;font-weight:600;letter-spacing:-0.02em;margin-bottom:5px}
-.ben p{font-size:12.5px;color:var(--sub);line-height:1.6}
-
-/* back cover */
-.back .addr{font-size:14px;line-height:1.6;margin-top:18px}
-.cta{display:flex;align-items:center;justify-content:space-between;gap:12px;height:56px;padding:0 22px;border-radius:28px;background:var(--ink);color:var(--paper);text-decoration:none;font-weight:600;font-size:15px;margin-top:22px}
-.cta span:last-child{font-family:var(--mono);font-size:12px;opacity:.7}
+/* back */
+.cta{display:flex;align-items:center;justify-content:space-between;gap:12px;height:50px;padding:0 20px;border-radius:25px;border:1px solid var(--ink);text-decoration:none;font-weight:500;font-size:13px;margin-top:18px}
+.cta.solid{background:var(--ink);color:#fff}
 
 /* floating bar */
 .fbar{position:fixed;left:0;right:0;bottom:0;z-index:10;display:flex;justify-content:center;pointer-events:none;
   padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px))}
-.fbar div{pointer-events:auto;display:flex;gap:6px;padding:6px;border-radius:30px;background:rgba(255,255,255,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 10px 30px -12px rgba(0,0,0,.35),0 0 0 1px rgba(0,0,0,.06)}
-.fbar a{display:inline-flex;align-items:center;height:44px;padding:0 18px;border-radius:22px;text-decoration:none;font-size:14px;font-weight:600}
+.fbar div{pointer-events:auto;display:flex;gap:4px;padding:5px;border-radius:26px;background:rgba(255,255,255,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 10px 30px -12px rgba(0,0,0,.45)}
+.fbar a{display:inline-flex;align-items:center;height:44px;padding:0 18px;border-radius:22px;text-decoration:none;font-size:12.5px;font-weight:500}
 .fbar a.book-btn{background:var(--ink);color:#fff}
-.fbar a.toc-btn{font-family:var(--mono);font-size:12px;font-weight:500}
 
-@media (min-width:520px){ body{padding-left:24px;padding-right:24px} .pg{padding:30px 30px 34px} }
-@media (max-width:360px){ .cols{columns:1} .toc{grid-template-columns:1fr} }
+@media (min-width:520px){ .pg{padding:26px 30px 34px} .sm{font-size:11px} }
+@media (max-width:350px){ .two{columns:1} }
 </style>
 
 <main class="book" id="book"></main>
-<nav class="fbar" aria-label="바로가기"><div><a class="toc-btn" href="#contents">CONTENTS</a><a class="book-btn" href="https://naver.me/FaOg9wsW" target="_blank" rel="noopener">네이버 예약</a></div></nav>
+<nav class="fbar" aria-label="바로가기"><div><a class="toc-btn" href="#contents">Contents</a><a class="book-btn" href="https://naver.me/FaOg9wsW" target="_blank" rel="noopener">네이버 예약</a></div></nav>
 
 <script>
 __DATA__
@@ -221,97 +230,113 @@ function drawAll(){ document.querySelectorAll("canvas[data-plate]").forEach(draw
 
 /* ---------- pages ---------- */
 let page = 0;
-const run = (title) => `<div class="run"><span>Merci Momong — ${title}</span><span>${pad(++page)}</span></div>`;
+const run = () => `<div class="run"><span>Merci Momong</span><span>${++page}.</span></div>`;
 const plate = (type, cap, dark) => `<div class="plate"><canvas data-plate="${type}" data-dark="${dark?1:0}" aria-hidden="true"></canvas>${cap ? `<span class="cap">${cap}</span>` : ""}</div>`;
+const cat = id => CATS.find(c => c.id === id);
+const SUB = {consult:["Know Yourself", "First"], cut:["Shaped To", "Your Face"], perm:["Movement", "That Lasts"], mens:["Easy Every", "Morning"], color:["The Color", "That Is You"], care:["Strength", "From Within"], signature:["Signed By", "Designer"]};
 
 function cover(){
-  return `<section class="pg cover" id="cover">
-    <div class="cover-meta"><span>The Service Book<br>Find The Hair<br>That Is You</span><span>Hair Consulting<br>& Design</span><span>Seoul<br>Sadang<br>2026</span></div>
-    <div class="cover-title"><h1 class="disp">Merci<br>Momong</h1><span class="yr">26</span></div>
-    ${plate("cover", "(00) Hair Study — Be yourself, 나다움")}
-    <div class="cover-foot"><span class="cap">서비스 · 과정 · 가격 안내</span><span class="cap">${SERVICES.length} Services / ${CAT_PAGES.length} Chapters</span></div>
+  return `<section class="pg cover tall" id="cover">${run()}
+    <div class="cover-meta"><span>The Service Book</span><span>Hair Consulting<br>& Design</span><span>Seoul, Sadang<br>2026</span></div>
+    <h1 class="disp">Merci<br>Momong</h1>
+    ${plate("cover", "Hair Study 00")}
+    <div class="cover-foot"><span class="xs">서비스 · 과정 · 가격 안내</span><span class="xs">${SERVICES.length} Services</span></div>
   </section>`;
+}
+function statement(){
+  return `<section class="pg tall" id="feature">${run()}
+    <h2 class="disp" style="font-size:clamp(30px,9.4vw,48px)">Good hair<br>begins with<br>knowing<br>who you are.</h2>
+    <div class="st-row"><span class="pill">3WAY</span>
+      <p class="sm two">메르시모몽의 헤어컨설팅은 머리를 하기 전에 나를 먼저 봅니다. 얼굴과 이목구비, 퍼스널컬러, 골격 이미지를 분석하고, 고유의 이미지와 추구하는 이미지 사이를 연결해 어울리는 디자인을 찾습니다. 사전 인터뷰로 생활 습관까지 확인하고, 집에서도 같은 모양을 낼 수 있도록 스타일링을 코칭합니다.</p></div>
+    <div class="st-bottom"><span class="xs">Be<br>Yourself</span>${plate("rings", "")}</div>
+  </section>`;
+}
+function bleed(type, cap){
+  return `<section class="pg bleed" aria-hidden="true">${run()}${plate(type, cap)}</section>`;
 }
 function contents(){
-  const entries = [...CAT_PAGES.map((c, i) => ({no: i + 1, id: "ch-" + c.id, t: cat(c.id).ko, d: SERVICES.filter(s => s.cat === c.id).slice(0, 3).map(s => strip(s.name)).join(" · ")})),
-    {no: CAT_PAGES.length + 1, id: "designers", t: "디자이너", d: DESIGNERS.map(d => d.name).join(" · ")},
-    {no: CAT_PAGES.length + 2, id: "benefits", t: "혜택 안내", d: "첫방문 · N페이 · 정액권"}];
-  return `<section class="pg" id="contents">${run("Contents")}
-    <h2 class="h2" style="margin-bottom:26px">Table of<br>Contents</h2>
-    <nav class="toc" aria-label="목차">${entries.map(e => `<a href="#${e.id}"><b>${pad(e.no)}</b><span>${e.t}</span><small>${e.d}</small></a>`).join("")}</nav>
+  const entries = [...CAT_PAGES.map((c, i) => ({no: i + 1, id: "ch-" + c.id, t: c.en.join(" "), k: cat(c.id).ko})),
+    {no: CAT_PAGES.length + 1, id: "designers", t: "Designers", k: "디자이너"},
+    {no: CAT_PAGES.length + 2, id: "benefits", t: "Good to Know", k: "혜택"}];
+  return `<section class="pg tall" id="contents">${run()}
+    <h2 class="h2">Table of<br>Contents</h2>
+    <nav class="toc" aria-label="목차">${entries.map(e => `<a href="#${e.id}"><span class="n">${pad(e.no)}.</span><span class="t">${e.t}</span><span class="k">${e.k}</span></a>`).join("")}</nav>
   </section>`;
 }
-function feature(){
-  return `<section class="pg" id="feature">${run("Feature")}
-    <h2 class="disp" style="font-size:clamp(36px,11vw,56px)">Find the hair<br>that is you.</h2>
-    <div class="feat-body"><span class="pill">3WAY</span>
-      <p class="cols">메르시모몽의 헤어컨설팅은 머리를 하기 전에 나를 먼저 봅니다. 얼굴과 이목구비, 퍼스널컬러, 골격 이미지를 분석하고, 고유의 이미지와 추구하는 이미지 사이를 연결해 어울리는 디자인을 찾습니다. 사전 인터뷰로 생활 습관까지 확인하고, 집에서도 같은 모양을 낼 수 있도록 스타일링을 코칭합니다.</p></div>
-    <div class="principles">
-      <div>이목구비 분석<span>Face & Features</span></div>
-      <div>퍼스널컬러 진단<span>Personal Color</span></div>
-      <div>골격 이미지 진단<span>Body Type</span></div>
-      <div>스타일링 코칭<span>Styling Coach</span></div>
+function favorite(){
+  const picks = NAVER_PICKS.map(id => SERVICES.find(s => s.id === id));
+  const top = picks[0];
+  return `<section class="pg tall" id="favorite">${run()}
+    <h2 class="disp">Customer<br>Favorite</h2>
+    <div class="fav-mid"><span></span><div style="display:flex;gap:12px;align-items:flex-start"><span class="pill">Best For</span><span class="xs">${top.rec.slice(0,3).join("<br>")}</span></div></div>
+    <div class="pair">${plate("rings", "Hair Study 01")}${plate("cut", "Hair Study 02")}</div>
+    <p class="quote">“Hair becomes timeless<br>when it fits<br>who you are.”</p>
+    <div class="fav-foot">
+      <p class="sm" style="text-align:left">메르시모몽이 먼저 권하는 두 가지. 어울리는 방향을 찾는 헤어컨설팅과, 지금의 스타일을 깔끔하게 정돈하는 디자인컷.</p>
+      <div style="display:flex;flex-direction:column;gap:12px">${picks.map(s => { const r = range(s); return `<div class="price"><b>${r.text}</b><span>${strip(s.name)} · Price Range</span></div>`; }).join("")}</div>
     </div>
-    <div class="range"><b>${catRange("consult")}원</b><span>Consulting Price Range</span></div>
   </section>`;
 }
-function item(s, i, dark){
+function item(s, i){
   const r = range(s);
-  let acc = 0; const flow = s.steps.map(st => { const a = acc; acc += st.m; return `<div><span>${clock(a)}–${clock(acc)}</span><span>${st.t}</span></div>`; }).join("");
+  let acc = 0; const flow = s.steps.map(st => { const a = acc; acc += st.m; return `<div class="r"><span>${clock(a)}–${clock(acc)}</span><span>${st.t}</span></div>`; }).join("");
   return `<details class="it"><summary>
-      <span class="no">(${pad(i + 1)})</span>
-      <span class="nm">${strip(s.name)}${NAVER_PICKS.includes(s.id) ? `<span class="fav">BEST</span>` : ""}<span class="tg">${s.designer ? s.designer + " · " : ""}${s.tag}</span></span>
+      <span class="no">${pad(i + 1)}.</span>
+      <span class="nm">${strip(s.name)}${NAVER_PICKS.includes(s.id) ? `<span class="best">BEST</span>` : ""}<span class="tg">${s.designer ? s.designer + " · " : ""}${s.tag}</span></span>
       <span class="pr">${r.normal ? `<s>${won(r.normal)}</s>` : ""}${r.text}${s.from || r.mx > r.mn ? "~" : ""}</span>
       <span class="more">${timeTxt(s)}</span>
     </summary>
     <div class="det">
-      <p class="desc">${s.desc}</p>
-      <div class="facts"><div><span class="cap">TIME</span><b>${timeTxt(s)}</b></div><div><span class="cap">LASTS</span><b>${s.keep}</b></div><div><span class="cap">STEPS</span><b>${s.steps.length}단계</b></div></div>
-      <div><p class="cap" style="margin-bottom:6px">PROCESS</p><div class="flow">${flow}</div></div>
-      <div><p class="cap" style="margin-bottom:6px">RECOMMENDED FOR</p><ul class="recs">${s.rec.map(x => `<li>${x}</li>`).join("")}</ul></div>
-      ${s.priceNote ? `<p class="cap">${s.priceNote}</p>` : ""}
+      <p class="sm">${s.desc}</p>
+      <div class="facts"><div><span class="xs">Time</span><b>${timeTxt(s)}</b></div><div><span class="xs">Lasts</span><b>${s.keep}</b></div><div><span class="xs">Steps</span><b>${s.steps.length}단계</b></div></div>
+      <div class="rules flow"><span class="pill">Process</span>${flow}</div>
+      <div><p class="xs" style="margin-bottom:5px">Recommended For</p><ul class="recs">${s.rec.map(x => `<li>${x}</li>`).join("")}</ul></div>
+      ${s.priceNote ? `<p class="xs" style="color:var(--sub)">${s.priceNote}</p>` : ""}
     </div>
   </details>`;
 }
 function chapter(c, idx){
   const list = SERVICES.filter(s => s.cat === c.id);
-  return `<section class="pg ${c.dark ? "dark" : ""}" id="ch-${c.id}">${run("Chapter " + pad(idx + 1))}
-    <div class="opener">
-      <div class="txt"><h2 class="h2">${c.en[0]}<br>${c.en[1]}</h2><p class="ko">${cat(c.id).ko}</p><p class="intro">${c.intro}</p><span class="cap">${list.length} Menus · ${catRange(c.id)}원</span></div>
-      ${plate(c.plate, `(${pad(idx + 1)}) Hair Study`, c.dark)}
+  const head = list.slice(0, 3);
+  return `<section class="pg ${c.dark ? "dark" : ""}" id="ch-${c.id}">${run()}
+    <div class="ch-top"><h2 class="h2">${c.en[0]}<br>${c.en[1]}</h2><p class="sm">${c.intro}</p></div>
+    <div class="ch-mid">
+      <div class="labels">${head.map((s, i) => `<span class="xs"><b>${pad(i + 1)}.</b>${strip(s.name)}</span>`).join("")}</div>
+      ${plate(c.plate, `Hair Study ${pad(idx + 3)}`, c.dark)}
     </div>
-    <div class="items">${list.map((s, i) => item(s, i, c.dark)).join("")}</div>
+    <div class="ch-foot"><h3 class="h3">${SUB[c.id][0]}<br>${SUB[c.id][1]}</h3><div class="price"><b>${catRange(c.id)}</b><span>${cat(c.id).ko} · ${list.length} Menus · Price Range</span></div></div>
+    <div class="items">${list.map(item).join("")}</div>
   </section>`;
 }
-function quote(){
-  return `<section class="pg" id="quote">${run("Note")}
+function note(){
+  return `<section class="pg tall" id="quote">${run()}
     <div class="stair"><span>Be</span><span>Yourself,</span><span>나 다움</span><span>Merci Momong</span></div>
-    <p class="quote">“자신만의 아름다움으로 스스로를 사랑할 수 있도록 돕습니다.”</p>
-    <p class="cap">당신만의 아름다움을 마주하고, 스스로를 사랑할 수 있도록 진심을 다해 함께합니다.</p>
+    <div class="st-row" style="margin-top:0"><span class="pill">Our Note</span><p class="sm">자신만의 아름다움으로 스스로를 사랑할 수 있도록 돕습니다. 당신만의 아름다움을 마주하고, 스스로를 사랑할 수 있도록 진심을 다해 함께합니다.</p></div>
   </section>`;
 }
 function designers(){
-  return `<section class="pg" id="designers">${run("Designers")}
-    <h2 class="h2" style="margin-bottom:24px">Our<br>Designers</h2>
-    <div class="des">${DESIGNERS.map((d, i) => `<div class="de"><div class="plate"><b>${d.name[0]}</b><span class="cap">(${pad(i + 1)})</span></div><h3>${d.name}<small>${d.role}</small></h3><p>${d.desc}</p></div>`).join("")}</div>
+  return `<section class="pg" id="designers">${run()}
+    <div class="ch-top"><h2 class="h2">Our<br>Designers</h2><p class="sm">헤어컨설팅을 바탕으로 각자의 전문 분야를 가진 디자이너들입니다. 디자이너마다 메뉴와 가격이 조금씩 달라요.</p></div>
+    <div class="des">${DESIGNERS.map((d, i) => `<div class="de"><div class="plate"><b>${d.name[0]}</b><span class="cap">${pad(i + 1)}.</span></div><div class="nm">${d.name}<span>${d.role}</span></div><p class="sm" style="text-align:left">${d.desc}</p></div>`).join("")}</div>
   </section>`;
 }
 function benefits(){
-  return `<section class="pg" id="benefits">${run("Benefits")}
-    <h2 class="h2" style="margin-bottom:24px">Good to<br>Know</h2>
-    <div class="ben">${GIFTS.map((g, i) => `<div><span class="cap">(${pad(i + 1)})</span><div><b>${g.h}</b><p>${g.p}</p></div></div>`).join("")}</div>
-    <p class="cap" style="margin-top:16px">금액은 디자이너·기장·모발 상태에 따라 달라질 수 있어요. 정확한 금액은 상담 후 안내드려요.</p>
+  return `<section class="pg" id="benefits">${run()}
+    <h2 class="h2" style="margin-bottom:26px">Good to<br>Know</h2>
+    <div class="rules"><span class="pill">Benefits</span>${GIFTS.map((g, i) => `<div class="r" style="flex-direction:column;gap:4px;padding:12px 0"><span style="font-size:13px">${pad(i + 1)}. ${g.h}</span><span class="sm" style="color:var(--body)">${g.p}</span></div>`).join("")}</div>
+    <p class="xs" style="margin-top:16px;color:var(--sub)">금액은 디자이너·기장·모발 상태에 따라 달라질 수 있어요. 정확한 금액은 상담 후 안내드려요.</p>
   </section>`;
 }
 function back(){
-  return `<section class="pg back" id="visit">${run("Visit")}
-    <h2 class="disp" style="font-size:clamp(40px,12vw,60px)">See you<br>soon.</h2>
-    <p class="addr">메르시모몽<br>서울 서초구 방배천로 5-1 우성빌딩 6층</p>
-    <a class="cta" href="https://naver.me/FaOg9wsW" target="_blank" rel="noopener"><span>네이버로 예약하기</span><span>naver.me/FaOg9wsW</span></a>
+  return `<section class="pg tall" id="visit">${run()}
+    <h2 class="disp">See you<br>soon.</h2>
+    <div class="grow"></div>
+    <div class="st-row"><span class="pill">Visit</span><p class="sm" style="text-align:left">메르시모몽<br>서울 서초구 방배천로 5-1 우성빌딩 6층</p></div>
+    <a class="cta solid" href="https://naver.me/FaOg9wsW" target="_blank" rel="noopener"><span>네이버로 예약하기</span><span>→</span></a>
   </section>`;
 }
-const cat = id => CATS.find(c => c.id === id);
-document.getElementById("book").innerHTML = cover() + contents() + feature() + CAT_PAGES.map(chapter).join("") + quote() + designers() + benefits() + back();
+document.getElementById("book").innerHTML = cover() + statement() + bleed("wave", "Hair Study — Movement") + contents() + favorite()
+  + CAT_PAGES.map(chapter).join("") + note() + designers() + benefits() + back();
 requestAnimationFrame(drawAll);
 let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawAll, 150); });
 document.fonts && document.fonts.ready.then(drawAll);
