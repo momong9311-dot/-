@@ -6,6 +6,7 @@ src/brochure.html → brochure.html     (모바일 브로셔, 링크로 공유)
 
 두 페이지 모두 __DATA__ 자리에 src/data.js + data/prices.json + src/icons.js 를,
 __FONT__ 자리에 fonts/PretendardVariable.woff2 (base64) 를 넣는다.
+브로셔는 data.js 의 PHOTOS 에 적힌 photos/*.jpg 를 PHOTO_DATA 표(data: 주소)로 묶어 파일 하나로 만든다.
 
     python3 app/servicebook/scripts/build.py
     python3 app/servicebook/scripts/build.py --fragment OUT.html            # 서비스 북 아티팩트 게시용
@@ -14,6 +15,7 @@ __FONT__ 자리에 fonts/PretendardVariable.woff2 (base64) 를 넣는다.
 import base64
 import json
 import pathlib
+import re
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -25,7 +27,19 @@ HEAD = ('<!doctype html>\n<html lang="ko">\n'
         '<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>\n')
 
 
-def bundle(src: str) -> str:
+def photo_table(data: str, photos: bool) -> str:
+    """PHOTOS 에 적힌 photos/*.jpg 를 한 번씩만 data: 주소로 묶은 PHOTO_DATA 표 (서비스 북은 빈 표)."""
+    table = {}
+    if photos:
+        for path in sorted(set(re.findall(r'"(photos/[^"]+\.jpe?g)"', data))):
+            f = ROOT / path
+            if not f.exists():
+                raise SystemExit(f"사진 파일이 없습니다: {path}")
+            table[path] = "data:image/jpeg;base64," + base64.b64encode(f.read_bytes()).decode()
+    return "const PHOTO_DATA = " + json.dumps(table) + ";\n"
+
+
+def bundle(src: str, photos: bool = False) -> str:
     page = (ROOT / src).read_text(encoding="utf-8")
     data = (ROOT / "src/data.js").read_text(encoding="utf-8")
     icons = (ROOT / "src/icons.js").read_text(encoding="utf-8")
@@ -39,7 +53,7 @@ def bundle(src: str) -> str:
     for token in ("__DATA__", "__FONT__"):
         if token not in page:
             raise SystemExit(f"{src} 에 {token} 자리가 없습니다.")
-    return page.replace("__DATA__", data + "\n" + prices_js + "\n" + icons).replace("__FONT__", font)
+    return page.replace("__DATA__", data + "\n" + photo_table(data, photos) + prices_js + "\n" + icons).replace("__FONT__", font)
 
 
 def write(path: pathlib.Path, html: str) -> None:
@@ -54,10 +68,10 @@ def main() -> None:
         write(pathlib.Path(args[args.index("--fragment") + 1]).resolve(), bundle("src/page.html"))
         return
     if "--brochure-fragment" in args:
-        write(pathlib.Path(args[args.index("--brochure-fragment") + 1]).resolve(), bundle("src/brochure.html"))
+        write(pathlib.Path(args[args.index("--brochure-fragment") + 1]).resolve(), bundle("src/brochure.html", photos=True))
         return
     write(ROOT / "servicebook.html", HEAD + bundle("src/page.html") + "\n</html>\n")
-    write(ROOT / "brochure.html", HEAD + bundle("src/brochure.html") + "\n</html>\n")
+    write(ROOT / "brochure.html", HEAD + bundle("src/brochure.html", photos=True) + "\n</html>\n")
 
 
 if __name__ == "__main__":

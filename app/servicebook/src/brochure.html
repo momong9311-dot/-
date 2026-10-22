@@ -6,7 +6,7 @@
 /* Layout: 모바일 룩북. 흰 종이 페이지가 회색 책상 위에 쌓인다. 얇고 촘촘한 대문자 헤드라인, 작은 양쪽 정렬 본문,
    테두리 알약 라벨, 얇은 선 목록, 넉넉한 여백과 비대칭 배치. 사진 자리는 시술별 '헤어 스터디' 판화. 단일 라이트 테마(인쇄물 톤). */
 :root{
-  --desk:#9C9C9A; --paper:#FFFFFF; --plate:#ECECEA; --ink:#141414; --body:#2E2E2E; --sub:#5C5C5A; --mute:#A3A3A0; --line:#D9D9D6;
+  --desk:#9C9C9A; --paper:#F8F6F1; --plate:#EAE6DF; --ink:#141414; --body:#2E2E2E; --sub:#5C5C5A; --mute:#A3A3A0; --line:#D9D9D6;
   --sans:"Pretendard",-apple-system,"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;
   --mono:var(--sans);
   color-scheme:light;
@@ -44,6 +44,19 @@ p{margin:0}
 .plate .cap{position:absolute;left:10px;bottom:9px;font-size:10.5px;font-weight:500;color:#5E5E5C;background:rgba(236,236,234,.92);padding:2px 6px}
 .dark .plate{background:#1C1C1C}
 .dark .plate .cap{color:#A9A9A6;background:rgba(28,28,28,.92)}
+
+/* collage (무드보드: 겹쳐 놓은 사진 몇 장 + 아주 작은 글) */
+.cl{position:relative;aspect-ratio:3/4.3;margin:4px -6px 0}
+.cl img{position:absolute;display:block;aspect-ratio:3/4;object-fit:cover;box-shadow:0 0 0 1px rgba(0,0,0,.06),0 18px 30px -22px rgba(0,0,0,.45)}
+.cl-a .c1{left:44%;top:0;width:52%}
+.cl-a .c2{left:24%;top:31%;width:32%;z-index:2}
+.cl-a .c3{left:2%;top:45%;width:38%;z-index:1}
+.cl-a .c4{left:52%;top:66%;width:32%}
+.cl-b .c1{left:3%;top:2%;width:46%}
+.cl-b .c2{left:66%;top:16%;width:17%}
+.cl-b .c3{left:54%;top:34%;width:42%;z-index:1}
+.cl-b .c4{left:22%;top:60%;width:42%;z-index:2}
+.cl-foot{display:flex;justify-content:space-between;gap:12px;margin-top:auto;padding-top:18px;font-size:11px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--body)}
 
 /* cover */
 .cover-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;font-size:11.5px;line-height:1.35;font-weight:500;margin-bottom:auto}
@@ -104,7 +117,7 @@ p{margin:0}
 .chap{display:flex;flex-direction:column;gap:14px;scroll-margin-top:62px}
 .pg.open .ov{position:absolute;left:22px;right:22px;bottom:24px;z-index:1;display:flex;flex-direction:column;gap:8px}
 .pg.open .ov .ko-tag{margin:0;font-size:14px;font-weight:500;word-break:keep-all;text-wrap:pretty}
-.pg.open::after{content:"";position:absolute;left:0;right:0;bottom:0;height:60%;background:linear-gradient(180deg,rgba(236,236,234,0),rgba(236,236,234,.97) 50%)}
+.pg.open::after{content:"";position:absolute;left:0;right:0;bottom:0;height:60%;background:linear-gradient(180deg,rgba(248,246,241,0),rgba(248,246,241,.94) 55%)}
 .pg.open.dark::after{background:linear-gradient(180deg,rgba(28,28,28,0),rgba(28,28,28,.95) 50%)}
 .pg.open .ov .disp{font-size:clamp(44px,14vw,72px)}
 .stack{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
@@ -342,7 +355,9 @@ function drawAll(){ document.querySelectorAll("canvas[data-plate]").forEach(draw
 let page = 0;
 const run = () => `<div class="run"><span>Merci Momong</span><span>${++page}.</span></div>`;
 /* 사진 자리: PHOTOS(data.js)에 사진이 있으면 사진, 없으면 헤어 스터디 그림 */
-const plate = (type, cap, dark, seed, photo) => `<div class="plate">${photo ? `<img src="${photo}" alt="" loading="lazy">` : `<canvas data-plate="${type}" data-seed="${seed || type}" data-dark="${dark?1:0}" aria-hidden="true"></canvas>`}${cap ? `<span class="cap">${cap}</span>` : ""}</div>`;
+const plate = (type, cap, dark, seed, photo) => `<div class="plate">${photo ? `<img src="${photo}" alt="" loading="lazy">` : `<canvas data-plate="${type}" data-seed="${seed || type}" data-dark="${dark?1:0}" aria-hidden="true"></canvas>`}${cap && !photo ? `<span class="cap">${cap}</span>` : ""}</div>`;
+/* PHOTOS 의 파일 경로 → 빌드 때 묶은 사진 (없으면 빈 값 → 헤어 스터디 그림) */
+const photo = k => { const f = PHOTOS[k]; return f ? (PHOTO_DATA[f] || "") : ""; };
 const PLATE_BY_CAT = {consult:"rings", cut:"cut", perm:"wave", mens:"crop", color:"ombre", care:"sheen", signature:"curl"};
 function plateType(s){
   const id = s.id;
@@ -352,7 +367,7 @@ function plateType(s){
   if(s.cat === "signature") return /cut/.test(id) ? "cut" : /ombre/.test(id) ? "ombre" : /slick|leaf|long|hunryul|won/.test(id) ? "crop" : "curl";
   return PLATE_BY_CAT[s.cat] || "cover";
 }
-const svcPlate = (s, cap, dark) => plate(plateType(s), cap, dark, s.id, PHOTOS[s.id]);
+const svcPlate = (s, cap, dark) => plate(plateType(s), cap, dark, s.id, photo(s.id));
 const cat = id => CATS.find(c => c.id === id);
 const SUB = {consult:["Know Yourself", "First"], cut:["Shaped To", "Your Face"], perm:["Movement", "That Lasts"], mens:["Easy Every", "Morning"], color:["The Color", "That Is You"], care:["Strength", "From Within"], signature:["Signed By", "Designer"]};
 
@@ -360,7 +375,7 @@ function cover(){
   return `<section class="pg cover tall" id="cover">${run()}
     <div class="cover-meta"><span>${meD().name} ${meD().role}<br>메뉴판</span><span>Hair Consulting<br>& Design</span><span>Seoul, Sadang<br>2026</span></div>
     <h1 class="disp">Merci<br>Momong</h1>
-    <div class="cover-img">${plate("cover", "Hair Study 00", false, "cover", PHOTOS.cover)}</div>
+    <div class="cover-img">${plate("cover", "Hair Study 00", false, "cover", photo("cover"))}</div>
     <div class="cover-foot"><span class="xs">서비스 · 과정 · 가격</span><span class="xs">${SERVICES.filter(offered).length} Services</span></div>
   </section>`;
 }
@@ -372,8 +387,10 @@ function statement(){
     <div class="st-bottom"><span class="xs">Be<br>Yourself</span>${plate("rings", "")}</div>
   </section>`;
 }
-function bleed(type, cap){
-  return `<section class="pg bleed" aria-hidden="true">${run()}${plate(type, cap)}</section>`;
+function collage(kind, keys, left, right){
+  const ph = keys.map(photo).filter(Boolean);
+  if(ph.length < 4) return "";
+  return `<section class="pg tall" aria-hidden="true">${run()}<div class="cl cl-${kind}">${ph.map((src, i) => `<img class="c${i + 1}" src="${src}" alt="" loading="lazy">`).join("")}</div><div class="cl-foot"><span>${left}</span><span>${right}</span></div></section>`;
 }
 function contents(){
   const vis = visibleChapters();
@@ -420,7 +437,7 @@ function chapter(c, idx){
   const list = SERVICES.filter(s => s.cat === c.id && offered(s));
   const head = list.slice(0, 3), dk = c.dark ? "dark" : "";
   return `<div class="chap" id="ch-${c.id}">
-    <section class="pg bleed open ${dk}">${run()}${plate(c.plate, "", c.dark, "open-" + c.id, PHOTOS["cat:" + c.id])}
+    <section class="pg bleed open ${dk}">${run()}${plate(c.plate, "", c.dark, "open-" + c.id, photo("cat:" + c.id))}
       <div class="ov"><span class="xs">Chapter ${pad(idx + 1)}</span><h2 class="disp">${c.en[0]}<br>${c.en[1]}</h2><span class="ko-tag">${cat(c.id).ko} — ${c.line}</span></div>
     </section>
     <section class="pg ${dk}">${run()}
@@ -432,7 +449,7 @@ function chapter(c, idx){
 }
 function note(){
   return `<section class="pg tall" id="quote">${run()}
-    ${plate("wave", "", false, "note", PHOTOS.note)}
+    ${plate("wave", "", false, "note", photo("note"))}
     <div class="stair"><span>Be</span><span>Yourself,</span><span>나 다움</span><span>Merci Momong</span></div>
     <div class="st-row" style="margin-top:0"><span class="pill">Our Note</span><p class="sm">자신만의 아름다움으로 스스로를 사랑할 수 있도록.</p></div>
   </section>`;
@@ -502,8 +519,8 @@ function accountView(){
 }
 function bookHtml(){
   page = 0;
-  return cover() + statement() + bleed("wave", "Hair Study — Movement") + contents() + favorite()
-    + visibleChapters().map(chapter).join("") + note() + designers() + benefits() + back();
+  return cover() + statement() + collage("a", ["mood2", "mood5", "mood4", "mood6"], "See your own beauty", "Merci Momong") + contents() + favorite()
+    + visibleChapters().map(chapter).join("") + collage("b", ["mood1", "mood3", "cat:consult", "cat:mens"], "Be yourself", "3Way Hair Consulting") + note() + designers() + benefits() + back();
 }
 function render(){
   const v = state.me ? state.view : "login";

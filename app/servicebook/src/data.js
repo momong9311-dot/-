@@ -671,6 +671,14 @@ const GIFTS = [
   {eb:"진행 중인 이벤트", h:"'탈색 없는' 애쉬브라운·밀크브라운 220,000원", p:"노란기를 줄이는 프리미엄 약제로 탈색 없이 원하는 컬러의 완성도를 높입니다. 톤다운·블랙·레드 시술 이력이 있다면 상담 후 진행 여부가 정해지고, 기장 추가금이 있습니다.", k:"tube", obj:"정가 320,000원 · N페이 결제 시"}
 ];
 
-/* 브로셔 사진 자리. 매장 사진이 준비되면 여기에 넣는다 — 키: 시술 id(예: "perm-signature") 또는 "cat:카테고리 id"(예: "cat:perm", 챕터 첫 장).
-   값: 이미지 주소. 비어 있으면 시술별 '헤어 스터디' 그림이 대신 들어간다. 지어낸 인물·결과 사진은 넣지 않는다. */
-const PHOTOS = {};
+/* 브로셔 사진 자리 — 키: 시술 id(예: "perm-signature"), "cat:카테고리 id"(챕터 첫 장), cover, mood1~4(콜라주).
+   값: photos/ 폴더의 파일 경로. 빌드할 때 파일 안에 묶인다. 비어 있으면 시술별 '헤어 스터디' 그림이 대신 들어간다.
+   지금 사진은 Canva AI로 만든 분위기 정물 사진(사람·시술 결과 없음)이다. 매장 사진이 생기면 같은 이름으로 바꿔 넣는다.
+   지어낸 인물·시술 결과 사진은 넣지 않는다. */
+const PHOTOS = {
+  cover: "photos/cover.jpg",
+  "cat:consult": "photos/consult.jpg", "cat:cut": "photos/cut.jpg", "cat:perm": "photos/perm.jpg", "cat:mens": "photos/mens.jpg",
+  "cat:color": "photos/color.jpg", "cat:care": "photos/care.jpg", "cat:signature": "photos/signature.jpg",
+  "consult-basic": "photos/consult.jpg", "cut-design": "photos/cut.jpg",
+  mood1: "photos/flower.jpg", mood2: "photos/shell.jpg", mood3: "photos/perm.jpg", mood4: "photos/care.jpg", mood5: "photos/color.jpg", mood6: "photos/cover.jpg"
+};
