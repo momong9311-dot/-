@@ -1,0 +1,318 @@
+<meta charset="utf-8">
+<title>Merci Momong Service Book</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+@font-face{font-family:"Pretendard";src:url(data:font/woff2;base64,__FONT__) format("woff2");font-weight:45 920;font-style:normal;font-display:swap}
+/* Layout: 모바일 매거진. 페이지(섹션)마다 러닝 헤더 + 페이지 번호, 큰 그로테스크 헤드라인 + 모노 캡션.
+   흰 종이 페이지가 연한 회색 바탕 위에 쌓이고, 시그니처만 검은 페이지. 사진 대신 시술별 '헤어 스터디' 판화(캔버스). 단일 라이트 테마(인쇄물 톤). */
+:root{
+  --desk:#DEDEDC; --paper:#FFFFFF; --plate:#EFEFED; --ink:#111111; --sub:#5E5E5C; --mute:#9A9A97; --line:#E3E3E0;
+  --sans:"Pretendard",-apple-system,"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,"Pretendard",monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{background:var(--desk);scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--desk);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;letter-spacing:-0.01em;-webkit-font-smoothing:antialiased;
+  padding-left:max(10px,env(safe-area-inset-left,0px));padding-right:max(10px,env(safe-area-inset-right,0px));padding-block:10px 96px}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.book{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+.pg{background:var(--paper);border-radius:3px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 18px 40px -28px rgba(0,0,0,.35);padding:22px 22px 26px;position:relative;scroll-margin-top:10px;overflow:hidden}
+.pg.dark{background:#0E0E0E;color:#F3F3F1}
+.run{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--mono);font-size:10.5px;letter-spacing:.02em;color:var(--mute);margin-bottom:26px}
+.dark .run{color:#8A8A88}
+.mono{font-family:var(--mono);letter-spacing:.01em}
+.cap{font-family:var(--mono);font-size:11px;line-height:1.5;color:var(--sub);letter-spacing:.01em}
+.dark .cap{color:#A9A9A6}
+.up{text-transform:uppercase}
+h1,h2,h3{margin:0;font-weight:600;text-wrap:balance}
+.disp{font-size:clamp(46px,14vw,74px);line-height:.9;letter-spacing:-0.055em;font-weight:600;text-transform:uppercase}
+.h2{font-size:clamp(34px,10vw,52px);line-height:.92;letter-spacing:-0.05em;font-weight:600;text-transform:uppercase}
+.ko{font-size:15px;font-weight:600;letter-spacing:-0.02em;margin-top:10px}
+p{margin:0}
+.pill{display:inline-flex;align-items:center;height:26px;padding:0 14px;border:1px solid currentColor;border-radius:13px;font-family:var(--mono);font-size:11px}
+.plate{background:var(--plate);border-radius:2px;position:relative;overflow:hidden}
+.plate canvas{display:block;width:100%;height:100%}
+.plate .cap{position:absolute;left:10px;bottom:10px;color:#5E5E5C;background:rgba(239,239,237,.9);padding:2px 7px;border-radius:2px}
+.dark .plate{background:#1B1B1B}
+.dark .plate .cap{color:#A9A9A6;background:rgba(27,27,27,.9)}
+
+/* cover */
+.cover-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;font-size:11.5px;line-height:1.35;font-weight:500;margin-bottom:30px}
+.cover-meta span:last-child{text-align:right}
+.cover-title{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:20px}
+.cover-title .yr{font-size:clamp(40px,12vw,64px);font-weight:600;letter-spacing:-0.05em;line-height:.9}
+.cover .plate{aspect-ratio:4/5;max-width:100%}
+.cover-foot{display:flex;justify-content:space-between;gap:12px;margin-top:14px}
+
+/* contents */
+.toc{display:grid;grid-template-columns:1fr 1fr;gap:26px 18px;margin-top:6px}
+.toc a{text-decoration:none;display:flex;flex-direction:column;gap:6px;padding-top:12px;border-top:1px solid var(--ink)}
+.toc b{font-family:var(--mono);font-size:22px;font-weight:500;letter-spacing:-0.02em}
+.toc span{font-size:14.5px;font-weight:600;line-height:1.35}
+.toc small{font-size:12px;color:var(--sub);line-height:1.45}
+
+/* feature */
+.feat-body{display:grid;grid-template-columns:auto 1fr;gap:16px;margin:22px 0 26px;align-items:start}
+.cols{columns:2;column-gap:14px;font-size:12.5px;line-height:1.6;color:var(--sub)}
+.principles{border-top:1px solid var(--ink)}
+.principles div{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:14px;font-weight:600}
+.principles div span{font-family:var(--mono);font-size:11px;color:var(--sub);font-weight:400;text-align:right}
+.range{display:flex;flex-direction:column;align-items:flex-end;margin-top:24px}
+.range b{font-size:26px;font-weight:600;letter-spacing:-0.04em}
+.range span{font-family:var(--mono);font-size:11px;color:var(--sub)}
+
+/* category opener */
+.opener{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:end;margin-bottom:22px}
+.opener .plate{aspect-ratio:3/4}
+.opener .txt{display:flex;flex-direction:column;gap:14px;padding-bottom:4px}
+.intro{font-size:13.5px;line-height:1.65;color:var(--sub)}
+.dark .intro{color:#B9B9B6}
+
+/* service entries */
+.items{border-top:1px solid currentColor}
+details.it{border-bottom:1px solid var(--line)}
+.dark details.it{border-bottom-color:#2A2A2A}
+details.it summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:16px 0 15px}
+details.it summary::-webkit-details-marker{display:none}
+.it .no{font-family:var(--mono);font-size:11px;color:var(--mute)}
+.it .nm{font-size:17px;font-weight:600;letter-spacing:-0.025em;line-height:1.3}
+.it .tg{display:block;font-size:12.5px;color:var(--sub);font-weight:400;margin-top:4px;line-height:1.5;letter-spacing:-0.01em}
+.dark .it .tg{color:#A9A9A6}
+.it .pr{text-align:right;font-family:var(--mono);font-size:12.5px;white-space:nowrap}
+.it .pr s{display:block;color:var(--mute);font-size:10.5px}
+.it .fav{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;border:1px solid currentColor;border-radius:9px;padding:0 7px;margin-left:6px;vertical-align:3px}
+.it .more{grid-column:2 / 4;font-family:var(--mono);font-size:10.5px;color:var(--mute);margin-top:2px}
+details.it[open] .more::after{content:" — 닫기"}
+details.it:not([open]) .more::after{content:" — 자세히"}
+.det{padding:0 0 20px 50px;display:flex;flex-direction:column;gap:16px}
+.det .desc{font-size:13.5px;line-height:1.7;color:var(--sub)}
+.dark .det .desc{color:#B9B9B6}
+.flow{border-top:1px solid currentColor}
+.flow div{display:grid;grid-template-columns:86px minmax(0,1fr);gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+.dark .flow div{border-bottom-color:#2A2A2A}
+.flow div span:first-child{font-family:var(--mono);font-size:11px;color:var(--sub)}
+.dark .flow div span:first-child{color:#8F8F8C}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.facts div{display:flex;flex-direction:column;gap:3px}
+.facts b{font-size:14px;font-weight:600}
+.recs{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px;font-size:13px}
+.recs li::before{content:"— ";color:var(--mute)}
+
+/* quote */
+.quote{font-size:clamp(24px,7.2vw,34px);line-height:1.18;letter-spacing:-0.04em;font-weight:600;margin:6px 0 26px}
+.stair{display:flex;flex-direction:column;gap:6px;margin:10px 0 24px}
+.stair span{font-size:clamp(26px,8vw,38px);font-weight:600;letter-spacing:-0.045em;line-height:1.05}
+.stair span:nth-child(2){padding-left:28%}
+.stair span:nth-child(3){padding-left:10%}
+.stair span:nth-child(4){padding-left:46%}
+
+/* designers */
+.des{display:grid;grid-template-columns:1fr 1fr;gap:22px 14px}
+.de{display:flex;flex-direction:column;gap:8px}
+.de .plate{aspect-ratio:1/1;display:grid;place-items:center}
+.de .plate b{font-size:46px;font-weight:600;letter-spacing:-0.05em;color:#BEBEBB}
+.de h3{font-size:16px;font-weight:600;letter-spacing:-0.02em}
+.de h3 small{font-family:var(--mono);font-size:10.5px;color:var(--sub);font-weight:400;margin-left:6px}
+.de p{font-size:12px;color:var(--sub);line-height:1.55}
+
+/* benefits */
+.ben{border-top:1px solid var(--ink)}
+.ben div{display:grid;grid-template-columns:40px minmax(0,1fr);gap:10px;padding:16px 0;border-bottom:1px solid var(--line)}
+.ben b{display:block;font-size:16px;font-weight:600;letter-spacing:-0.02em;margin-bottom:5px}
+.ben p{font-size:12.5px;color:var(--sub);line-height:1.6}
+
+/* back cover */
+.back .addr{font-size:14px;line-height:1.6;margin-top:18px}
+.cta{display:flex;align-items:center;justify-content:space-between;gap:12px;height:56px;padding:0 22px;border-radius:28px;background:var(--ink);color:var(--paper);text-decoration:none;font-weight:600;font-size:15px;margin-top:22px}
+.cta span:last-child{font-family:var(--mono);font-size:12px;opacity:.7}
+
+/* floating bar */
+.fbar{position:fixed;left:0;right:0;bottom:0;z-index:10;display:flex;justify-content:center;pointer-events:none;
+  padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px))}
+.fbar div{pointer-events:auto;display:flex;gap:6px;padding:6px;border-radius:30px;background:rgba(255,255,255,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 10px 30px -12px rgba(0,0,0,.35),0 0 0 1px rgba(0,0,0,.06)}
+.fbar a{display:inline-flex;align-items:center;height:44px;padding:0 18px;border-radius:22px;text-decoration:none;font-size:14px;font-weight:600}
+.fbar a.book-btn{background:var(--ink);color:#fff}
+.fbar a.toc-btn{font-family:var(--mono);font-size:12px;font-weight:500}
+
+@media (min-width:520px){ body{padding-left:24px;padding-right:24px} .pg{padding:30px 30px 34px} }
+@media (max-width:360px){ .cols{columns:1} .toc{grid-template-columns:1fr} }
+</style>
+
+<main class="book" id="book"></main>
+<nav class="fbar" aria-label="바로가기"><div><a class="toc-btn" href="#contents">CONTENTS</a><a class="book-btn" href="https://naver.me/FaOg9wsW" target="_blank" rel="noopener">네이버 예약</a></div></nav>
+
+<script>
+__DATA__
+</script>
+<script>
+/* ---------- helpers ---------- */
+const won = n => n.toLocaleString("ko-KR");
+const dur = m => m < 60 ? `${m}분` : `${Math.floor(m/60)}시간${m%60 ? " " + m%60 + "분" : ""}`;
+const clock = m => `${Math.floor(m/60)}:${String(m%60).padStart(2,"0")}`;
+const pad = n => String(n).padStart(2, "0");
+/* 네이버 '추천' 표시가 붙은 메뉴 */
+const NAVER_PICKS = ["consult-basic", "cut-design"];
+function range(s){
+  const row = PRICES[s.id] || {};
+  const ks = Object.keys(row).filter(k => k !== "first");
+  const ps = ks.length ? ks.map(k => row[k][0]) : [s.price];
+  const mn = Math.min(...ps), mx = Math.max(...ps);
+  const nm = ks.length && mn === mx ? row[ks[0]][1] : null;
+  return {mn, mx, normal: nm, text: mn === mx ? won(mn) : `${won(mn)}–${won(mx)}`};
+}
+const timeTxt = s => s.timeText || ("약 " + dur(s.min));
+const catRange = id => { const r = SERVICES.filter(s => s.cat === id).map(range); return `${won(Math.min(...r.map(x=>x.mn)))}–${won(Math.max(...r.map(x=>x.mx)))}`; };
+const strip = t => t.replace(/^\[[^\]]+\]\s*/, "");
+
+const CAT_PAGES = [
+  {id:"consult", en:["3WAY", "Consulting"], intro:"얼굴·이목구비, 퍼스널컬러, 골격 이미지를 정밀 분석하고 헤어컨설팅을 진행합니다. 자신만의 아름다움으로 스스로를 사랑할 수 있도록 돕습니다.", plate:"rings"},
+  {id:"cut", en:["The", "Cut"], intro:"지금 스타일을 정돈하는 디자인컷부터, 오늘의 얼굴과 컨디션에 맞춰 방향을 바꾸는 FIT CUT까지.", plate:"cut"},
+  {id:"perm", en:["Perm", "& Magic"], intro:"얼굴형과 모질에 맞춘 컬과 볼륨. 손상이 걱정된다면 메르시모몽이 자체 개발한 '뉴에이징' 시스템으로.", plate:"wave"},
+  {id:"mens", en:["Men's", "Grooming"], intro:"얼굴형과 두상, 모질에 맞춰 매일 손질하기 편한 스타일을 만듭니다.", plate:"crop"},
+  {id:"color", en:["The", "Color"], intro:"'무슨 색을 할까?'보다 '오늘의 나에게 어떤 색이 어울릴까?'에서 시작합니다.", plate:"ombre"},
+  {id:"care", en:["Clinic", "& Scalp"], intro:"손상된 모발의 힘과 윤기를 되살리는 클리닉, 두피 관리와 휴식을 함께하는 헤드스파.", plate:"sheen"},
+  {id:"signature", en:["The", "Signature"], intro:"디자이너가 오래 다듬어 온 각자의 디자인. 이 메뉴는 해당 디자이너에게만 예약할 수 있어요.", plate:"curl", dark:true}
+];
+
+/* ---------- hair study plates (generative, deterministic) ---------- */
+function rng(seed){ let s = seed >>> 0; return () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296; }
+function drawPlate(cv){
+  const type = cv.dataset.plate, dark = cv.dataset.dark === "1";
+  const box = cv.parentElement.getBoundingClientRect();
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const W = Math.max(10, box.width), H = Math.max(10, box.height);
+  cv.width = W * dpr; cv.height = H * dpr;
+  const c = cv.getContext("2d"); c.setTransform(dpr,0,0,dpr,0,0); c.clearRect(0,0,W,H);
+  const r = rng(type.length * 977 + Math.round(W));
+  const ink = dark ? "rgba(240,240,236," : "rgba(20,20,20,";
+  c.lineCap = "round";
+  const strands = (n, fn, alpha=0.55, lw=0.9) => { for(let i=0;i<n;i++){ c.beginPath(); fn(i, n); c.strokeStyle = ink + (alpha * (0.45 + r()*0.55)) + ")"; c.lineWidth = lw * (0.6 + r()*0.8); c.stroke(); } };
+  if(type === "cut"){ // 곧은 머리카락이 사선으로 잘린 끝
+    strands(140, (i, n) => { const x = W*0.12 + (W*0.76)*(i/n) + (r()-.5)*3; const end = H*0.30 + (x/W)*H*0.42 + (r()-.5)*4; c.moveTo(x, -5); c.bezierCurveTo(x + (r()-.5)*6, H*0.2, x + (r()-.5)*6, end*0.8, x + (r()-.5)*2, end); });
+    c.strokeStyle = ink + "0.9)"; c.lineWidth = 1; c.setLineDash([3,4]); c.beginPath(); c.moveTo(W*0.06, H*0.30); c.lineTo(W*0.94, H*0.72); c.stroke(); c.setLineDash([]);
+  } else if(type === "wave" || type === "curl"){
+    const amp = type === "curl" ? 16 : 10, freq = type === "curl" ? 0.06 : 0.035;
+    strands(110, (i, n) => { const x0 = W*0.1 + W*0.8*(i/n); const ph = r()*0.6 + i*0.02; c.moveTo(x0, -5); for(let y=0; y<=H+5; y+=4){ const a = amp * (0.4 + y/H); c.lineTo(x0 + Math.sin(y*freq + ph*6) * a, y); } }, 0.5);
+  } else if(type === "crop"){ // 짧게 세운 결
+    for(let row=0; row<14; row++) strands(36, (i, n) => { const x = W*0.08 + W*0.84*(i/n) + (r()-.5)*6; const y = H*0.12 + row*H*0.058; const ang = -Math.PI/2 + (x/W - .5)*0.9 + (r()-.5)*0.2; c.moveTo(x, y + 12); c.lineTo(x + Math.cos(ang)*14, y + 12 + Math.sin(ang)*14); }, 0.6, 1);
+  } else if(type === "ombre"){ // 뿌리는 진하고 끝으로 갈수록 밝아지는 결
+    for(let i=0;i<150;i++){ const x = W*0.08 + W*0.84*(i/150) + (r()-.5)*3; const g = c.createLinearGradient(0,0,0,H); g.addColorStop(0, ink + "0.85)"); g.addColorStop(0.45, ink + "0.45)"); g.addColorStop(1, ink + "0.04)"); c.beginPath(); c.moveTo(x, -5); c.bezierCurveTo(x + (r()-.5)*10, H*0.35, x + (r()-.5)*14, H*0.7, x + (r()-.5)*10, H+5); c.strokeStyle = g; c.lineWidth = 0.6 + r()*0.8; c.stroke(); }
+  } else if(type === "sheen"){ // 매끈한 결 + 윤기 띠
+    strands(160, (i, n) => { const x = W*0.06 + W*0.88*(i/n); c.moveTo(x, -5); c.bezierCurveTo(x - 6, H*0.4, x + 6, H*0.6, x, H+5); }, 0.35, 0.7);
+    const g = c.createLinearGradient(0, H*0.34, 0, H*0.5); g.addColorStop(0, "rgba(255,255,255,0)"); g.addColorStop(.5, dark ? "rgba(255,255,255,.18)" : "rgba(255,255,255,.85)"); g.addColorStop(1, "rgba(255,255,255,0)"); c.fillStyle = g; c.fillRect(0, H*0.34, W, H*0.16);
+  } else if(type === "rings"){ // 3WAY: 이목구비 · 컬러 · 골격
+    const R = Math.min(W, H) * 0.24, cx = W/2, cy = H*0.48;
+    [[cx, cy - R*0.62, "FACE"], [cx - R*0.62, cy + R*0.42, "COLOR"], [cx + R*0.62, cy + R*0.42, "BODY"]].forEach(([x, y, t]) => {
+      c.beginPath(); c.arc(x, y, R, 0, Math.PI*2); c.strokeStyle = ink + "0.75)"; c.lineWidth = 1; c.stroke();
+      for(let k=0;k<26;k++){ const rr = R - 3 - k*1.6; if(rr <= 1) break; c.beginPath(); c.arc(x, y, rr, 0, Math.PI*2); c.strokeStyle = ink + (0.06) + ")"; c.lineWidth = .6; c.stroke(); }
+      c.fillStyle = ink + "0.7)"; c.font = "500 10px " + getComputedStyle(document.body).getPropertyValue("--mono"); c.textAlign = "center"; c.fillText(t, x, y + (t === "FACE" ? -R*0.35 : R*0.45));
+    });
+    c.fillStyle = ink + "0.9)"; c.font = "600 13px Pretendard, sans-serif"; c.fillText("나다움", cx, cy + 4);
+  } else { // cover: 흘러내리는 긴 머리 한 다발
+    strands(220, (i, n) => { const t = i/n; const x0 = W*(0.18 + t*0.5); c.moveTo(x0, -5); c.bezierCurveTo(x0 + W*0.1, H*0.28, x0 - W*0.12 + t*W*0.1, H*0.62, x0 + W*0.22 - t*W*0.06 + (r()-.5)*10, H+5); }, 0.42, 0.8);
+  }
+}
+function drawAll(){ document.querySelectorAll("canvas[data-plate]").forEach(drawPlate); }
+
+/* ---------- pages ---------- */
+let page = 0;
+const run = (title) => `<div class="run"><span>Merci Momong — ${title}</span><span>${pad(++page)}</span></div>`;
+const plate = (type, cap, dark) => `<div class="plate"><canvas data-plate="${type}" data-dark="${dark?1:0}" aria-hidden="true"></canvas>${cap ? `<span class="cap">${cap}</span>` : ""}</div>`;
+
+function cover(){
+  return `<section class="pg cover" id="cover">
+    <div class="cover-meta"><span>The Service Book<br>Find The Hair<br>That Is You</span><span>Hair Consulting<br>& Design</span><span>Seoul<br>Sadang<br>2026</span></div>
+    <div class="cover-title"><h1 class="disp">Merci<br>Momong</h1><span class="yr">26</span></div>
+    ${plate("cover", "(00) Hair Study — Be yourself, 나다움")}
+    <div class="cover-foot"><span class="cap">서비스 · 과정 · 가격 안내</span><span class="cap">${SERVICES.length} Services / ${CAT_PAGES.length} Chapters</span></div>
+  </section>`;
+}
+function contents(){
+  const entries = [...CAT_PAGES.map((c, i) => ({no: i + 1, id: "ch-" + c.id, t: cat(c.id).ko, d: SERVICES.filter(s => s.cat === c.id).slice(0, 3).map(s => strip(s.name)).join(" · ")})),
+    {no: CAT_PAGES.length + 1, id: "designers", t: "디자이너", d: DESIGNERS.map(d => d.name).join(" · ")},
+    {no: CAT_PAGES.length + 2, id: "benefits", t: "혜택 안내", d: "첫방문 · N페이 · 정액권"}];
+  return `<section class="pg" id="contents">${run("Contents")}
+    <h2 class="h2" style="margin-bottom:26px">Table of<br>Contents</h2>
+    <nav class="toc" aria-label="목차">${entries.map(e => `<a href="#${e.id}"><b>${pad(e.no)}</b><span>${e.t}</span><small>${e.d}</small></a>`).join("")}</nav>
+  </section>`;
+}
+function feature(){
+  return `<section class="pg" id="feature">${run("Feature")}
+    <h2 class="disp" style="font-size:clamp(36px,11vw,56px)">Find the hair<br>that is you.</h2>
+    <div class="feat-body"><span class="pill">3WAY</span>
+      <p class="cols">메르시모몽의 헤어컨설팅은 머리를 하기 전에 나를 먼저 봅니다. 얼굴과 이목구비, 퍼스널컬러, 골격 이미지를 분석하고, 고유의 이미지와 추구하는 이미지 사이를 연결해 어울리는 디자인을 찾습니다. 사전 인터뷰로 생활 습관까지 확인하고, 집에서도 같은 모양을 낼 수 있도록 스타일링을 코칭합니다.</p></div>
+    <div class="principles">
+      <div>이목구비 분석<span>Face & Features</span></div>
+      <div>퍼스널컬러 진단<span>Personal Color</span></div>
+      <div>골격 이미지 진단<span>Body Type</span></div>
+      <div>스타일링 코칭<span>Styling Coach</span></div>
+    </div>
+    <div class="range"><b>${catRange("consult")}원</b><span>Consulting Price Range</span></div>
+  </section>`;
+}
+function item(s, i, dark){
+  const r = range(s);
+  let acc = 0; const flow = s.steps.map(st => { const a = acc; acc += st.m; return `<div><span>${clock(a)}–${clock(acc)}</span><span>${st.t}</span></div>`; }).join("");
+  return `<details class="it"><summary>
+      <span class="no">(${pad(i + 1)})</span>
+      <span class="nm">${strip(s.name)}${NAVER_PICKS.includes(s.id) ? `<span class="fav">BEST</span>` : ""}<span class="tg">${s.designer ? s.designer + " · " : ""}${s.tag}</span></span>
+      <span class="pr">${r.normal ? `<s>${won(r.normal)}</s>` : ""}${r.text}${s.from || r.mx > r.mn ? "~" : ""}</span>
+      <span class="more">${timeTxt(s)}</span>
+    </summary>
+    <div class="det">
+      <p class="desc">${s.desc}</p>
+      <div class="facts"><div><span class="cap">TIME</span><b>${timeTxt(s)}</b></div><div><span class="cap">LASTS</span><b>${s.keep}</b></div><div><span class="cap">STEPS</span><b>${s.steps.length}단계</b></div></div>
+      <div><p class="cap" style="margin-bottom:6px">PROCESS</p><div class="flow">${flow}</div></div>
+      <div><p class="cap" style="margin-bottom:6px">RECOMMENDED FOR</p><ul class="recs">${s.rec.map(x => `<li>${x}</li>`).join("")}</ul></div>
+      ${s.priceNote ? `<p class="cap">${s.priceNote}</p>` : ""}
+    </div>
+  </details>`;
+}
+function chapter(c, idx){
+  const list = SERVICES.filter(s => s.cat === c.id);
+  return `<section class="pg ${c.dark ? "dark" : ""}" id="ch-${c.id}">${run("Chapter " + pad(idx + 1))}
+    <div class="opener">
+      <div class="txt"><h2 class="h2">${c.en[0]}<br>${c.en[1]}</h2><p class="ko">${cat(c.id).ko}</p><p class="intro">${c.intro}</p><span class="cap">${list.length} Menus · ${catRange(c.id)}원</span></div>
+      ${plate(c.plate, `(${pad(idx + 1)}) Hair Study`, c.dark)}
+    </div>
+    <div class="items">${list.map((s, i) => item(s, i, c.dark)).join("")}</div>
+  </section>`;
+}
+function quote(){
+  return `<section class="pg" id="quote">${run("Note")}
+    <div class="stair"><span>Be</span><span>Yourself,</span><span>나 다움</span><span>Merci Momong</span></div>
+    <p class="quote">“자신만의 아름다움으로 스스로를 사랑할 수 있도록 돕습니다.”</p>
+    <p class="cap">당신만의 아름다움을 마주하고, 스스로를 사랑할 수 있도록 진심을 다해 함께합니다.</p>
+  </section>`;
+}
+function designers(){
+  return `<section class="pg" id="designers">${run("Designers")}
+    <h2 class="h2" style="margin-bottom:24px">Our<br>Designers</h2>
+    <div class="des">${DESIGNERS.map((d, i) => `<div class="de"><div class="plate"><b>${d.name[0]}</b><span class="cap">(${pad(i + 1)})</span></div><h3>${d.name}<small>${d.role}</small></h3><p>${d.desc}</p></div>`).join("")}</div>
+  </section>`;
+}
+function benefits(){
+  return `<section class="pg" id="benefits">${run("Benefits")}
+    <h2 class="h2" style="margin-bottom:24px">Good to<br>Know</h2>
+    <div class="ben">${GIFTS.map((g, i) => `<div><span class="cap">(${pad(i + 1)})</span><div><b>${g.h}</b><p>${g.p}</p></div></div>`).join("")}</div>
+    <p class="cap" style="margin-top:16px">금액은 디자이너·기장·모발 상태에 따라 달라질 수 있어요. 정확한 금액은 상담 후 안내드려요.</p>
+  </section>`;
+}
+function back(){
+  return `<section class="pg back" id="visit">${run("Visit")}
+    <h2 class="disp" style="font-size:clamp(40px,12vw,60px)">See you<br>soon.</h2>
+    <p class="addr">메르시모몽<br>서울 서초구 방배천로 5-1 우성빌딩 6층</p>
+    <a class="cta" href="https://naver.me/FaOg9wsW" target="_blank" rel="noopener"><span>네이버로 예약하기</span><span>naver.me/FaOg9wsW</span></a>
+  </section>`;
+}
+const cat = id => CATS.find(c => c.id === id);
+document.getElementById("book").innerHTML = cover() + contents() + feature() + CAT_PAGES.map(chapter).join("") + quote() + designers() + benefits() + back();
+requestAnimationFrame(drawAll);
+let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawAll, 150); });
+document.fonts && document.fonts.ready.then(drawAll);
+</script>
