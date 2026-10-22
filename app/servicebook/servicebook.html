@@ -1131,13 +1131,26 @@ const today = (() => { const d = new Date(); return `${d.getMonth()+1}월 ${d.ge
 
 /* 디자이너 로그인 — 매장 코드는 아래 값을 바꿔 쓰세요. 화면 잠금용이며 보안 장치는 아닙니다. */
 const STORE_CODE = "0000";
+/* 개인 PIN: 디자이너가 이 iPad에서 처음 로그인할 때 직접 만든다 (매장 코드 확인 후). 기기에는 해시만 저장한다. */
+const PIN_KEY = k => "mm-servicebook-pin-" + k;
+const getPin = k => { try { return localStorage.getItem(PIN_KEY(k)); } catch(e) { return memPins[k] || null; } };
+const memPins = {};
+const setPin = (k, h) => { memPins[k] = h; try { localStorage.setItem(PIN_KEY(k), h); } catch(e) {} };
+const clearPin = k => { delete memPins[k]; try { localStorage.removeItem(PIN_KEY(k)); } catch(e) {} };
+async function hashPin(k, pin){
+  const txt = "merci-momong:" + k + ":" + pin;
+  try {
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(txt));
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+  } catch(e) { let h = 5381; for (const c of txt) h = (h * 33 + c.charCodeAt(0)) >>> 0; return "d" + h.toString(16); }
+}
 const ME_KEY = "mm-servicebook-me";
 let savedMe = null; try { savedMe = localStorage.getItem(ME_KEY); } catch(e) {}
 if(savedMe && !DESIGNERS.some(d => d.key === savedMe)) savedMe = null;
 const meD = () => DESIGNERS.find(d => d.key === state.me);
 const VISIT_KEY = "mm-servicebook-visit";
 let savedVisit = "pick"; try { savedVisit = localStorage.getItem(VISIT_KEY) || "pick"; } catch(e) {}
-const state = {visit:savedVisit, unlocked:false, openGrp:null, me:savedMe, pick:null, pin:"", keep:true, pinErr:"", view:"home", des:"all", cat:"all", id:null, tab:"process", step:0, compare:[...DEFAULT_CMP], concerns:[], q:""};
+const state = {loginStep:"name", newPin:"", visit:savedVisit, unlocked:false, openGrp:null, me:savedMe, pick:null, pin:"", keep:true, pinErr:"", view: savedMe ? "home" : "login", des:"all", cat:"all", id:null, tab:"process", step:0, compare:[...DEFAULT_CMP], concerns:[], q:""};
 const view = document.getElementById("view");
 const dock = document.getElementById("dock");
 
@@ -1449,20 +1462,31 @@ function designers(){
 }
 
 /* ---------- 디자이너 로그인 (모몽 OS 로그인 화면 참고) ---------- */
-function keypad(){
-  return `<div class="pinrow gw" aria-label="매장 코드 ${state.pin.length}자리 입력됨">${[0,1,2,3].map(i => `<i class="${i<state.pin.length?"on":""}"></i>`).join("")}</div>
+function keypad(label = "PIN"){
+  return `<div class="pinrow gw" aria-label="${label} ${state.pin.length}자리 입력됨">${[0,1,2,3].map(i => `<i class="${i<state.pin.length?"on":""}"></i>`).join("")}</div>
     <p class="err" role="alert">${state.pinErr}</p>
     <div class="keys">${["1","2","3","4","5","6","7","8","9","del","0","ok"].map(k => k==="del" ? `<button class="g press" data-key="del" aria-label="지우기">${ic("back",2).replace('<svg','<svg width="24" height="24"')}</button>` : k==="ok" ? `<button class="gp press" data-key="ok" style="font-size:17px">확인</button>` : `<button class="t press" data-key="${k}">${k}</button>`).join("")}</div>`;
 }
 function login(){
+  const d = DESIGNERS.find(x => x.key === state.pick);
+  const step = state.loginStep;
+  const head = !d ? ["메르시모몽 서비스북", "내 이름을 눌러 로그인해 주세요"]
+    : step === "pin" ? [`${d.name} ${d.role}`, "내 PIN 4자리를 입력해 주세요"]
+    : step === "store" ? ["처음 로그인이에요", "이 iPad에서 처음이라 매장 코드를 먼저 확인할게요"]
+    : step === "new" ? ["내 PIN 만들기", "앞으로 로그인할 때 쓸 숫자 4자리를 정해 주세요"]
+    : ["한 번 더 입력", "확인을 위해 같은 PIN을 다시 입력해 주세요"];
+  const label = step === "store" ? "매장 코드" : "PIN";
   return `<div class="app">
-    ${bar3(homeTile, "디자이너 로그인", "개인 메뉴판으로 전환", `<span></span>`)}
+    ${bar3(d ? `<button class="tile t press" data-login-back aria-label="이름 다시 고르기">${ic("back",2)}</button>` : `<span></span>`, "로그인", "메르시모몽 서비스북 · 직원 전용", `<span></span>`)}
     <div class="login">
-      <div class="logo"><span class="o g"><span class="i gp">${ic("user")}</span></span><h1>메르시모몽 서비스북</h1><p class="sub">직원 전용 · 내 이름을 고르고 매장 코드를 입력해 주세요</p><p class="sub" style="font-size:13px">가격 기준: 네이버 예약 ${SOURCE_DATE} 확인</p></div>
-      <p class="lbl">디자이너</p>
-      <div class="who" role="group" aria-label="디자이너 선택">${DESIGNERS.map(d => `<button class="${state.pick===d.key?"gp":"g"} press" data-pick="${d.key}" aria-pressed="${state.pick===d.key}"><span class="tile t av">${d.name[0]}</span><b>${d.name}</b><small>${d.role}</small></button>`).join("")}</div>
-      ${state.pick ? `<p class="lbl">매장 코드</p>${keypad()}
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:0 6px"><span class="sub" style="font-size:15px">이 기기에서 로그인 유지</span><button class="sw gw" role="switch" aria-checked="${state.keep}" aria-label="로그인 유지" data-keep><span></span></button></div>` : `<div class="empty g"><h2>먼저 내 이름을 눌러 주세요</h2><p class="sub">로그인하면 이 iPad의 메뉴판이 내 메뉴와 내 가격으로 바뀌어요.</p></div>`}
+      <div class="logo"><span class="o g"><span class="i gp">${d ? `<b style="font-size:24px;font-weight:800">${d.name[0]}</b>` : ic("user")}</span></span><h1>${head[0]}</h1><p class="sub">${head[1]}</p></div>
+      ${!d ? `<div class="who" role="group" aria-label="디자이너 선택">${DESIGNERS.map(x => `<button class="g press" data-pick="${x.key}"><span class="tile t av">${x.name[0]}</span><b>${x.name}</b><small>${x.role}</small></button>`).join("")}</div>
+        <p class="sub" style="font-size:13px;text-align:center">가격 기준: 네이버 예약 ${SOURCE_DATE} 확인</p>`
+      : `${keypad(label)}
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0 6px;gap:12px;flex-wrap:wrap">
+          <span style="display:flex;align-items:center;gap:12px"><button class="sw gw" role="switch" aria-checked="${state.keep}" aria-label="이 기기에서 로그인 유지" data-keep><span></span></button><span class="sub" style="font-size:15px">이 기기에서 로그인 유지</span></span>
+          ${step === "pin" ? `<button class="pill g press" data-forgot style="height:44px;font-size:14px">PIN을 잊었어요</button>` : ""}
+        </div>`}
     </div>
   </div>`;
 }
@@ -1498,7 +1522,7 @@ function account(){
   if(!state.unlocked) return `<div class="app">
     ${bar3(backTile("home"), "내 메뉴판 설정", `${d.name} ${d.role} · 직원 전용`, `<span></span>`)}
     <div class="login">
-      <div class="logo"><span class="o g"><span class="i gp">${ic("user")}</span></span><h1>매장 코드를 입력해 주세요</h1><p class="sub">고객 유형 변경과 로그아웃은 직원만 할 수 있어요</p><p class="sub" style="font-size:13px">가격 기준: 네이버 예약 ${SOURCE_DATE} 확인</p></div>
+      <div class="logo"><span class="o g"><span class="i gp">${ic("user")}</span></span><h1>내 PIN을 입력해 주세요</h1><p class="sub">고객 유형 변경과 로그아웃은 본인만 할 수 있어요</p><p class="sub" style="font-size:13px">가격 기준: 네이버 예약 ${SOURCE_DATE} 확인</p></div>
       ${keypad()}
     </div>
   </div>`;
@@ -1518,27 +1542,45 @@ function account(){
     </div>
   </div>`;
 }
-function pressKey(k){
+async function pressKey(k){
   state.pinErr = "";
-  if(k === "del"){ state.pin = state.pin.slice(0,-1); }
-  else if(k === "ok" || state.pin.length >= 3 && k !== "ok"){
-    if(k !== "ok") state.pin += k;
-    if(state.pin.length < 4){ state.pinErr = "매장 코드 4자리를 입력해 주세요."; }
-    else if(state.pin !== STORE_CODE){ state.pinErr = "매장 코드가 맞지 않아요. 다시 입력해 주세요."; state.pin = ""; }
-    else if(state.view === "account"){
-      state.unlocked = true; state.pin = "";
-    } else {
-      state.me = state.pick; state.des = "all"; state.pin = ""; state.pick = null;
-      try{ state.keep ? localStorage.setItem(ME_KEY, state.me) : localStorage.removeItem(ME_KEY); }catch(e){}
-      go("visit"); return;
-    }
-  } else { state.pin += k; }
-  rerender();
+  if(k === "del"){ state.pin = state.pin.slice(0,-1); rerender(); return; }
+  if(k !== "ok"){ if(state.pin.length < 4) state.pin += k; if(state.pin.length < 4){ rerender(); return; } }
+  if(state.pin.length < 4){ state.pinErr = "4자리를 입력해 주세요."; rerender(); return; }
+  const pin = state.pin; state.pin = "";
+  const who = state.view === "account" ? state.me : state.pick;
+  const fail = msg => { state.pinErr = msg; rerender(); };
+
+  if(state.view === "account"){
+    if(await hashPin(who, pin) !== getPin(who)) return fail("PIN이 맞지 않아요. 다시 입력해 주세요.");
+    state.unlocked = true; return rerender();
+  }
+  const step = state.loginStep;
+  if(step === "pin"){
+    if(await hashPin(who, pin) !== getPin(who)) return fail("PIN이 맞지 않아요. 다시 입력해 주세요.");
+    return finishLogin(who);
+  }
+  if(step === "store"){
+    if(pin !== STORE_CODE) return fail("매장 코드가 맞지 않아요. 다시 입력해 주세요.");
+    state.loginStep = "new"; return rerender();
+  }
+  if(step === "new"){ state.newPin = pin; state.loginStep = "confirm"; return rerender(); }
+  if(step === "confirm"){
+    if(pin !== state.newPin){ state.newPin = ""; state.loginStep = "new"; return fail("두 번 입력한 PIN이 달라요. 처음부터 다시 만들어 주세요."); }
+    setPin(who, await hashPin(who, pin)); state.newPin = "";
+    toast("내 PIN을 만들었어요"); return finishLogin(who);
+  }
+}
+function finishLogin(who){
+  state.me = who; state.des = "all"; state.pick = null; state.loginStep = "name";
+  try{ state.keep ? localStorage.setItem(ME_KEY, who) : localStorage.removeItem(ME_KEY); }catch(e){}
+  state.compare = state.compare.filter(id => offered(svcById(id)));
+  go("visit");
 }
 
 /* ---------- 하단 바 ---------- */
 function dockHtml(){
-  if(state.view === "visit") return "";
+  if(state.view === "visit" || state.view === "login" || !state.me) return "";
   if(state.view === "detail"){
     const inC = state.compare.includes(state.id);
     return `<button class="cta ${inC?"g":"gp"} press" data-cmp="${state.id}">${inC ? "비교함에서 빼기" : `비교함에 담기 (${state.compare.length}/3)`}</button>
@@ -1550,6 +1592,7 @@ function dockHtml(){
 }
 
 function render(){
+  if(!state.me && state.view !== "login") state.view = "login";
   view.innerHTML = ({home, menu, detail, compare, finder, benefits, designers, login, account, visit})[state.view]();
   dock.innerHTML = dockHtml();
   if(entering){ const el = view.querySelector(".app"); if(el) el.classList.add("enter"); entering = false; }
@@ -1580,7 +1623,7 @@ function bind(root){
   root.querySelectorAll("[data-logout]").forEach(b => b.onclick = () => {
     const n = meD(); state.me = null; state.unlocked = false; state.visit = "pick";
     try{ localStorage.removeItem(ME_KEY); localStorage.removeItem(VISIT_KEY); }catch(e){}
-    toast(`${n.name} ${n.role} 메뉴판에서 로그아웃했어요`); go("home");
+    toast(`${n.name} ${n.role} 로그아웃했어요`); go("login", {pick:null, loginStep:"name"});
   });
   root.querySelectorAll("[data-grp]").forEach(b => b.onclick = () => { state.openGrp = state.openGrp === b.dataset.grp ? null : b.dataset.grp; rerender(); });
   root.querySelectorAll("[data-staff]").forEach(el => {
@@ -1588,7 +1631,9 @@ function bind(root){
     el.addEventListener("pointerdown", () => { t = setTimeout(() => go(state.me ? "account" : "login"), 1500); });
     ["pointerup","pointerleave","pointercancel"].forEach(e => el.addEventListener(e, clear));
   });
-  root.querySelectorAll("[data-pick]").forEach(b => b.onclick = () => { state.pick = b.dataset.pick; state.pin = ""; state.pinErr = ""; rerender(); });
+  root.querySelectorAll("[data-pick]").forEach(b => b.onclick = () => { state.pick = b.dataset.pick; state.loginStep = getPin(state.pick) ? "pin" : "store"; state.pin = ""; state.pinErr = ""; rerender(); });
+  root.querySelectorAll("[data-login-back]").forEach(b => b.onclick = () => { state.pick = null; state.loginStep = "name"; state.pin = ""; state.pinErr = ""; rerender(); });
+  root.querySelectorAll("[data-forgot]").forEach(b => b.onclick = () => { state.loginStep = "store"; state.pin = ""; state.pinErr = ""; toast("매장 코드를 확인한 뒤 새 PIN을 만들어요"); rerender(); });
   root.querySelectorAll("[data-key]").forEach(b => b.onclick = () => pressKey(b.dataset.key));
   root.querySelectorAll("[data-keep]").forEach(b => b.onclick = () => { state.keep = !state.keep; rerender(); });
   root.querySelectorAll("[data-des]").forEach(b => b.onclick = () => { state.des = b.dataset.des; rerender(); });
@@ -1617,6 +1662,7 @@ let idle;
 function resetIdle(){
   clearTimeout(idle);
   idle = setTimeout(() => {
+    if(!state.me){ if(state.view !== "login" || state.pick) go("login", {pick:null, loginStep:"name"}); return; }
     if(state.view !== "home" || state.q || state.concerns.length){
       Object.assign(state, {concerns:[], des:"all", cat:"all", q:"", compare:[...DEFAULT_CMP]});
       go("home");
