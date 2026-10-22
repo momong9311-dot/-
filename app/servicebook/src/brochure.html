@@ -441,7 +441,7 @@ function chapter(c, idx){
       <div class="ov"><span class="xs">Chapter ${pad(idx + 1)}</span><h2 class="disp">${c.en[0]}<br>${c.en[1]}</h2><span class="ko-tag">${cat(c.id).ko} — ${c.line}</span></div>
     </section>
     <section class="pg ${dk}">${run()}
-      <div class="stack">${head.map((s, i) => `<a href="#svc-${s.id}" class="st"><span class="lb"><b>${pad(i + 1)}.</b><span>${nm(strip(s.name))}</span><em>${range(s).text}</em></span>${svcPlate(s, "", c.dark)}</a>`).join("")}</div>
+      <div class="stack">${head.map((s, i) => `<a href="#svc-${s.id}" class="st"><span class="lb"><b>${pad(i + 1)}.</b><span>${nm(strip(s.name))}</span><em>${range(s).text}</em></span>${i === 0 && !photo(s.id) && photo("still:" + c.id) ? plate(plateType(s), "", c.dark, s.id, photo("still:" + c.id)) : svcPlate(s, "", c.dark)}</a>`).join("")}</div>
       <div class="ch-foot"><h3 class="h3">${SUB[c.id][0]}<br>${SUB[c.id][1]}</h3><div class="price"><b>${catRange(c.id)}</b><span>${list.length}가지 메뉴</span></div></div>
       <div class="items">${list.map(item).join("")}</div>
     </section>
@@ -474,6 +474,7 @@ function back(){
     <h2 class="disp">See you<br>soon.</h2>
     <div class="grow"></div>
     <div class="st-row"><span class="pill">Visit</span><p class="sm" style="text-align:left">메르시모몽<br>서울 서초구 방배천로 5-1 우성빌딩 6층</p></div>
+    <p class="xs" style="color:var(--sub);margin-top:14px">브로셔의 사진은 분위기를 위한 연출 이미지예요.</p>
     <a class="cta solid" href="https://naver.me/FaOg9wsW" target="_blank" rel="noopener"><span>네이버로 예약하기</span><span>→</span></a>
   </section>`;
 }
@@ -520,7 +521,7 @@ function accountView(){
 function bookHtml(){
   page = 0;
   return cover() + statement() + collage("a", ["mood2", "mood5", "mood4", "mood6"], "See your own beauty", "Merci Momong") + contents() + favorite()
-    + visibleChapters().map(chapter).join("") + collage("b", ["mood1", "mood3", "cat:consult", "cat:mens"], "Be yourself", "3Way Hair Consulting") + note() + designers() + benefits() + back();
+    + visibleChapters().map(chapter).join("") + collage("b", ["mood1", "mood3", "still:consult", "cat:mens"], "Be yourself", "3Way Hair Consulting") + note() + designers() + benefits() + back();
 }
 function render(){
   const v = state.me ? state.view : "login";
