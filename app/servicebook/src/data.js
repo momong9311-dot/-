@@ -674,12 +674,12 @@ const GIFTS = [
 /* 브로셔 사진 자리 — 키: 시술 id(예: "perm-signature"), "cat:챕터 id"(챕터 첫 장 큰 사진), cover, mood1~6(콜라주).
    값: photos/ 폴더의 파일 경로. 빌드할 때 브로셔 파일 안에 묶인다.
    사진이 따로 정해지지 않은 자리(메뉴 사진·목차·소개 등)는 MOOD_PHOTOS의 감성 사진이 차례로 들어간다.
-   지금 사진은 모두 Canva AI로 만든 연출 이미지다 (model-*: 인물, 나머지: 헤어와 상관없는 감성 정물). 매장 사진이 생기면 경로만 바꿔 넣는다.
+   지금 사진은 모두 AI(Runway·Canva)로 만든 연출 이미지다 (rw-*: Runway 인물, model-*: Canva 인물, 나머지: 헤어와 상관없는 감성 정물). 매장 사진이 생기면 경로만 바꿔 넣는다.
    AI 인물·스타일 사진은 연출 이미지로만 쓴다 — 실제 고객 사례·특정 디자이너의 작업·비포/애프터로 소개하지 않는다. */
 const PHOTOS = {
-  cover: "photos/model-cover.jpg", login: "photos/curtain.jpg",
-  "cat:consult": "photos/model-consult.jpg", "cat:cut": "photos/model-cut.jpg", "cat:perm": "photos/model-perm.jpg", "cat:mens": "photos/model-mens.jpg",
-  "cat:color": "photos/model-color.jpg", "cat:care": "photos/model-care.jpg", "cat:signature": "photos/model-signature.jpg",
+  cover: "photos/rw-cover.jpg", login: "photos/curtain.jpg",
+  "cat:consult": "photos/rw-consult.jpg", "cat:cut": "photos/rw-cut.jpg", "cat:perm": "photos/rw-perm.jpg", "cat:mens": "photos/model-mens.jpg",
+  "cat:color": "photos/rw-color.jpg", "cat:care": "photos/model-care.jpg", "cat:signature": "photos/model-signature.jpg",
   "consult-basic": "photos/peony.jpg", "cut-design": "photos/vase.jpg",
   mood1: "photos/flower.jpg", mood2: "photos/shell.jpg", mood3: "photos/model-perm.jpg", mood4: "photos/candle.jpg", mood5: "photos/model-color.jpg", mood6: "photos/sand.jpg",
   mood7: "photos/moth.jpg", mood8: "photos/coconut.jpg", mood9: "photos/curtain.jpg", mood10: "photos/model-mens.jpg"
