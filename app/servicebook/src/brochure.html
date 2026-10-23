@@ -6,7 +6,7 @@
 /* Layout: 모바일 룩북. 흰 종이 페이지가 회색 책상 위에 쌓인다. 얇고 촘촘한 대문자 헤드라인, 작은 양쪽 정렬 본문,
    테두리 알약 라벨, 얇은 선 목록, 넉넉한 여백과 비대칭 배치. 사진 자리는 시술별 '헤어 스터디' 판화. 단일 라이트 테마(인쇄물 톤). */
 :root{
-  --desk:#9C9C9A; --paper:#F8F6F1; --plate:#EAE6DF; --ink:#141414; --body:#2E2E2E; --sub:#5C5C5A; --mute:#A3A3A0; --line:#D9D9D6;
+  --desk:#9C9C9A; --paper:#FFFFFF; --plate:#EDEDED; --ink:#141414; --body:#2E2E2E; --sub:#5C5C5A; --mute:#A3A3A0; --line:#D9D9D6;
   --sans:"Pretendard",-apple-system,"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;
   --mono:var(--sans);
   color-scheme:light;
@@ -117,7 +117,7 @@ p{margin:0}
 .chap{display:flex;flex-direction:column;gap:14px;scroll-margin-top:62px}
 .pg.open .ov{position:absolute;left:22px;right:22px;bottom:24px;z-index:1;display:flex;flex-direction:column;gap:8px}
 .pg.open .ov .ko-tag{margin:0;font-size:14px;font-weight:500;word-break:keep-all;text-wrap:pretty}
-.pg.open::after{content:"";position:absolute;left:0;right:0;bottom:0;height:60%;background:linear-gradient(180deg,rgba(248,246,241,0),rgba(248,246,241,.94) 55%)}
+.pg.open::after{content:"";position:absolute;left:0;right:0;bottom:0;height:60%;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.92) 55%)}
 .pg.open.dark::after{background:linear-gradient(180deg,rgba(28,28,28,0),rgba(28,28,28,.95) 50%)}
 .pg.open .ov .disp{font-size:clamp(44px,14vw,72px)}
 .stack{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
