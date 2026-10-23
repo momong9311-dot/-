@@ -204,6 +204,64 @@ details.it[open] .more i{transform:rotate(45deg)}
 @media (min-width:520px){ .pg{padding:28px 32px 36px} .cover-img,#quote > .plate{margin-inline:-32px} .pg.open .ov{left:32px;right:32px} }
 @media (max-width:350px){ .two{columns:1} }
 
+/* ---------- 읽기 크기 (레퍼런스 룩북 톤 · 큰 글씨) ----------
+   종이: 살짝 회색 기운의 흰 종이, 헤드라인은 얇고 촘촘하게, 본문·라벨·가격은 크게 읽히도록. */
+:root{--paper:#F6F6F4; --plate:#E8E8E6; --body:#262626; --sub:#55554F; --line:#D6D6D2}
+body{font-size:16px}
+.pg{padding:22px 24px 32px}
+.run{font-size:12.5px;margin-bottom:30px}
+.disp{font-weight:520;letter-spacing:-0.055em}
+.h2{font-size:clamp(32px,9.6vw,46px);font-weight:520}
+.h3{font-size:clamp(22px,6.6vw,30px);font-weight:520}
+.sm{font-size:15.5px;line-height:1.7}
+.xs{font-size:13.5px;line-height:1.5}
+.pill{height:32px;padding:0 16px;border-radius:16px;font-size:13px}
+.plate .cap{font-size:12px}
+.cl-foot{font-size:12.5px;letter-spacing:.14em}
+.cover-meta{font-size:13px}
+.rules .r{font-size:15px;padding:12px 0}
+.toc a{grid-template-columns:56px 34px minmax(0,1fr) auto;gap:10px;padding:10px 0;min-height:68px}
+.toc .plate{width:56px;height:56px}
+.toc .n{font-size:13.5px}
+.toc .tt{font-size:clamp(20px,6vw,26px)}
+.toc .k{font-size:15px}
+.pair .price b{font-size:23px}
+.quote{font-size:clamp(22px,6.8vw,31px);line-height:1.04}
+.price b{font-size:27px}
+.price span{font-size:13.5px}
+.ko-tag{font-size:16px}
+.pg.open .ov .ko-tag{font-size:16.5px;line-height:1.45}
+.pg.open .ov .xs{font-size:13.5px}
+.stack .st{grid-template-columns:38% minmax(0,1fr)}
+.stack .lb{font-size:17px;line-height:1.35}
+.stack .lb b{font-size:13.5px}
+.stack .lb em{font-size:16px;color:var(--ink);font-weight:500}
+details.it summary{grid-template-columns:76px minmax(0,1fr) auto;column-gap:14px;padding:14px 0;min-height:104px}
+details.it summary > .plate{width:76px;height:76px}
+.it .no{font-size:13.5px}
+.it .nm{font-size:19px;line-height:1.3}
+.it .pr{font-size:17.5px}
+.it .pr s{font-size:13px}
+.it .best{height:18px;font-size:10px;padding:0 7px;border-radius:9px}
+.it .more{font-size:14px}
+.it .more i{width:34px;height:34px;font-size:18px}
+.det{gap:18px}
+.facts b{font-size:17px}
+.flow .r{grid-template-columns:96px minmax(0,1fr);font-size:15px}
+.recs li{font-size:15.5px;line-height:1.55}
+.stair span{font-size:clamp(30px,9.6vw,48px)}
+.de .nm{font-size:17px}
+.de .nm span{font-size:13px}
+.cta{height:60px;font-size:16.5px}
+.tabs a{height:40px;padding:0 16px;font-size:14.5px}
+.fbar a{height:50px;padding:0 22px;font-size:15px}
+#staff{--paper:#F6F6F4}
+.it .nm,.stack .lb,.toc .tt,.price span,.pg.open .ov .ko-tag,.de .nm{word-break:keep-all;overflow-wrap:anywhere}
+.toc a{grid-template-columns:56px 34px minmax(0,1fr);row-gap:2px}
+.toc a .plate{grid-row:1 / 3}
+.toc a .n{grid-row:1 / 3}
+.toc .k{grid-column:3;font-size:14px}
+
 /* ---------- 직원 화면 (서비스 북과 같은 모몽 OS 로그인) ---------- */
 #staff{position:fixed;inset:0;z-index:30;overflow:auto;background:radial-gradient(130% 90% at 50% 35%,#E7E7E9 0%,#D5D5D8 100%) #D5D5D8;
   --ink:#1B1C1F;--sub:#5B5F68;--mute:#8A8E97;--point:#7F9BD6;--accent:#3F5FA8;color:var(--ink);font-size:17px;letter-spacing:-0.01em}
