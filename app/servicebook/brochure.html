@@ -263,6 +263,54 @@ details.it[open] .more i{transform:rotate(45deg)}
 .staff-back{align-self:flex-start;height:48px;padding:0 18px;border-radius:24px;font-size:15px;font-weight:600}
 @media (max-width:520px){.vgrid{grid-template-columns:minmax(0,1fr)}.vcard{min-height:0}}
 .run{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+
+/* 직원 화면 — 브로셔 룩북 톤 (흰 종이 · 얇은 선 · 검은 알약 버튼). 흐름은 서비스 북과 같다. */
+#staff{background:var(--paper);--ink:#141414;--sub:#5C5C5A;--mute:#A3A3A0;--point:#141414;color:var(--ink);font-size:15px;letter-spacing:-0.015em}
+#staff .g,#staff .gp,#staff .gw,#staff .t{background:none;box-shadow:none;border:0;backdrop-filter:none;-webkit-backdrop-filter:none}
+.lg{max-width:440px;justify-content:flex-start;gap:26px;padding-block:20px 40px}
+.lg-run{display:flex;justify-content:space-between;font-size:11px;font-weight:500;color:#2A2A2A}
+.lg-head{display:flex;flex-direction:column;gap:14px}
+.lg-head .disp{font-size:clamp(40px,12vw,58px)}
+.lg-head .plate{aspect-ratio:4/3;margin:0 calc(-1 * max(24px,env(safe-area-inset-left,0px)))}
+.lg-meta{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.lgform{gap:0;border-top:1px solid var(--ink)}
+.lgf{gap:2px;padding:14px 0 10px;border-bottom:1px solid var(--line)}
+.lgf label{padding:0;font-size:12px;font-weight:500;color:var(--sub)}
+#staff .fld{height:44px;padding:0;border-radius:0;gap:8px}
+#staff .fld:focus-within{box-shadow:none}
+.lgf:focus-within{border-bottom-color:var(--ink)}
+.fld svg{display:none}
+.fld input,.fld select{font-size:18px;font-weight:500;letter-spacing:-0.02em}
+.lgform .err{margin:12px 0 0;min-height:20px;text-align:left;font-size:13.5px;font-weight:500}
+.lgbtns{margin-top:10px}
+#staff .lgmain,#staff .cta-btn{height:56px;border-radius:28px;background:var(--ink);color:#fff;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+#staff .lgsub,#staff .staff-back{border:1px solid var(--ink);border-radius:28px}
+.lgkeep{padding:16px 0 0}
+.lgkeep > span{font-size:13.5px}
+#staff .sw{width:52px;height:30px;border-radius:15px;border:1px solid var(--ink);padding:2px}
+#staff .sw span{width:24px;height:24px;background:var(--ink);box-shadow:none;opacity:.25}
+#staff .sw[aria-checked="true"]{background:var(--ink)}
+#staff .sw[aria-checked="true"] span{background:#fff;opacity:1;box-shadow:none}
+.lgfoot{text-align:left;font-size:12px;color:var(--sub)}
+.staff-in{max-width:440px;padding-top:20px;gap:20px}
+.staff-in h1{font-size:clamp(28px,8.4vw,40px);line-height:.95;letter-spacing:-0.05em;font-weight:560;text-transform:uppercase;text-align:left}
+.staff-in h2{margin:0;font-size:20px;font-weight:600;letter-spacing:-0.03em;word-break:keep-all}
+.staff-in .sub{text-align:left;font-size:13.5px}
+#staff .staff-back{height:44px;padding:0 18px;font-size:13.5px}
+.vgrid{grid-template-columns:minmax(0,1fr);gap:0;border-top:1px solid var(--ink)}
+#staff .vcard{border-radius:0;padding:18px 0;min-height:0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:30px minmax(0,1fr) 26px;column-gap:10px;align-items:baseline}
+.vcard .no{font-size:12px;font-weight:500;color:var(--sub)}
+.vcard b{font-size:18px;font-weight:500;letter-spacing:-0.03em}
+.vcard span.d{grid-column:2;font-size:13.5px;line-height:1.5;word-break:keep-all}
+.vcard i{grid-column:3;grid-row:1;font-style:normal;width:22px;height:22px;border:1px solid var(--ink);border-radius:50%;display:inline-grid;place-items:center;font-size:12px}
+#staff .vcard[aria-pressed="true"] i{background:var(--ink);color:#fff}
+#staff .pinrow{height:auto;padding:14px 0 18px;justify-content:flex-start;gap:12px;border-bottom:1px solid var(--ink);border-radius:0}
+#staff .pinrow i{width:12px;height:12px;background:none;border:1px solid var(--ink);box-shadow:none}
+#staff .pinrow i.on{background:var(--ink);box-shadow:none}
+.keys{gap:0;max-width:none;border-top:1px solid var(--line)}
+#staff .keys button{height:64px;border-radius:0;font-size:22px;font-weight:500;border-bottom:1px solid var(--line)}
+#staff .keys button[data-key="ok"]{background:var(--ink);color:#fff;font-size:15px;font-weight:600}
+#staff .err{text-align:left;color:#9B3A33}
 </style>
 
 <nav class="tabs" id="tabs" aria-label="챕터" hidden></nav>
@@ -950,7 +998,7 @@ const GIFTS = [
    지금 사진은 모두 Canva AI로 만든 연출 이미지다 (model-*: 인물, 나머지: 헤어와 상관없는 감성 정물). 매장 사진이 생기면 경로만 바꿔 넣는다.
    AI 인물·스타일 사진은 연출 이미지로만 쓴다 — 실제 고객 사례·특정 디자이너의 작업·비포/애프터로 소개하지 않는다. */
 const PHOTOS = {
-  cover: "photos/model-cover.jpg",
+  cover: "photos/model-cover.jpg", login: "photos/curtain.jpg",
   "cat:consult": "photos/model-consult.jpg", "cat:cut": "photos/model-cut.jpg", "cat:perm": "photos/model-perm.jpg", "cat:mens": "photos/model-mens.jpg",
   "cat:color": "photos/model-color.jpg", "cat:care": "photos/model-care.jpg", "cat:signature": "photos/model-signature.jpg",
   "consult-basic": "photos/peony.jpg", "cut-design": "photos/vase.jpg",
@@ -1208,35 +1256,36 @@ const state = { me: ls.get(ME_KEY), branch: ls.get(BRANCH_KEY) || (BRANCHES.leng
 if(!meD() || !branchOf(state.branch)) state.me = null;
 state.view = state.me ? "book" : "login";
 const staff = document.getElementById("staff"), book = document.getElementById("book"), fbar = document.querySelector(".fbar");
-const heart = '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1B1C1F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.3-7-9.5A4 4 0 0 1 12 8a4 4 0 0 1 7 2.5C19 15.7 12 20 12 20z"/></svg>';
 const lockI = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8A8E97" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>';
 const pinI = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8A8E97" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/></svg>';
 
 function loginView(){
   return `<div class="lg enter">
-    <div class="lglogo"><div class="g o"><div class="gp i">${heart}</div></div><div class="lgt"><h1>메르시모몽 브로셔</h1><p>지점 · 이름 · 공용 코드로 시작해요</p></div></div>
+    <div class="lg-run"><span>Merci Momong</span><span>Staff</span></div>
+    <div class="lg-head"><h1 class="disp">Merci<br>Momong</h1>${plate("cover", "", false, "login", photo("login") || photo("cover"))}
+      <div class="lg-meta"><span class="pill">Designer Login</span><span class="xs">지점 · 이름 · 공용 코드로 시작해요</span></div></div>
     <form class="lgform" id="lgform" autocomplete="off">
       <div class="lgf"><label for="lg-branch">지점</label><div class="gw fld">${pinI}<select id="lg-branch">${BRANCHES.length > 1 ? `<option value="">지점 선택</option>` : ""}${BRANCHES.map(b => `<option value="${b.key}" ${state.branch===b.key?"selected":""}>${b.name}</option>`).join("")}</select></div></div>
       <div class="lgf"><label for="lg-name">이름</label><div class="gw fld"><input id="lg-name" list="lg-names" placeholder="디자이너 이름" value="${state.name}" autocomplete="off"></div></div>
       <datalist id="lg-names">${DESIGNERS.map(d => `<option value="${d.name}">`).join("")}</datalist>
       <div class="lgf"><label for="lg-code">공용 코드</label><div class="gw fld">${lockI}<input id="lg-code" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" placeholder="지점 공용 코드"></div></div>
       <p class="err" role="alert">${state.err}</p>
-      <div class="lgbtns"><button type="submit" class="gp press lgmain">시작하기</button></div>
+      <div class="lgbtns"><button type="submit" class="gp press lgmain"><span>시작하기</span><span aria-hidden="true">→</span></button></div>
       <div class="lgkeep"><span>이 기기에서 로그인 유지</span><button type="button" class="sw gw" role="switch" aria-checked="${state.keep}" aria-label="이 기기에서 로그인 유지" data-keep><span></span></button></div>
     </form>
     <p class="lgfoot">가격 기준 · 네이버 예약 ${SOURCE_DATE} 확인</p>
   </div>`;
 }
-const visitCards = () => `<div class="vgrid">${[["pick","지정 예약 고객","내 메뉴 가격으로 보여요"],["first","첫방문 고객","첫방문 혜택가로 보여요. 혜택이 없는 메뉴는 일반 가격으로 보여요"]].map(([k,t,d]) => `<button class="${state.visit===k?"gp":"g"} press vcard" data-visit="${k}" aria-pressed="${state.visit===k}"><b>${t}</b><span>${d}</span></button>`).join("")}</div>`;
+const visitCards = () => `<div class="vgrid">${[["pick","지정 예약 고객","내 메뉴 가격으로 보여요"],["first","첫방문 고객","첫방문 혜택가로 보여요. 혜택이 없는 메뉴는 일반 가격으로 보여요"]].map(([k,t,d]) => `<button class="${state.visit===k?"gp":"g"} press vcard" data-visit="${k}" aria-pressed="${state.visit===k}"><span class="no">${k === "pick" ? "01." : "02."}</span><b>${t}</b><i aria-hidden="true">${state.visit===k ? "✓" : "→"}</i><span class="d">${d}</span></button>`).join("")}</div>`;
 const keypad = () => `<div class="pinrow gw" aria-label="공용 코드 ${state.pin.length}자리 입력됨">${[0,1,2,3].map(i => `<i class="${i<state.pin.length?"on":""}"></i>`).join("")}</div><p class="err" role="alert">${state.err}</p>
   <div class="keys">${["1","2","3","4","5","6","7","8","9","del","0","ok"].map(k => k==="del" ? `<button class="g press" data-key="del" aria-label="지우기">←</button>` : k==="ok" ? `<button class="gp press" data-key="ok" style="font-size:17px">확인</button>` : `<button class="t press" data-key="${k}">${k}</button>`).join("")}</div>`;
 function visitView(){
-  return `<div class="staff-in"><div class="lglogo"><div class="g o"><div class="gp i">${heart}</div></div></div><h1>이번 고객님은 어떤 예약인가요?</h1><p class="sub">${meD().name} ${meD().role} · 직원 전용</p>${visitCards()}</div>`;
+  return `<div class="staff-in enter"><div class="lg-run"><span>Merci Momong</span><span>Staff</span></div><h1>Who is<br>visiting?</h1><h2>이번 고객님은 어떤 예약인가요?</h2><p class="sub">${meD().name} ${meD().role} · 직원 전용</p>${visitCards()}</div>`;
 }
 function accountView(){
-  if(!state.unlocked) return `<div class="staff-in"><button class="g press staff-back" data-close>← 브로셔로</button><h1>공용 코드를 입력해 주세요</h1><p class="sub">고객 유형 변경과 로그아웃은 직원만 할 수 있어요</p>${keypad()}</div>`;
-  return `<div class="staff-in"><button class="g press staff-back" data-close>← 브로셔로</button><h1>내 메뉴판 설정</h1><p class="sub">${meD().name} ${meD().role} · 직원 전용</p>
-    <p style="font-weight:750;margin:6px 0 -6px">고객 유형</p>${visitCards()}
+  if(!state.unlocked) return `<div class="staff-in"><button class="g press staff-back" data-close>← 브로셔로</button><h1>Staff<br>Only</h1><h2>공용 코드를 입력해 주세요</h2><p class="sub">고객 유형 변경과 로그아웃은 직원만 할 수 있어요</p>${keypad()}</div>`;
+  return `<div class="staff-in"><button class="g press staff-back" data-close>← 브로셔로</button><h1>My Menu<br>Settings</h1><p class="sub">${meD().name} ${meD().role} · 직원 전용</p>
+    <h2 style="margin-top:6px">고객 유형</h2>${visitCards()}
     <button class="g press lgsub" data-logout style="flex:none">로그아웃</button></div>`;
 }
 function bookHtml(){

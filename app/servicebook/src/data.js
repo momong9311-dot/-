@@ -677,7 +677,7 @@ const GIFTS = [
    지금 사진은 모두 Canva AI로 만든 연출 이미지다 (model-*: 인물, 나머지: 헤어와 상관없는 감성 정물). 매장 사진이 생기면 경로만 바꿔 넣는다.
    AI 인물·스타일 사진은 연출 이미지로만 쓴다 — 실제 고객 사례·특정 디자이너의 작업·비포/애프터로 소개하지 않는다. */
 const PHOTOS = {
-  cover: "photos/model-cover.jpg",
+  cover: "photos/model-cover.jpg", login: "photos/curtain.jpg",
   "cat:consult": "photos/model-consult.jpg", "cat:cut": "photos/model-cut.jpg", "cat:perm": "photos/model-perm.jpg", "cat:mens": "photos/model-mens.jpg",
   "cat:color": "photos/model-color.jpg", "cat:care": "photos/model-care.jpg", "cat:signature": "photos/model-signature.jpg",
   "consult-basic": "photos/peony.jpg", "cut-design": "photos/vase.jpg",
